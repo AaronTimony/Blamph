@@ -8,7 +8,7 @@ function NewUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await fetch("http://127.0.0.1:8000/register/", {
+    await fetch("http://127.0.0.1:8000/api/v1/users/register/", {
       method: "POST",
     headers: { "Content-Type" : "application/json"},
     body: JSON.stringify({username, email, password}),
@@ -24,7 +24,7 @@ function NewUser() {
   const getUsers = async (e) => {
       e.preventDefault()
     try{
-      const response = await fetch("http://127.0.0.1:8000/users/", {
+      const response = await fetch("http://127.0.0.1:8000/api/v1/users/", {
         method: "GET",
         headers: {"Content-Type": "application/json"},
       });
