@@ -1,4 +1,4 @@
-#!/home/aaron-timony/projects/newBlamph/backend/venv/bin/python3
+#!/home/aaron-timony/projects/Blamph/backend/venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
