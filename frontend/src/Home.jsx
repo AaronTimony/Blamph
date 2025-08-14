@@ -1,3 +1,2 @@
-import "./components/deck"
 
 

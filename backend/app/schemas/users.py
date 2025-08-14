@@ -1,14 +1,17 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 class UserCreate(BaseModel):
     username: str
-    email: str
+    email: EmailStr
+    full_name: Optional[str]
     password: str
 
 class UserResponse(BaseModel):
     id: int
+    email: EmailStr
+    full_name: str
     username: str
-    email: str
 
     class Config:
         from_attributes = True

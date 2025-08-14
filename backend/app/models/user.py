@@ -8,4 +8,7 @@ class User(Base):
     id = Column(Integer, primary_key = True)
     username = Column(String, nullable= False)
     email = Column(String)
+    full_name = Column(String)
     password = Column(String, nullable = False)
+
+    deck_associations = relationship("UserDeck", back_populates="user")
