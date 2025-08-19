@@ -8,6 +8,8 @@ class Deck(Base):
     id = Column(Integer, primary_key = True)
     deck_name = Column(String, nullable = False)
     image_url = Column(String)
-
+    total_words = Column(Integer)
+    unique_words = Column(Integer)
+    
     word_associations = relationship("WordDeck", back_populates="deck")
     user_associations = relationship("UserDeck", back_populates="deck")

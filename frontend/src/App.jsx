@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './css/App.css'
 import Home from "./pages/Home"
+import Review from "./pages/Review"
 import NavBar from "./components/NavBar"
 import {Routes, Route} from "react-router-dom"
 import MyDecks from "./pages/MyDecks"
@@ -10,6 +11,7 @@ import Decks from "./pages/Decks"
 import {AuthProvider, useAuthContext} from "./contexts/AuthContext"
 import LoginForm from "./pages/login"
 import RegisterForm from "./pages/register"
+import CreateDeck from "./pages/CreateDeck"
 
 function App() {
   return (
@@ -26,11 +28,12 @@ function AppContent() {
       <NavBar />
       <main>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Review />} />
           <Route path="/decks" element={<Decks />} />
           <Route path="/Login" element={<LoginForm />} />
           <Route path="/Register" element={<RegisterForm />} />
           {user && <Route path={`/myDecks`} element={<MyDecks />} />}
+          <Route path="/Create" element={<CreateDeck />} />
         </Routes>
       </main>
     </>

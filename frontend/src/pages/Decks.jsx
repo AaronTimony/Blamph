@@ -1,8 +1,8 @@
 import DeckPicker from "../components/deckPicker"
 import SearchBar from "../components/searchBar"
 import {useState, useEffect} from "react";
-import {FetchTopAnime, SearchTopAnime} from "../services/jikan_api"
 function Decks() {
+  const [allDecks, setAllDecks] = useState([])
   const [decks, setDecks] = useState([])
   const [searchQuery, setSearchQuery] = useState("")
 
@@ -26,19 +26,15 @@ function Decks() {
             ownedDecks = await response.json()
           }
         }
-        const animeList = await FetchTopAnime();
-
-        const transformedDecks = animeList.map((anime) => ({
-          deck_name:anime.title,
-          image_url: anime.image,
-        }));
-
-        /* Filters out all the decks that you own (note we created ownedDecks to be empty if we don't have a token so this naturally produces all decks even when logged out) */
+        const response = await fetch("http://127.0.0.1:8000/api/v1/decks")
+        const animeList = await response.json()
+        /* filters out all the decks that you own (note we created owneddecks to be empty if we don't have a token so this naturally produces all decks even when logged out) */
         const ownedDecksSet = new Set(ownedDecks.map(deck => deck.deck_name));
-        const cur_available_decks = transformedDecks.filter(
+        const cur_available_decks = animeList.filter(
           deck => !ownedDecksSet.has(deck.deck_name)
         );
         setDecks(cur_available_decks)
+        setAllDecks(cur_available_decks)
       } catch(error) {
         console.log("Failed to fetch decks", error);
       }
@@ -65,44 +61,31 @@ function Decks() {
       console.log(error)
     }
   }
-  const doSearch = async () => {
-    try{
-      if (!searchQuery.trim()) {
-        return
-      } else {
-        const searching = true;
-      }
-      const results = await SearchTopAnime(searchQuery);
-
-      const searchDecks = results.map((anime) => ({
-        deck_name:anime.title,
-        image_url: anime.image,
-      }));
-      setDecks(searchDecks)
-    } catch(error) {
-      console.error("Could not perform search", error);
-    }
-  }
 
   useEffect(() => {
-    if (searchQuery) {
-      doSearch();
+    if (!searchQuery) {
+      setDecks(allDecks)
+      return;
     }
+
+  const searchDecks = setTimeout(async () => {
+    try{
+      const response = await fetch(`http://127.0.0.1:8000/api/v1/decks/search?q=${encodeURIComponent(searchQuery)}`)
+      if (!response.ok) {
+        throw new Error("Failed to find decks")
+      }
+      const searchDecks = await response.json()
+      setDecks(searchDecks)
+    } catch(error) {
+      console.error("failed to search decks", error)
+    }
+  }, 150);
+  return () => clearTimeout(searchDecks)
   }, [searchQuery]);
 
   return (
     <>
-  <div className="search-bar">
-      <form onSubmit={doSearch}>
-        <input
-        id="search-box"
-        placeholder="Search Decks..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button type="submit" className="search-btn">Search</button>
-      </form>
-    </div>
+      <SearchBar onSearch={setSearchQuery}/>
       <DeckPicker decks={decks} added={false} addDecktoUser={addDecktoUser}/>
     </>
   )

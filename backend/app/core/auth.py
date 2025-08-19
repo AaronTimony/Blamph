@@ -1,13 +1,23 @@
 from passlib.context import CryptContext
+import redis
 from fastapi import Depends, HTTPException, status
+import secrets
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from typing import Optional, List
+from datetime import datetime, timedelta, timezone
 from app.core.database import get_db
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
-from app.schemas.auth import UserInDB, TokenData
+from app.schemas.auth import UserInDB, TokenData, RefreshTokenData
 from app.core.config import settings
 from app.models.user import User
+
+redis_client = redis.Redis(
+    host=settings.REDIS_HOST,
+    port=settings.REDIS_PORT,
+    db=settings.REDIS_DB,
+    decode_responses=True
+)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="token") 
@@ -38,9 +48,61 @@ def create_access_token(data: dict, expires_delta: timedelta or None = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
 
-    to_encode.update({"exp": expire})
+    to_encode.update({"exp": expire, "type" : "access"})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM) # jwt.encode knows to look for "exp" in the data and use that as the expiretime
     return encoded_jwt
+
+def create_refresh_token(username: str) -> str:
+    refresh_token = secrets.token_urlsafe(64)
+
+    token_data = RefreshTokenData(username=username,
+                                  created_at=datetime.now(timezone.utc).isoformat()
+                                  )
+
+    expire_seconds = settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+    redis_client.setex(
+        f"refresh_token:{refresh_token}",
+        expire_seconds,
+        token_data.model_dump_json() # You can store anything you want in token_data
+        # it is just a json attached to the token so anything that could be useful you can input
+    )
+    return refresh_token
+
+def verify_refresh_token(token: str, db: Session) -> Optional[User]:
+    try:
+        token_data_json = redis_client.get(f"refresh_token:{token}")
+        if not token_data_json:
+            return None
+        token_data = RefreshTokenData.model_validate_json(token_data_json)
+
+        user = get_user(db, token_data.username)
+        return user
+    except Exception as e:
+        print(f"Refresh token verification error: {e}")
+        return None
+
+def revoke_refresh_token(token: str) -> bool:
+    """This would be used in the case that you want to log out on one device,
+    but not on the others"""
+    try:
+        result = redis_client.delete(f"refresh_token:{token}")
+        return result > 0
+    except Exception:
+        return False
+
+def revoke_all_user_refresh_tokens(username: str):
+    """This is useful if someone gets a password of some sort and wants to log out on all of their devices. This function allows you to quickly do that. Not currently used but could be added for security if I wanted."""
+    try:
+        pattern = "refresh_token:*"
+        keys = redis_client.keys(pattern)
+        for key in keys:
+            token_data_json = redis_client.get(key)
+            if token_data_json:
+                token_data = RefreshTokenData.model_validate_json(token_data_json)
+                if token_data.username == username:
+                    redis_client.delete(key)
+    except Exception as e:
+        print(f"Error in removing refresh token {e}")
 
 async def get_current_user(token: str = Depends(oauth_2_scheme),
                            db: Session = Depends(get_db)):
@@ -68,5 +130,4 @@ async def get_current_user(token: str = Depends(oauth_2_scheme),
     return user
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
-
     return current_user

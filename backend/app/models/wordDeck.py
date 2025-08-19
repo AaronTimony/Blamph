@@ -8,6 +8,7 @@ class WordDeck(Base):
 
     word_id = Column(Integer, ForeignKey("words.id"), primary_key = True)
     deck_id = Column(Integer, ForeignKey("decks.id"), primary_key = True)
+    word_frequency = Column(Integer)
 
     word = relationship("Word", back_populates="deck_associations")
     deck = relationship("Deck", back_populates="word_associations")
