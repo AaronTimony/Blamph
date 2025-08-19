@@ -7,7 +7,9 @@ function NavBar() {
   const {user, logout} = useAuthContext();
   const handleLogout = () => {
     if (window.confirm('Are you sure you wish to log out?')) {
-      logout();
+      logout().then(() => {
+        window.location.href = "/Decks";
+      });
     }
   };
   return (
@@ -15,6 +17,7 @@ function NavBar() {
     <div className="NavBar">
       <Link to="/">Blamph</Link>
       <div className="centre-of-navbar">
+        <Link to="/Create">Create Deck</Link>
         <Link to="/Decks">Decks</Link>
           {user ? (
             <div>

@@ -1,27 +1,30 @@
-import {useState} from "react"
-import {SearchTopAnime} from "../services/jikan_api"
+import {useState, useRef, useEffect} from "react"
 import "../css/SearchBar.css"
 
-function SearchBar({sendResults}) {
+function SearchBar({onSearch}) {
   const [searchQuery, setSearchQuery] = useState("");
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!searchQuery.trim()) return;
+  const inputRef = useRef(null);
 
-  const results = await SearchTopAnime(searchQuery);
-  sendResults(results)
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [])
+
+  const handleChange = async (e) => {
+    const value = e.target.value
+    setSearchQuery(value)
+    onSearch(value)
+
   };
   return (
   <div className="search-bar">
-      <form onSubmit={handleSubmit}>
         <input
+        ref={inputRef}
         id="search-box"
         placeholder="Search Decks..."
         value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
+        onChange={handleChange}
+        autoComplete="off"
         />
-        <button type="submit" className="search-btn">Search</button>
-      </form>
     </div>
   )
 }

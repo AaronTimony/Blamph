@@ -14,3 +14,7 @@ class DeckAdd(BaseModel):
 
 class DeleteDeck(BaseModel):
     deck_name: str
+
+class CreateDeck(BaseModel):
+    deck_name: str
+    image_url: str

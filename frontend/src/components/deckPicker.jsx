@@ -1,9 +1,9 @@
 import "../css/deckPicker.css"
-import downloadImage from "../images/download.jpeg"
 import {useState, useEffect} from "react"
 
 function DeckPicker({decks, addDecktoUser, added, delDeckfromUser}) {
-  if (!decks) return <div>Loading...</div>;
+  if (!decks) return <div>Loading...</div>
+
   return (
     <div className="deck-picker-container">
       {decks.map((deck) => (
@@ -18,13 +18,13 @@ function DeckPicker({decks, addDecktoUser, added, delDeckfromUser}) {
             </div>
 
             <div className="deck-section deck-property difficulty-section">
-              <div className="property-label">Difficulty</div>
-              <div className="property-value">0</div>
+              <div className="property-label">Unique Words</div>
+              <div className="property-value">{deck.unique_words}</div>
             </div>
 
             <div className="deck-section deck-property word-count-section">
               <div className="property-label">Words</div>
-              <div className="property-value">0</div>
+              <div className="property-value">{deck.total_words}</div>
             </div>
 
             <div className="deck-section deck-property knowledge-section">

@@ -1,37 +1,47 @@
-from fastapi import APIRouter, Depends, HTTPException
-from typing import List
-from app.core.database import get_db
+from fastapi import APIRouter, HTTPException, Header, Depends, UploadFile, File, Form
+from sqlalchemy import func
 from sqlalchemy.orm import Session
-from app.models.word import Word
+from app.services.subtitle_parser import SubtitleParser
+from typing import Optional, List
+import requests
+import base64
 from app.models.deck import Deck
 from app.models.wordDeck import WordDeck
+from app.core.database import get_db
 
 router = APIRouter()
+parser = SubtitleParser()
 
-@router.post("/add/{word_text}/{deck_name}")
-def add_word_to_deck(word_text: str, deck_name: str, db: Session = Depends(get_db)):
+@router.post("/addSubs")
+async def assign_words_to_deck(deck_name: str = Form(...), files: List[UploadFile] = File(...), db: Session = Depends(get_db)):
+    supported_extensions = ('.srt',)
+
     deck = db.query(Deck).filter(Deck.deck_name == deck_name).first()
-    if not deck:
-        raise HTTPException(status_code = 404, detail="Deck does not exist")
+    for file in files:
+        if not file.filename.lower().endswith(supported_extensions):
+            raise HTTPException(status_code=400, detail="This file type is not supported)")
 
-    word = db.query(Word).filter(Word.word_text == word_text).first()
-    if not word:
-        word = Word(word_text = word_text)
-        db.add(word)
-        db.commit()
-        db.refresh(word)
+        if not deck:
+            raise HTTPException(status_code=404, detail=f"Deck '{deck_name}' not found")
+        try:
+            content = await file.read()
 
-    existing = db.query(WordDeck).filter(
-        WordDeck.word_id == word.id,
-        WordDeck.deck_id == deck.id
-    ).first()
-    if existing:
-        raise HTTPException(status_code = 409, detail="This word is already in this Deck")
+            result = parser.parse_srt_file(content, deck.id, db)
 
-    word_deck = WordDeck(word_id=word.id, deck_id=deck.id)
-    db.add(word_deck)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=f"Could not add subtitles: {e}")
+
+    unique_words = db.query(WordDeck).filter(WordDeck.deck_id == deck.id).count()
+    total_words = db.query(func.sum(WordDeck.word_frequency)).filter(WordDeck.deck_id == deck.id).scalar()
+
+    deck.total_words = total_words
+    deck.unique_words = unique_words
     db.commit()
+    db.refresh(deck)
 
-    return {"message": "Success"}
-
+    return {
+    "message": "successfully added",
+    "deck_id": deck.id,
+    "unique_words": total_words
+}
 
