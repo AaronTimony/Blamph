@@ -12,3 +12,4 @@ class User(Base):
     password = Column(String, nullable = False)
 
     deck_associations = relationship("UserDeck", back_populates="user")
+    cards = relationship("UserCard", back_populates="user")

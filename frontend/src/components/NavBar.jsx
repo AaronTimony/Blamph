@@ -17,6 +17,7 @@ function NavBar() {
     <div className="NavBar">
       <Link to="/">Blamph</Link>
       <div className="centre-of-navbar">
+        <Link to="/SearchWord">Search</Link>
         <Link to="/Create">Create Deck</Link>
         <Link to="/Decks">Decks</Link>
           {user ? (

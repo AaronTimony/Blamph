@@ -3,12 +3,8 @@ from app.schemas.users import UserCreate, UserResponse
 from typing import List
 from app.core.database import get_db
 from sqlalchemy.orm import Session
-from app.models.word import Word
-from app.models.user import User
-from app.models.deck import Deck
-from app.models.userDeck import UserDeck
+from app.models import Card, User, Deck, UserDeck, CardDeck
 from passlib.context import CryptContext
-from app.models.wordDeck import WordDeck
 from app.api.v1.endpoints.auth import get_current_active_user
 from app.core.auth import get_password_hash
 router = APIRouter()
@@ -40,8 +36,8 @@ def get_users_words(username:str,
                     db: Session = Depends(get_db)):
     user = current_user
 
-    words = db.query(Word).join(WordDeck, Word.id == WordDeck.word_id)\
-            .join(Deck, Deck.id == WordDeck.deck_id)\
+    words = db.query(Card).join(CardDeck, Card.id == CardDeck.word_id)\
+            .join(Deck, Deck.id == CardDeck.deck_id)\
             .join(UserDeck, Deck.id == UserDeck.deck_id)\
             .filter(UserDeck.user_id == user.id).all()
 
