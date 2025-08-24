@@ -62,6 +62,7 @@ function Decks() {
     }
   }
 
+  /*This is to ensure when we remove something from the search query, it goes back to the default of showing all decks.*/
   useEffect(() => {
     if (!searchQuery) {
       setDecks(allDecks)

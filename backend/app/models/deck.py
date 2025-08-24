@@ -11,5 +11,5 @@ class Deck(Base):
     total_words = Column(Integer)
     unique_words = Column(Integer)
     
-    word_associations = relationship("WordDeck", back_populates="deck")
+    card_associations = relationship("CardDeck", back_populates="deck")
     user_associations = relationship("UserDeck", back_populates="deck")

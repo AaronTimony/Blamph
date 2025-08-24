@@ -5,8 +5,7 @@ from app.services.subtitle_parser import SubtitleParser
 from typing import Optional, List
 import requests
 import base64
-from app.models.deck import Deck
-from app.models.wordDeck import WordDeck
+from app.models import Deck, CardDeck
 from app.core.database import get_db
 
 router = APIRouter()
@@ -31,8 +30,8 @@ async def assign_words_to_deck(deck_name: str = Form(...), files: List[UploadFil
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"Could not add subtitles: {e}")
 
-    unique_words = db.query(WordDeck).filter(WordDeck.deck_id == deck.id).count()
-    total_words = db.query(func.sum(WordDeck.word_frequency)).filter(WordDeck.deck_id == deck.id).scalar()
+    unique_words = db.query(CardDeck).filter(CardDeck.deck_id == deck.id).count()
+    total_words = db.query(func.sum(CardDeck.word_frequency)).filter(CardDeck.deck_id == deck.id).scalar()
 
     deck.total_words = total_words
     deck.unique_words = unique_words

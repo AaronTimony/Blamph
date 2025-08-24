@@ -11,7 +11,6 @@ class Settings(BaseSettings):
     REDIS_PORT: int
     REDIS_DB: int
     REDIS_PASSWORD: str
-    OPENSUBS_API: str
 
     class Config:
         env_file = "app/core/.env"
