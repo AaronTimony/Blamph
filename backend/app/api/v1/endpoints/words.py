@@ -3,9 +3,11 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.services.subtitle_parser import SubtitleParser
 from typing import Optional, List
+from datetime import datetime
 import requests
 import base64
-from app.models import Deck, CardDeck
+from app.models import Deck, CardDeck, UserDeck, UserCard, User, Card
+from app.api.v1.endpoints.auth import get_current_active_user
 from app.core.database import get_db
 
 router = APIRouter()
@@ -44,3 +46,23 @@ async def assign_words_to_deck(deck_name: str = Form(...), files: List[UploadFil
     "unique_words": total_words
 }
 
+@router.get("/getWords")
+def get_users_words(current_user: User = Depends(get_current_active_user), db: Session = Depends(get_db)):
+
+    users_cards = db.query(CardDeck).join(UserDeck, CardDeck.deck_id == UserDeck.deck_id).filter(UserDeck.user_id == current_user.id).distinct().all()
+
+    for user_card in users_cards:
+        card_already_added = db.query(UserCard).filter(UserCard.user_id == current_user.id).filter(UserCard.card_id == user_card.card_id).first()
+
+        if not card_already_added:
+            new_user_card = UserCard(user_id=current_user.id,
+                                     card_id=user_card.card_id,
+                                     known=False,
+                                     level=0,
+                                     next_review=datetime.now())
+            db.add(new_user_card)
+    db.commit()
+
+    user_cards = db.query(Card).join(UserCard, UserCard.card_id == Card.id).filter(UserCard.user_id == current_user.id).all()
+
+    return user_cards

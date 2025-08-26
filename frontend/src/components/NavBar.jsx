@@ -15,7 +15,7 @@ function NavBar() {
   return (
   <nav>
     <div className="NavBar">
-      <Link to="/">Blamph</Link>
+      <Link to="/Review">Blamph</Link>
       <div className="centre-of-navbar">
         <Link to="/SearchWord">Search</Link>
         <Link to="/Create">Create Deck</Link>

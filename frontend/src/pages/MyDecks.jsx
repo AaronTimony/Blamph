@@ -73,7 +73,7 @@ function MyDecks() {
       } catch(error) {
         console.error("Found error in searching decks", error)
       }
-    }, 150)
+    }, 300)
 
     return () => clearTimeout(searchAnime);
   }, [searchQuery])

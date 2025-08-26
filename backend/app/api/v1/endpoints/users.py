@@ -30,17 +30,3 @@ def get_users(db: Session = Depends(get_db)):
 
     return [username[0] for username in usernames]
 
-@router.get("/words", response_model=List[str])
-def get_users_words(username:str,
-                    current_user: str = Depends(get_current_active_user),
-                    db: Session = Depends(get_db)):
-    user = current_user
-
-    words = db.query(Card).join(CardDeck, Card.id == CardDeck.word_id)\
-            .join(Deck, Deck.id == CardDeck.deck_id)\
-            .join(UserDeck, Deck.id == UserDeck.deck_id)\
-            .filter(UserDeck.user_id == user.id).all()
-
-    word_list =  [word.word_text for word in words]
-
-    return word_list

@@ -10,7 +10,7 @@ class UserCard(Base):
     user_id = Column(Integer, ForeignKey("users.id"), primary_key = True)
     known = Column(Boolean, default=False)
     level = Column(Integer, default=0)
-    next_review = Column(Date, default=datetime.utcnow)
+    next_review = Column(DateTime, default=datetime.utcnow)
     
     user = relationship("User", back_populates="cards")
     card = relationship("Card", back_populates="user_relationship")
