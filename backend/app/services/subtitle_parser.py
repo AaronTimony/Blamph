@@ -8,7 +8,7 @@ from app.core.badwords import badwords
 from app.models.card import Card
 from app.models.cardDeck import CardDeck
 from collections import Counter
-from typing import List, Dict
+from typing import List, Dict, Tuple
 import re
 import chardet
 
@@ -60,19 +60,24 @@ class SubtitleParser:
 
         return jp_words
 
-    def extract_meaning(self, word: str) -> str:
+    def extract_meaning_and_reading(self, word: str) -> Tuple[str | None, str | None]:
         """Function used to get the meaning of Japanese word passed by extract_cards"""
-        res = self.jamdict.lookup(word)
+        meaning = None
+        reading = None
 
-        if res.entries:
+        res = self.jamdict.lookup(word)
+        if res.entries != []:
             entry = res.entries[0]
 
+            if entry.kana_forms[0]:
+                reading = str(entry.kana_forms[0])
             if entry.senses:
                 first_sense = entry.senses[0]
                 if first_sense.gloss:
-                    return str(first_sense.gloss[0])
+                    meaning = str(first_sense.gloss[0])
 
-        return None
+
+        return meaning, reading
 
     def parse_srt_file(self, file_content: bytes, deck_id: int, db: Session) -> Dict:
         try:
@@ -86,10 +91,10 @@ class SubtitleParser:
             words_count = Counter(all_words)
 
             for word, count in words_count.items():
-                meaning = self.extract_meaning(word)
+                meaning, reading = self.extract_meaning_and_reading(word)
 
                 if meaning:
-                    new_card = Card(jp_word=word, meaning=meaning)
+                    new_card = Card(jp_word=word, meaning=meaning, reading=reading)
                     db.add(new_card)
                     db.flush()
                 else:

@@ -12,6 +12,7 @@ import LoginForm from "./pages/login"
 import RegisterForm from "./pages/register"
 import CreateDeck from "./pages/CreateDeck"
 import SearchWord from "./pages/Search"
+import CardReview from "./pages/CardReview"
 
 function App() {
   return (
@@ -28,8 +29,9 @@ function AppContent() {
       <NavBar />
       <main>
         <Routes>
-          <Route path="/" element={<Review />} />
+          <Route path="/Review" element={<Review />} />
           <Route path="/decks" element={<Decks />} />
+          <Route path="/CardReview" element={<CardReview />} />
           <Route path="/Login" element={<LoginForm />} />
           <Route path="/SearchWord" element={<SearchWord />} />
           <Route path="/Register" element={<RegisterForm />} />

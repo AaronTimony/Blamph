@@ -58,6 +58,19 @@ export const AuthProvider = ({children}) => {
     }
   }
 
+  const authorizedFetch = async (url, options = {}) => {
+    const token = localStorage.getItem("access_token")
+    
+    return fetch(url, {
+      ...options,
+      headers: {
+        "Content-Type" : "application/json",
+        "Authorization" : `Bearer ${token}`,
+        ...options.headers,
+      }
+    });
+  };
+
   const clearAuth = useCallback(() => {
     setUser(null);
     setToken(null)
@@ -185,6 +198,7 @@ export const AuthProvider = ({children}) => {
     token,
     loading,
     apiCall,
+    authorizedFetch,
     refreshAccessToken
   }
   return <AuthContext.Provider value={value}>

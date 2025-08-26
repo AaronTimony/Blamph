@@ -4,9 +4,7 @@ from app.api.v1.endpoints.auth import get_current_active_user
 from app.core.database import get_db
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from app.models.deck import Deck
-from app.models.user import User
-from app.models.userDeck import UserDeck
+from app.models import Deck, User, UserDeck, UserCard
 from app.schemas.decks import DeckAdd, DeleteDeck, CreateDeck
 from typing import List
 router = APIRouter()
@@ -72,19 +70,15 @@ def delete_a_users_deck(delDeck: DeleteDeck,
 def add_deck_to_user(deck: DeckAdd,
                      current_user: User = Depends(get_current_active_user),
                      db: Session =  Depends(get_db)):
-    print(f"received deck: {deck.deck_name}")
     user = current_user
-    print(f"found user: {user.id}")
     deck_exist = db.query(Deck).filter(Deck.deck_name == deck.deck_name).first()
     if not deck_exist:
-        print("Creating new deck")
         new_deck = Deck(image_url=deck.image_url,
                         deck_name=deck.deck_name)
         db.add(new_deck)
         db.commit()
         db.refresh(new_deck)
         deck_exist = new_deck
-        print(f"{deck_exist.id}")
 
     existing = db.query(UserDeck).filter(
         UserDeck.user_id == user.id,
@@ -93,6 +87,8 @@ def add_deck_to_user(deck: DeckAdd,
 
     if existing:
         raise HTTPException(status_code = 409, detail="User already has this deck")
+
+    # Excludes cards that the user already has
 
     user_deck = UserDeck(user_id=user.id, deck_id=deck_exist.id)
     db.add(user_deck)

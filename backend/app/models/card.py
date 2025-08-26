@@ -7,6 +7,7 @@ class Card(Base):
 
     id = Column(Integer, primary_key= True)
     jp_word = Column(String, nullable = False)
+    reading = Column(String, nullable = True)
     meaning = Column(String, nullable = True)
     image = Column(String, nullable = True)
 
