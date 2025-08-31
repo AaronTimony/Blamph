@@ -49,14 +49,16 @@ class SubtitleParser:
         for token in tokens:
             jp_word = token.dictionary_form()
 
-            word_exist = db.query(Card).filter(Card.jp_word == jp_word).first()
-            if word_exist:
-                continue
-
             if jp_word and not jp_word.isspace() and jp_word not in badwords:
                 jp_words.append(jp_word)
+
             else:
                 continue
+
+            db.query(Card).filter(Card.jp_word == jp_word)\
+            .update({Card.overall_frequency: Card.overall_frequency + 1})
+
+            db.commit()
 
         return jp_words
 
@@ -94,20 +96,22 @@ class SubtitleParser:
                 meaning, reading = self.extract_meaning_and_reading(word)
 
                 if meaning:
-                    new_card = Card(jp_word=word, meaning=meaning, reading=reading)
-                    db.add(new_card)
-                    db.flush()
+                    card = db.query(Card).filter(Card.jp_word == word).first()
+                    if not card:
+                        card = Card(jp_word=word, meaning=meaning, reading=reading)
+                        db.add(card)
+                        db.flush()
                 else:
                     continue
 
                 existing_relation = db.query(CardDeck).filter(
-                    CardDeck.card_id == new_card.id,
+                    CardDeck.card_id == card.id,
                     CardDeck.deck_id == deck_id
                 ).first()
                 
                 if not existing_relation:
                     new_relation = CardDeck(
-                        card_id=new_card.id,
+                        card_id=card.id,
                         deck_id=deck_id,
                         word_frequency=count
                     )

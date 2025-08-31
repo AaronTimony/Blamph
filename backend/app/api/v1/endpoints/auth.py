@@ -26,7 +26,8 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     return {
         "access_token": access_token,
         "refresh_token":refresh_token,
-        "token_type": "bearer"
+        "token_type": "bearer",
+        "user": form_data.username
     }
 
 @router.post("/refresh", response_model=TokenResponse)
@@ -38,12 +39,13 @@ async def refresh_token(request: RefreshTokenRequest, db: Session = Depends(get_
             detail="Invalid refresh token"
         )
 
-    # Revoke the old refresh token
-    revoke_refresh_token(request.refresh_token)
 
+    revoke_refresh_token(request.refresh_token)
     # Create new tokens
     token =  create_access_token(data={"sub": user.username})
-    return {"access_token": token, "token_type": "bearer"}
+    new_refresh_token = create_refresh_token(user.username)
+    return {"access_token": token, "token_type": "bearer",
+            "refresh_token" : new_refresh_token, "user": user.username}
 
 @router.post("/logout")
 async def logout(request: RefreshTokenRequest, current_user: User = Depends(get_current_active_user)):

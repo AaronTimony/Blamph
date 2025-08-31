@@ -1,7 +1,9 @@
 import {useState} from "react"
 import "../css/addFile.css"
+import {useAuthContext} from "../contexts/AuthContext"
 
 function CreateDeck() {
+  const {apiCall} = useAuthContext();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [deckName, setDeckName] = useState("")
 
@@ -20,20 +22,18 @@ function CreateDeck() {
     const formData = new FormData();
     formData.append("deck_name", deckName)
     selectedFiles.forEach((file) => {
-      formData.append("files", file); 
+      formData.append("files", file);
     })
 
     try{
-      const token = localStorage.getItem("token")
+      const token = localStorage.getItem("access_token")
       const response = await fetch("http://127.0.0.1:8000/api/v1/words/addSubs", {
+      headers: {"Authorization" : `Bearer ${token}`},
       method: "POST",
-      headers: {
-          "Authorization" : `Bearer ${token}`
-        },
       body: formData
     })
 
-    const data = await response.json()
+      const data = await response.json()
       console.log("Upload success:", data);
     } catch(error) {
       console.error("Upload failed:", error)

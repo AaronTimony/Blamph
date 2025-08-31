@@ -10,6 +10,7 @@ class Card(Base):
     reading = Column(String, nullable = True)
     meaning = Column(String, nullable = True)
     image = Column(String, nullable = True)
+    overall_frequency = Column(Integer, default=0)
 
     deck_associations = relationship("CardDeck", back_populates="card")
     user_relationship = relationship("UserCard", back_populates="card")

@@ -1,7 +1,10 @@
 import {useState, useEffect} from "react";
+import {useAuthContext} from "../contexts/AuthContext"
+import "../css/search.css"
 
 function SearchWord() {
   const [query, setQuery] = useState("")
+  const {apiCall} = useAuthContext();
   const [words, setWords] = useState([])
   const [userWords, setUserWords] = useState([])
 
@@ -13,7 +16,7 @@ function SearchWord() {
         method: "GET",
       })
       if (!response.ok) {
-        throw new Error("Failed to retrieve word/meaing")
+        throw new Error("Failed to retrieve word/meaning")
       }
       const words = await response.json()
       setWords(words)
@@ -24,13 +27,8 @@ function SearchWord() {
 
   const fetchUserWords = async (e) => {
     e.preventDefault()
-    const token = localStorage.getItem("access_token")
     try{
-      const response = await fetch("http://127.0.0.1:8000/api/v1/words/getWords", {
-        method: "GET",
-        headers: {"Content-Type" : "application/json",
-        "Authorization" : `Bearer ${token}`}
-      })
+      const response = await apiCall("http://127.0.0.1:8000/api/v1/words/getWords")
       if (!response.ok) {
         throw new Error("Could not fetch words")
       }
@@ -42,9 +40,9 @@ function SearchWord() {
     }
   }
   return (
-    <>
+    <div className="search-content">
       <form onSubmit={fetchData} label="Search-asfsaf">
-        <label htmlFor="Search">Input Search</label>
+        <label htmlFor="Search" className="search-input">Input Search</label>
         <input
           id="Search"
           placeholder="Search for words here..."
@@ -55,9 +53,7 @@ function SearchWord() {
       </form>
       <div>
         {words.map((word, index) => (
-          <>
-            <p key={index}>{word.meaning} -> {word.jp_word}</p>
-          </>
+            <p key={index}>{word.rank}: {word.meaning} -> {word.jp_word} -> {word.overall_frequency}</p>
         ))}
         </div>
       <form onSubmit={fetchUserWords}>
@@ -65,10 +61,10 @@ function SearchWord() {
       </form>
       <div>
         {userWords.map((word, index) => (
-        <p key={index}>{word.meaning} -> {word.jp_word}</p>
+        <p key={index}>{word.rank}: {word.meaning} -> {word.jp_word} -> {word.overall_frequency}</p>
         ))}
       </div>
-    </>
+    </div>
   )
 }
 

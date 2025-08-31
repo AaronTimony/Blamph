@@ -17,7 +17,7 @@ import CardReview from "./pages/CardReview"
 function App() {
   return (
     <AuthProvider>
-      <AppContent />
+        <AppContent />
     </AuthProvider>
   )
 }
@@ -30,6 +30,7 @@ function AppContent() {
       <main>
         <Routes>
           <Route path="/Review" element={<Review />} />
+          <Route path="/" element={<Review />} />
           <Route path="/decks" element={<Decks />} />
           <Route path="/CardReview" element={<CardReview />} />
           <Route path="/Login" element={<LoginForm />} />

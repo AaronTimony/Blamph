@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional, List
 
 class AddUser(BaseModel):
     user: str
@@ -14,7 +15,25 @@ class DeckAdd(BaseModel):
 
 class DeleteDeck(BaseModel):
     deck_name: str
+    deck_order: int
 
 class CreateDeck(BaseModel):
     deck_name: str
+    image_url: Optional[str]
+
+class MyDecksResponse(BaseModel):
+    deck_name: str
     image_url: str
+    unique_words: int
+    total_words: int
+    deck_order: int
+
+    class Config:
+        from_attributes=True
+
+class DeckReorder(BaseModel):
+    deck_name: str
+    deck_order: int
+
+class DeckOrderRequest(BaseModel):
+    deckOrders: List[DeckReorder]
