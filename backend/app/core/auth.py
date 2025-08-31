@@ -65,12 +65,16 @@ def create_refresh_token(username: str) -> str:
         expire_seconds,
         token_data.model_dump_json() # You can store anything you want in token_data
         # it is just a json attached to the token so anything that could be useful you can input
-    )
+   )
+    redis_client.bgsave()
+    print(redis_client.get(f"refresh_token:{refresh_token}"))
+    print(refresh_token)
     return refresh_token
 
 def verify_refresh_token(token: str, db: Session) -> Optional[User]:
     try:
         token_data_json = redis_client.get(f"refresh_token:{token}")
+
         if not token_data_json:
             return None
         token_data = RefreshTokenData.model_validate_json(token_data_json)

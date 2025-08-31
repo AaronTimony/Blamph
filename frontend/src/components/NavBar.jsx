@@ -4,7 +4,7 @@ import {useAuthContext} from "../contexts/AuthContext"
 import {useState, useEffect} from "react"
 
 function NavBar() {
-  const {user, logout} = useAuthContext();
+  const {loading, user, logout} = useAuthContext();
   const handleLogout = () => {
     if (window.confirm('Are you sure you wish to log out?')) {
       logout().then(() => {
@@ -12,6 +12,12 @@ function NavBar() {
       });
     }
   };
+
+  if (loading) {
+    return (
+    <h1>Loading...</h1>
+    )
+  }
   return (
   <nav>
     <div className="NavBar">

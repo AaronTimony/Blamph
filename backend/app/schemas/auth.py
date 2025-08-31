@@ -8,6 +8,7 @@ class TokenResponse(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
+    user: str
 
 class TokenData(BaseModel):
     username: str or None = None

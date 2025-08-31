@@ -13,7 +13,7 @@ function LoginForm() {
     const result = await login(username, password)
     if (result.success) {
       console.log("User has logged in")
-      navigate('/myDecks')
+      navigate('/Review')
     } else {
       console.error(result.error)
     }

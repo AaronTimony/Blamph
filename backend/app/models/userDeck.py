@@ -8,6 +8,7 @@ class UserDeck(Base):
 
     user_id = Column(Integer, ForeignKey("users.id"), primary_key = True) 
     deck_id = Column(Integer, ForeignKey("decks.id"), primary_key = True)
+    deck_order = Column(Integer, nullable = True)
     
     user = relationship("User", back_populates="deck_associations")
     deck = relationship("Deck", back_populates="user_associations")

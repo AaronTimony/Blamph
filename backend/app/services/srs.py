@@ -90,7 +90,7 @@ class SRS:
     def get_newest_card(self, user_id: int, db: Session, offset: int):
         """Change this to just one query joining Card and UserCard"""
 
-        user_first_deck_id = db.query(UserDeck.deck_id).filter(UserDeck.user_id == user_id).scalar()
+        user_first_deck_id = db.query(UserDeck.deck_id).filter(UserDeck.user_id == user_id).filter(UserDeck.deck_order == 1).scalar()
 
         if not user_first_deck_id:
             raise HTTPException(status_code=404, detail="User has no decks")

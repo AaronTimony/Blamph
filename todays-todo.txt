@@ -1,0 +1,14 @@
+1) Add site-wide frequency and all words on site. So just have card - frequency button on search page.
+2) Check issues with tokenization + translation and see what can be done to improve.
+3) Fix SRS system make something more meaningful with better review intervals and more complexity.
+5) I need to fix my frontend as well. Pages should JUST contain components and not have all the code that should be in the components. Need to fix that.
+6) Inspect code and see if there are any unncessary parts that could be fixed or optimized. Perhaps look at other people's code for ideas and learn some stuff.
+7) Allow for users to create custom decks with their uploaded subtitles (gives meaning to create deck). I need to add a way to add images to the deck manually and if user doesn't have a deck just have a book or something show up.
+8) So I also need a system where when a word is searched, there are several options for what word and then when you click on the word you get much more details. I can add all those details to the word later.
+9) Possible mismatch in true number of words and unique words count. Need to check if they are accurate.
+10) Still one bug with refresh tokens where you get logged out until you click something that calls an api and then you get re-logged.
+11) katakana words dont need to have readings.
+12) Add feature so click on a deck gives frequencies and words of deck.
+13) if word exist in subtitle_parser add to some site-wide frequency counter for the word(must be added currently doesnt exist.)
+14) Authorization
+15) I need to record known word %.

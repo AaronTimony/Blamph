@@ -1,11 +1,13 @@
-const FetchTopAnime = async () => {
+export const fetchTopAnime = async () => {
   try{
-    const response = await fetch("https://api.jikan.moe/v4/top/anime?limit=20")
+    const response = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent("Stone Ocean")}`)
+
     if (!response.ok) {
       throw new Error("Failed to retrieve data")
     }
     const data = await response.json()
-    return data.data.map((anime) => ({
+    const filtered_decks = data.data.filter(anime => anime.title.includes("Stone Ocean"))
+    return filtered_decks.map((anime) => ({
       title: anime.title,
       image: anime.images.jpg.image_url,
     }));
@@ -16,10 +18,10 @@ const FetchTopAnime = async () => {
   }
 }
 
-const createDecks = async () => {
+export const createDecks = async () => {
   try{
     const token = localStorage.getItem("access_token")
-    const retrieved_decks = await FetchTopAnime()
+    const retrieved_decks = await fetchTopAnime()
     const mappedDecks = retrieved_decks.map(deck => ({
       deck_name: deck.title,
       image_url: deck.image
@@ -37,4 +39,4 @@ const createDecks = async () => {
   }
 }
 
-export default createDecks;
+

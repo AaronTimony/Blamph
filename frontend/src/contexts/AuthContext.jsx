@@ -24,16 +24,18 @@ export const AuthProvider = ({children}) => {
     } catch(error) {
       console.error("Token Verification failed", error)
       return null
-    } 
+    } finally {
+      setLoading(false)
+    }
   };
 
   const refreshAccessToken = async () => {
-    refresh_token = localStorage.getItem("refresh_token")
+    const refresh_token = localStorage.getItem("refresh_token")
     if (!refresh_token) {
       throw new Error("No refresh token found")
     }
     try {
-      const response = fetch("http://127.0.0.1:8000/api/v1/auth/refresh", {
+      const response = await fetch("http://127.0.0.1:8000/api/v1/auth/refresh", {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify({refresh_token}),
@@ -44,32 +46,21 @@ export const AuthProvider = ({children}) => {
       }
 
       const data = await response.json()
-      const {access_token, refresh_token : new_refresh_token} = data();
+      const {user: found_user, access_token, refresh_token : new_refresh_token} = data;
 
       localStorage.setItem("access_token", access_token)
       localStorage.setItem("refresh_token", new_refresh_token)
       setToken(access_token)
+      setUser(foundUser)
 
       return access_token;
     } catch(error) {
       console.error("refresh token failed", error)
-      clearAuth();
       return null;
+    } finally {
+      setLoading(false)
     }
   }
-
-  const authorizedFetch = async (url, options = {}) => {
-    const token = localStorage.getItem("access_token")
-    
-    return fetch(url, {
-      ...options,
-      headers: {
-        "Content-Type" : "application/json",
-        "Authorization" : `Bearer ${token}`,
-        ...options.headers,
-      }
-    });
-  };
 
   const clearAuth = useCallback(() => {
     setUser(null);
@@ -92,20 +83,21 @@ export const AuthProvider = ({children}) => {
         }
       });
     };
-    let response = makeRequest(accessToken);
+    let response = await makeRequest(accessToken);
+    let newAccessToken;
 
-      if (response.status === 401) {
-        console.log("Token expired, attempting refresh")
-        const newAccessToken = await refreshAccessToken();
-      }
-
+    if (response.status === 401) {
+      console.log("Token expired, attempting refresh")
+      const newAccessToken = await refreshAccessToken();
       if (newAccessToken) {
-        makeRequest(newAccessToken)
+        response = await makeRequest(newAccessToken)
       } else {
         throw new Error("Authentication failed")
       }
-      return response
     }
+
+    return response
+  }
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -117,21 +109,23 @@ export const AuthProvider = ({children}) => {
         if (userData) {
           setUser(userData)
           setToken(savedToken)
-        } else if (refreshToken) {
-            const newAccessToken = await refreshAccessToken();
-            if (newAccessToken) {
-              const userData = await validateToken(newAccessToken);
-            }
-            if (userData) {
-              setUser(userData)
-              setToken(newAccessToken)
-            }
+        }  
+      } else if (refreshToken) {
+
+        console.log("arae we not checking this???")
+        const newAccessToken = await refreshAccessToken();
+        console.log("Working",newAccessToken)
+        if (newAccessToken) {
+          const userData = await validateToken(newAccessToken);
+          if (userData) {
+            setUser(userData)
+            setToken(newAccessToken)
+          }
         }
-          else {
-            clearAuth();
-        }
+      } else {
+        clearAuth();
+        setLoading(false)
       }
-      setLoading(false)
     }
     checkAuth();
   }, [clearAuth])
@@ -197,8 +191,8 @@ export const AuthProvider = ({children}) => {
     user,
     token,
     loading,
+    setLoading,
     apiCall,
-    authorizedFetch,
     refreshAccessToken
   }
   return <AuthContext.Provider value={value}>
