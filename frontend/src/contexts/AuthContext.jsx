@@ -51,7 +51,7 @@ export const AuthProvider = ({children}) => {
       localStorage.setItem("access_token", access_token)
       localStorage.setItem("refresh_token", new_refresh_token)
       setToken(access_token)
-      setUser(foundUser)
+      setUser(found_user)
 
       return access_token;
     } catch(error) {
@@ -112,9 +112,7 @@ export const AuthProvider = ({children}) => {
         }  
       } else if (refreshToken) {
 
-        console.log("arae we not checking this???")
         const newAccessToken = await refreshAccessToken();
-        console.log("Working",newAccessToken)
         if (newAccessToken) {
           const userData = await validateToken(newAccessToken);
           if (userData) {
@@ -128,6 +126,23 @@ export const AuthProvider = ({children}) => {
       }
     }
     checkAuth();
+
+    const refreshInterval = setInterval(async () => {
+      const refreshToken = localStorage.getItem("refresh_token");
+      if (refreshToken) {
+        console.log("Auto-refreshing token")
+        const newToken = await refreshAccessToken();
+        if (newToken) {
+          setToken(newToken)
+        } else {
+          console.log("Refresh token not found, logging out")
+          clearAuth();
+          clearInterval(refreshInterval);
+        }
+      }
+    }, 10 * 60 * 1000);
+
+    return () => clearInterval(refreshInterval);
   }, [clearAuth])
 
   const login = async (username, password) => {

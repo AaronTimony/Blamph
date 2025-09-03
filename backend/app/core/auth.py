@@ -67,8 +67,6 @@ def create_refresh_token(username: str) -> str:
         # it is just a json attached to the token so anything that could be useful you can input
    )
     redis_client.bgsave()
-    print(redis_client.get(f"refresh_token:{refresh_token}"))
-    print(refresh_token)
     return refresh_token
 
 def verify_refresh_token(token: str, db: Session) -> Optional[User]:
@@ -105,6 +103,7 @@ def revoke_all_user_refresh_tokens(username: str):
                 token_data = RefreshTokenData.model_validate_json(token_data_json)
                 if token_data.username == username:
                     redis_client.delete(key)
+
     except Exception as e:
         print(f"Error in removing refresh token {e}")
 

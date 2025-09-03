@@ -55,7 +55,4 @@ async def logout(request: RefreshTokenRequest, current_user: User = Depends(get_
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 
-@router.get("/users/me/decks", response_model=DeckResponse)
-async def read_decks_me(current_user: User = Depends(get_current_active_user)):
-    return [{"deck_name" : 1,"username": current_user}]
 
