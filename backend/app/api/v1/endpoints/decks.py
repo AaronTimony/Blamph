@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from typing import List
+from typing import List, Optional
 from app.api.v1.endpoints.auth import get_current_active_user
 from app.core.database import get_db
 from sqlalchemy import func
@@ -13,6 +13,7 @@ decks_service = DeckService()
 
 @router.get("/")
 def get_decks(db: Session = Depends(get_db)):
+
     return db.query(Deck).filter(Deck.user_created == False).all()
 
 @router.post("/create/")
@@ -60,3 +61,9 @@ async def reorder_users_decks(request: DeckOrderRequest,
                         db: Session = Depends(get_db)):
 
     return await decks_service.reorder_decks(request, current_user, db)
+
+@router.get("/known_percent")
+def get_users_deck_known_percentage(current_user: User = 
+                                    Depends(get_current_active_user),
+                                    db: Session = Depends(get_db)):
+    return decks_service.deck_known_percentage(current_user, db)

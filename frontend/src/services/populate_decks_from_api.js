@@ -1,13 +1,13 @@
 export const fetchTopAnime = async () => {
   try{
-    const response = await fetch(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent("Stone Ocean")}`)
+    const response = await fetch(`https://api.jikan.moe/v4/anime/32847`)
 
     if (!response.ok) {
       throw new Error("Failed to retrieve data")
     }
     const data = await response.json()
-    const filtered_decks = data.data.filter(anime => anime.title.includes("Stone Ocean"))
-    return filtered_decks.map((anime) => ({
+  
+    return data.data.map((anime) => ({
       title: anime.title,
       image: anime.images.jpg.image_url,
     }));
@@ -38,5 +38,3 @@ export const createDecks = async () => {
     console.error("Something went wrong", error)
   }
 }
-
-

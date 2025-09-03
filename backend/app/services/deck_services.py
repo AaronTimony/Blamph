@@ -1,7 +1,8 @@
 from sqlalchemy.orm import Session 
+from sqlalchemy import func
 from fastapi import Depends, HTTPException
 from typing import List
-from app.models import Deck, UserDeck, User
+from app.models import Deck, UserDeck, User, CardDeck, UserCard
 from app.schemas.decks import CreateDeck, DeleteDeck, DeckAdd, DeckOrderRequest
 
 class DeckService:
@@ -107,3 +108,31 @@ class DeckService:
 
         except Exception as e:
             print(f"Could not update decks", e)
+
+    def deck_known_percentage(self, current_user: User, db: Session):
+        decks = db.query(Deck).filter(Deck.user_created == False).all()
+
+        known_per = []
+        for deck in decks:
+            known_words = db.query(func.sum(CardDeck.word_frequency))\
+            .join(UserCard, UserCard.card_id == CardDeck.card_id)\
+            .filter(CardDeck.deck_id == deck.id)\
+            .filter(UserCard.user_id == current_user.id)\
+            .filter(UserCard.known == True)\
+            .scalar() or 0 # If no cards are known
+
+            known_words_percentage = (
+                known_words / deck.total_words if deck.total_words else 0
+            )
+
+
+            deck_per = {
+                "deck_name" : deck.deck_name,
+                "known_per" : known_words_percentage
+            }
+
+            known_per.append(deck_per)
+
+        return known_per
+
+

@@ -2,7 +2,7 @@ import DeckPicker from "../components/deckPicker"
 import SearchBar from "../components/searchBar"
 import {useState, useEffect} from "react";
 /*import {createDecks, fetchTopAnime} from "../services/populate_decks_from_api" 
-only used when i want to update my decks from the api*/
+/*only used when i want to update my decks from the api*/
 import {useAuthContext} from "../contexts/AuthContext"
 function Decks() {
   const {apiCall} = useAuthContext();
@@ -11,31 +11,49 @@ function Decks() {
   const [searchQuery, setSearchQuery] = useState("")
 
   useEffect(() => {
-
-    const getAnime = async () => {
+    const getDecksWithKnownPercent = async () => {
       try{
-        let ownedDecks = [];
+        const [ownedDecksResponse, allDecksResponse, knownPercentResponse] = await Promise.all([
+          apiCall("http://127.0.0.1:8000/api/v1/decks/myDecks").catch(() => null),
+          fetch("http://127.0.0.1:8000/api/v1/decks"),
+          apiCall("http://127.0.0.1:8000/api/v1/decks/known_percent").catch(() => null)
+        ]);
 
-        const response = await apiCall("http://127.0.0.1:8000/api/v1/decks/myDecks")
-        if (!response.ok) {
-          console.log("Could not find token, showing all decks")
-        } else {
-          ownedDecks = await response.json()
+        let ownedDecks = []
+
+        if (ownedDecksResponse?.ok) {
+          ownedDecks = await ownedDecksResponse.json();
         }
-        const response_decks = await fetch("http://127.0.0.1:8000/api/v1/decks")
-        const animeList = await response_decks.json()
-        /* filters out all the decks that you own (note we created owneddecks to be empty if we don't have a token so this naturally produces all decks even when logged out) */
-        const ownedDecksSet = new Set(ownedDecks.map(deck => deck.deck_name));
-        const cur_available_decks = animeList.filter(
-          deck => !ownedDecksSet.has(deck.deck_name)
+
+        const allDecks = await allDecksResponse.json();
+
+        let knownPercentages = [];
+        /*We need this stuff in case knownPercentages doesn't return in that case things will break. */
+
+        if (knownPercentResponse?.ok) {
+          knownPercentages = await knownPercentResponse.json();
+        }
+
+        const knownPercentMap = new Map(
+          knownPercentages.map(item => [item.deck_name, item.known_per])
         );
-        setDecks(cur_available_decks)
-        setAllDecks(cur_available_decks)
-      } catch(error) {
-        console.log("Failed to fetch decks", error);
+
+        const ownedDecksSet = new Set(ownedDecks.map(deck => deck.deck_name));
+
+        const availableDecks = allDecks
+        .filter(deck => !ownedDecksSet.has(deck.deck_name))
+        .map(deck => ({
+          ...deck,
+          known_percentage: (knownPercentMap.get(deck.deck_name) || 0).toFixed(1)
+        }));
+
+        setDecks(availableDecks)
+        setAllDecks(availableDecks)
+      } catch (error) {
+        console.error("Failed to fetch deck data", error);
       }
     }
-    getAnime();
+    getDecksWithKnownPercent();
   }, []);
 
   const addDecktoUser = async (e, deckName, image_url) => {

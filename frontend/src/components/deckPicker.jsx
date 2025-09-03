@@ -45,7 +45,7 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
 
           <div className="deck-section deck-property knowledge-section">
             <div className="property-label">Known</div>
-            <div className="property-value">0</div>
+            <div className="property-value">{deck.known_percentage}</div>
           </div>
           {added ? (
             <div className="deck-section add-button-section">
