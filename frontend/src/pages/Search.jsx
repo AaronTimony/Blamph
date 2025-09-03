@@ -53,7 +53,7 @@ function SearchWord() {
       </form>
       <div>
         {words.map((word, index) => (
-            <p key={index}>{word.rank}: {word.meaning} -> {word.jp_word} -> {word.overall_frequency}</p>
+            <p key={index}>{word.rank} - {word.meaning} - {word.jp_word} - {word.overall_frequency}</p>
         ))}
         </div>
       <form onSubmit={fetchUserWords}>
@@ -61,7 +61,7 @@ function SearchWord() {
       </form>
       <div>
         {userWords.map((word, index) => (
-        <p key={index}>{word.rank}: {word.meaning} -> {word.jp_word} -> {word.overall_frequency}</p>
+        <p key={index}>{word.rank}: {word.meaning} - {word.jp_word} - {word.overall_frequency}</p>
         ))}
       </div>
     </div>
