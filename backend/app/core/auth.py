@@ -12,12 +12,7 @@ from app.schemas.auth import UserInDB, TokenData, RefreshTokenData
 from app.core.config import settings
 from app.models.user import User
 
-redis_client = redis.Redis(
-    host=settings.REDIS_HOST,
-    port=settings.REDIS_PORT,
-    db=settings.REDIS_DB,
-    decode_responses=True
-)
+redis_client = redis.from_url(settings.REDIS_URL)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="token") 
