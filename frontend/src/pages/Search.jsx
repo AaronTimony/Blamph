@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react";
+import API_BASE_URL from "../config"
 import {useAuthContext} from "../contexts/AuthContext"
 import "../css/search.css"
 
@@ -11,7 +12,7 @@ function SearchWord() {
   const fetchData = async (e) => {
     e.preventDefault()
     try{
-      const response = await fetch(`https://blamph.onrender.com/api/v1/search/words?query=${query}`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/search/words?query=${query}`, {
         headers: {"Content-Type" : "application/json"},
         method: "GET",
       })
@@ -28,7 +29,7 @@ function SearchWord() {
   const fetchUserWords = async (e) => {
     e.preventDefault()
     try{
-      const response = await apiCall("https://blamph.onrender.com/api/v1/words/getWords")
+      const response = await apiCall(`${API_BASE_URL}/api/v1/words/getWords`)
       if (!response.ok) {
         throw new Error("Could not fetch words")
       }

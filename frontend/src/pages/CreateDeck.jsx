@@ -1,5 +1,6 @@
 import {useState} from "react"
 import "../css/addFile.css"
+import API_BASE_URL from "../config"
 import {useAuthContext} from "../contexts/AuthContext"
 
 function CreateDeck() {
@@ -27,7 +28,7 @@ function CreateDeck() {
 
     try{
       const token = localStorage.getItem("access_token")
-      const response = await fetch("https://https://blamph.onrender.com/api/v1/words/addSubs", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/words/addSubs`, {
       headers: {"Authorization" : `Bearer ${token}`},
       method: "POST",
       body: formData

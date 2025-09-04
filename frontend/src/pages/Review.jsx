@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react";
+import API_BASE_URL from "../config"
 import {Link} from "react-router-dom";
 import {useAuthContext} from "../contexts/AuthContext"
 import "../css/reviewhome.css"
@@ -12,7 +13,7 @@ function ReviewPage() {
   useEffect(() => {
     const get_word_counts = async () => {
       try{
-        const response = await apiCall("https://blamph.onrender.com/api/v1/review/AllCardCounts")
+        const response = await apiCall(`${API_BASE_URL}/api/v1/review/AllCardCounts`)
 
         if (!response.ok) {
           throw new Error("Failed to find new word count")

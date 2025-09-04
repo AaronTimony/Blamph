@@ -1,4 +1,5 @@
 import {useCallback, createContext, useContext, useState, useEffect} from "react";
+import API_BASE_URL from "../config"
 
 const AuthContext = createContext();
 
@@ -9,7 +10,7 @@ export const AuthProvider = ({children}) => {
 
   const validateToken = async (accessToken) => {
     try{
-      const response = await fetch("https://blamph.onrender.com/api/v1/auth/users/me", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/users/me`, {
         method: "GET",
         headers: {
           "Content-Type" : "application/json",
@@ -35,7 +36,7 @@ export const AuthProvider = ({children}) => {
       throw new Error("No refresh token found")
     }
     try {
-      const response = await fetch("https://blamph.onrender.com/api/v1/auth/refresh", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/refresh`, {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify({refresh_token}),
@@ -150,7 +151,7 @@ export const AuthProvider = ({children}) => {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
-      const response = await fetch("https://blamph.vercel.app/api/v1/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
         method: "POST",
         body: formData,
       });
@@ -181,7 +182,7 @@ export const AuthProvider = ({children}) => {
     try {
       const refreshToken = localStorage.getItem("refresh_token")
       if (refreshtoken) {
-        await fetch("https://blamph.onrender.com/api/v1/auth/logout", {
+        await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

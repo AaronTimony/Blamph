@@ -1,4 +1,5 @@
 import {useState} from "react";
+import API_BASE_URL from "../config"
 import "../css/register.css"
 
 function RegisterForm() {
@@ -10,7 +11,7 @@ function RegisterForm() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try{
-      const response = await fetch("https://blamph.onrender.com/api/v1/users/register", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/register`, {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify({username, email, password, full_name: fullName})

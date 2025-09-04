@@ -1,4 +1,5 @@
 import DeckPicker from "../components/deckPicker"
+import API_BASE_URL from "../config"
 import SearchBar from "../components/searchBar"
 import {useState, useEffect} from "react";
 /*import {createDecks, fetchTopAnime} from "../services/populate_decks_from_api" 
@@ -14,9 +15,9 @@ function Decks() {
     const getDecksWithKnownPercent = async () => {
       try{
         const [ownedDecksResponse, allDecksResponse, knownPercentResponse] = await Promise.all([
-          apiCall("https://blamph.onrender.com/api/v1/decks/myDecks").catch(() => null),
-          fetch("https://blamph.onrender.com/api/v1/decks"),
-          apiCall("https://blamph.onrender.com/api/v1/decks/known_percent").catch(() => null)
+          apiCall(`${API_BASE_URL}/api/v1/decks/myDecks`).catch(() => null),
+          fetch(`${API_BASE_URL}/api/v1/decks`),
+          apiCall(`${API_BASE_URL}/api/v1/decks/known_percent`).catch(() => null)
         ]);
 
         let ownedDecks = []
@@ -59,7 +60,7 @@ function Decks() {
   const addDecktoUser = async (e, deckName, image_url) => {
     e.preventDefault()
     try{
-      const response = await apiCall("https://blamph.onrender.com/api/v1/decks/AddDeck", {
+      const response = await apiCall(`${API_BASE_URL}/api/v1/decks/AddDeck`, {
         method: "POST",
         body: JSON.stringify({deck_name: deckName, image_url}),
       });
@@ -81,7 +82,7 @@ function Decks() {
 
   const searchDecks = setTimeout(async () => {
     try{
-      const response = await fetch(`https://blamph.onrender.com/api/v1/decks/search?q=${encodeURIComponent(searchQuery)}`)
+      const response = await fetch(`${API_BASE_URL}/api/v1/decks/search?q=${encodeURIComponent(searchQuery)}`)
       if (!response.ok) {
         throw new Error("Failed to find decks")
       }
