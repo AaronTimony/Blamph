@@ -26,7 +26,7 @@ export const createDecks = async () => {
       deck_name: deck.title,
       image_url: deck.image
     }));
-    const response = await fetch("http://127.0.0.1:8000/api/v1/decks/create/", {
+    const response = await fetch("https://blamph.onrender.com/api/v1/decks/create/", {
       method: "POST",
       headers: {"Content-Type" : "application/json", "Authorization" : `Bearer ${token}`},
       body: JSON.stringify(mappedDecks)

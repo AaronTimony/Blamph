@@ -6,7 +6,7 @@ async function downloadSubtitleWithHeader(fileId) {
     }
     
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/v1/words/create`, {
+        const response = await fetch(`https://blamph.onrender.com/api/v1/words/create`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${access_token}`,

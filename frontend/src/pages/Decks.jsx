@@ -14,9 +14,9 @@ function Decks() {
     const getDecksWithKnownPercent = async () => {
       try{
         const [ownedDecksResponse, allDecksResponse, knownPercentResponse] = await Promise.all([
-          apiCall("http://127.0.0.1:8000/api/v1/decks/myDecks").catch(() => null),
-          fetch("http://127.0.0.1:8000/api/v1/decks"),
-          apiCall("http://127.0.0.1:8000/api/v1/decks/known_percent").catch(() => null)
+          apiCall("blamph.onrender.com/api/v1/decks/myDecks").catch(() => null),
+          fetch("blamph.onrender.com/api/v1/decks"),
+          apiCall("blamph.onrender.com/api/v1/decks/known_percent").catch(() => null)
         ]);
 
         let ownedDecks = []
@@ -59,7 +59,7 @@ function Decks() {
   const addDecktoUser = async (e, deckName, image_url) => {
     e.preventDefault()
     try{
-      const response = await apiCall("http://127.0.0.1:8000/api/v1/decks/AddDeck", {
+      const response = await apiCall("blamph.onrender.com/api/v1/decks/AddDeck", {
         method: "POST",
         body: JSON.stringify({deck_name: deckName, image_url}),
       });
@@ -81,7 +81,7 @@ function Decks() {
 
   const searchDecks = setTimeout(async () => {
     try{
-      const response = await fetch(`http://127.0.0.1:8000/api/v1/decks/search?q=${encodeURIComponent(searchQuery)}`)
+      const response = await fetch(`blamph.onrender.com/api/v1/decks/search?q=${encodeURIComponent(searchQuery)}`)
       if (!response.ok) {
         throw new Error("Failed to find decks")
       }

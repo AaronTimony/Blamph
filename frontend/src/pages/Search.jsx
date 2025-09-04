@@ -11,7 +11,7 @@ function SearchWord() {
   const fetchData = async (e) => {
     e.preventDefault()
     try{
-      const response = await fetch(`http://127.0.0.1:8000/api/v1/search/words?query=${query}`, {
+      const response = await fetch(`blamph.onrender.com/api/v1/search/words?query=${query}`, {
         headers: {"Content-Type" : "application/json"},
         method: "GET",
       })
@@ -28,7 +28,7 @@ function SearchWord() {
   const fetchUserWords = async (e) => {
     e.preventDefault()
     try{
-      const response = await apiCall("http://127.0.0.1:8000/api/v1/words/getWords")
+      const response = await apiCall("blamph.onrender.com/api/v1/words/getWords")
       if (!response.ok) {
         throw new Error("Could not fetch words")
       }

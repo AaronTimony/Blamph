@@ -27,7 +27,7 @@ function CreateDeck() {
 
     try{
       const token = localStorage.getItem("access_token")
-      const response = await fetch("http://127.0.0.1:8000/api/v1/words/addSubs", {
+      const response = await fetch("https://blamph.onrender.com/api/v1/words/addSubs", {
       headers: {"Authorization" : `Bearer ${token}`},
       method: "POST",
       body: formData

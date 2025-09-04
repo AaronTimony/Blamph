@@ -39,8 +39,8 @@ function MyDecks() {
     const getUserDecks = async () => {
       try{
         const [myDecksResponse, myDecksPercentageResponse] = await Promise.all([
-          await apiCall("http://127.0.0.1:8000/api/v1/decks/myDecks").catch(() => null),
-          await apiCall("http://127.0.0.1:8000/api/v1/decks/known_percent").catch(() => null)
+          await apiCall("blamph.onrender.com/api/v1/decks/myDecks").catch(() => null),
+          await apiCall("blamph.onrender.com/api/v1/decks/known_percent").catch(() => null)
         ])
 
         let myDecks = [];
@@ -78,7 +78,7 @@ function MyDecks() {
     e.preventDefault()
     console.log(deckName, deck_order)
     try{
-      const response = await apiCall("http://127.0.0.1:8000/api/v1/decks/delete", {
+      const response = await apiCall("blamph.onrender.com/api/v1/decks/delete", {
         method: "DELETE",
         body: JSON.stringify({deck_name: deckName, deck_order: deck_order})
       })
@@ -100,7 +100,7 @@ function MyDecks() {
 
    const searchAnime = setTimeout(async () => {
       try{
-        const response = await apiCall(`http://127.0.0.1:8000/api/v1/decks/search/myDecks?q=${encodeURIComponent(searchQuery)}`)
+        const response = await apiCall(`blamph.onrender.com/api/v1/decks/search/myDecks?q=${encodeURIComponent(searchQuery)}`)
         if (!response.ok) {
           throw new Error("Could not retrieve decks")
         }
@@ -132,7 +132,7 @@ function MyDecks() {
 
       const update_order_backend = async () => {
         try{
-          await apiCall('http://127.0.0.1:8000/api/v1/decks/reorder', {
+          await apiCall('blamph.onrender.com/api/v1/decks/reorder', {
             method: "PUT",
             body: JSON.stringify({
               deckOrders: updatedDecks.map(deck => ({
