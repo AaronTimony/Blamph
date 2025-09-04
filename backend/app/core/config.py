@@ -14,3 +14,5 @@ class Settings(BaseSettings):
         case_sensitive = False
 
 settings = Settings()
+
+print(settings.REDIS_URL)

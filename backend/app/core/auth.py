@@ -12,7 +12,7 @@ from app.schemas.auth import UserInDB, TokenData, RefreshTokenData
 from app.core.config import settings
 from app.models.user import User
 
-redis_client = redis.from_url(settings.REDIS_URL)
+redis_client = redis.Redis.from_url(settings.REDIS_URL)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="token") 
@@ -45,6 +45,7 @@ def create_access_token(data: dict, expires_delta: timedelta or None = None):
 
     to_encode.update({"exp": expire, "type" : "access"})
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM) # jwt.encode knows to look for "exp" in the data and use that as the expiretime
+    print("Token received:", encoded_jwt)
     return encoded_jwt
 
 def create_refresh_token(username: str) -> str:
@@ -63,6 +64,7 @@ def create_refresh_token(username: str) -> str:
    )
     # redis_client.bgsave()
     # No need to manually trigger to handle persistence anymore
+    print("refresh_token", refresh_token)
     return refresh_token
 
 def verify_refresh_token(token: str, db: Session) -> Optional[User]:
@@ -74,6 +76,7 @@ def verify_refresh_token(token: str, db: Session) -> Optional[User]:
         token_data = RefreshTokenData.model_validate_json(token_data_json)
 
         user = get_user(db, token_data.username)
+        print("Works well!")
         return user
     except Exception as e:
         print(f"Refresh token verification error: {e}")
