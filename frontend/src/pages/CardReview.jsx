@@ -13,7 +13,7 @@ function CardReview() {
 
   const get_new_card = async () => {
     try{
-      const response = await apiCall("blamph.onrender.com/api/v1/review/newcards")
+      const response = await apiCall("https://blamph.onrender.com/api/v1/review/newcards")
 
       if (!response.ok) {
         throw new Error("Failed to find new card")
@@ -29,7 +29,7 @@ function CardReview() {
 
   const get_due_card = async () => {
     try{
-      const response = await apiCall("blamph.onrender.com/api/v1/review/reviewcards")
+      const response = await apiCall("https://blamph.onrender.com/api/v1/review/reviewcards")
 
       if (!response.ok) {
         throw new Error("Failed to find due card")
@@ -76,7 +76,7 @@ function CardReview() {
     const send_rating = async () => {
       if (isCardNew) {
         try{
-          const response = await apiCall("blamph.onrender.com/api/v1/review/newcardrating", {
+          const response = await apiCall("https://blamph.onrender.com/api/v1/review/newcardrating", {
             method: "POST",
             body: JSON.stringify({"jp_word" : japWord, "rating" : rating})
           })
@@ -90,7 +90,7 @@ function CardReview() {
         }
       } else {
         try{
-          const response = await apiCall("blamph.onrender.com/api/v1/review/reviewcardrating", {
+          const response = await apiCall("https://blamph.onrender.com/api/v1/review/reviewcardrating", {
             method: "PATCH",
             body: JSON.stringify({"jp_word" : japWord, "rating": rating})
           })
