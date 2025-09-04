@@ -9,6 +9,6 @@
 16) Recreate user_cards with partitions.
 17) Registration conditions
 18) re-direct to decks page on user creation
-move to production, ui and ux, git actions, typescript?, vercel
+ui and ux, git actions, typescript?
 19) key press for reviews rather than click
 20)
