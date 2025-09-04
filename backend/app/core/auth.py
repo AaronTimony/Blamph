@@ -61,7 +61,8 @@ def create_refresh_token(username: str) -> str:
         token_data.model_dump_json() # You can store anything you want in token_data
         # it is just a json attached to the token so anything that could be useful you can input
    )
-    redis_client.bgsave()
+    # redis_client.bgsave()
+    # No need to manually trigger to handle persistence anymore
     return refresh_token
 
 def verify_refresh_token(token: str, db: Session) -> Optional[User]:
