@@ -8,8 +8,8 @@ import {Routes, Route} from "react-router-dom"
 import MyDecks from "./pages/MyDecks"
 import Decks from "./pages/Decks"
 import {AuthProvider, useAuthContext} from "./contexts/AuthContext"
-import LoginForm from "./pages/login"
-import RegisterForm from "./pages/register"
+import LoginPage from "./pages/login"
+import RegisterPage from "./pages/register"
 import CreateDeck from "./pages/CreateDeck"
 import SearchWord from "./pages/Search"
 import CardReview from "./pages/CardReview"
@@ -33,9 +33,9 @@ function AppContent() {
           <Route path="/" element={<Review />} />
           <Route path="/decks" element={<Decks />} />
           <Route path="/CardReview" element={<CardReview />} />
-          <Route path="/Login" element={<LoginForm />} />
+          <Route path="/Login" element={<LoginPage />} />
           <Route path="/SearchWord" element={<SearchWord />} />
-          <Route path="/Register" element={<RegisterForm />} />
+          <Route path="/Register" element={<RegisterPage />} />
           {user && <Route path={`/myDecks`} element={<MyDecks />} />}
           <Route path="/Create" element={<CreateDeck />} />
         </Routes>

@@ -146,7 +146,7 @@ export const AuthProvider = ({children}) => {
     return () => clearInterval(refreshInterval);
   }, [clearAuth])
 
-  const login = async (username, password) => {
+  const login = async (username, password, setError) => {
     try {
       const formData = new FormData();
       formData.append('username', username);
@@ -155,13 +155,16 @@ export const AuthProvider = ({children}) => {
         method: "POST",
         body: formData,
       });
-      if (!response.ok) {
-        throw new Error("failed to retrieve token")
-      }
       const data = await response.json()
+      if (!response.ok) {
+        setError(data.detail)
+        console.log(data.detaill)
+      }
+
       const {access_token, refresh_token, token_type} = data;
 
       const userData = await validateToken(access_token);
+
       if (userData) {
         localStorage.setItem('user', JSON.stringify(userData));
         localStorage.setItem('access_token', access_token);
@@ -170,7 +173,7 @@ export const AuthProvider = ({children}) => {
         setToken(access_token)
         return {success: true};
       } else {
-        return {success: false, error: "Failed to get user data"};
+        return {success: false, error: "Incorrect username or password"};
       }
     } catch(error) {
       console.error("Login failed", error);

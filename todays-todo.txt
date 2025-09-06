@@ -7,8 +7,5 @@
 12) Add feature so click on a deck gives frequencies and words of deck.
 14) Authorizations
 16) Recreate user_cards with partitions.
-17) Registration conditions
-18) re-direct to decks page on user creation
 ui and ux, git actions, typescript?
 19) key press for reviews rather than click
-20)

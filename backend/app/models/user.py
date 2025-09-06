@@ -6,9 +6,8 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key = True)
-    username = Column(String, nullable= False)
-    email = Column(String)
-    full_name = Column(String)
+    username = Column(String, unique = False, nullable= False)
+    email = Column(String, unique = True, nullable = False)
     password = Column(String, nullable = False)
 
     deck_associations = relationship("UserDeck", back_populates="user")

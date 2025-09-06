@@ -1,0 +1,52 @@
+.error-message {
+    text-align: center;
+    background: linear-gradient(135deg, #ff6b6b, #ff5252);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 2rem;
+    font-weight: 3rem;
+    margin: 10px 0;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+    animation: slideIn 0.3s ease-out;
+    max-width: 600px;
+}
+
+.error-message::before {
+    content: "⚠️ ";
+}
+
+@keyframes slideIn {
+from {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+to {
+    opacity: 1;
+    transform: translateY(0);
+}
+}
+
+/* Alternative minimal style */
+.error-message-minimal {
+    color: #d32f2f;
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-size: 14px;
+    margin: 8px 0;
+}
+
+/* Alternative modern style */
+.error-message-modern {
+    background: rgba(244, 67, 54, 0.1);
+    color: #c62828;
+    padding: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(244, 67, 54, 0.2);
+    font-size: 14px;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    margin: 12px 0;
+}

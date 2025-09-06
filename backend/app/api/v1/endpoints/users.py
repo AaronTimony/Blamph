@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.users import UserCreate
+from app.schemas.users import UserRegister
 from app.core.database import get_db
 from sqlalchemy.orm import Session
 from app.models import Card, User, Deck, UserDeck, CardDeck
@@ -9,6 +9,6 @@ router = APIRouter()
 user_service = UserService()
 
 @router.post("/register/")
-def register_user(user:UserCreate, db: Session = Depends(get_db)):
-    return user_service.register_user_service(user.password, user.username, user.full_name, user.email, db)
+def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
+    return user_service.register_user_service(user_data, db)
 
