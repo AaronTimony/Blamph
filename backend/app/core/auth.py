@@ -3,30 +3,35 @@ import redis
 from fastapi import Depends, HTTPException, status
 import secrets
 from sqlalchemy.orm import Session
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime, timedelta, timezone
 from app.core.database import get_db
 from jose import jwt, JWTError
 from fastapi.security import OAuth2PasswordBearer
-from app.schemas.auth import UserInDB, TokenData, RefreshTokenData
+from app.schemas.auth import TokenData, RefreshTokenData
 from app.core.config import settings
 from app.models.user import User
 
 redis_client = redis.Redis.from_url(settings.REDIS_URL)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="token") 
+oauth_2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # This will check the headers from the request and check authorization header
-# Then it will use the token passed in authorisation header is of Bearer <token>
+# Then it will use the token passed in authorisation header is of Bearer
+# <token>
+
 
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
+
 def get_password_hash(password):
     return pwd_context.hash(password)
 
+
 def get_user(db: Session, username: str):
     return db.query(User).filter(User.username == username).first()
+
 
 def authenticate_user(db: Session, username: str, password: str):
     user = get_user(db, username)
@@ -36,6 +41,7 @@ def authenticate_user(db: Session, username: str, password: str):
         return False
     return user
 
+
 def create_access_token(data: dict, expires_delta: timedelta or None = None):
     to_encode = data.copy()
     if expires_delta:
@@ -43,10 +49,14 @@ def create_access_token(data: dict, expires_delta: timedelta or None = None):
     else:
         expire = datetime.utcnow() + timedelta(minutes=15)
 
-    to_encode.update({"exp": expire, "type" : "access"})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM) # jwt.encode knows to look for "exp" in the data and use that as the expiretime
+    to_encode.update({"exp": expire, "type": "access"})
+    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY,
+                             algorithm=settings.ALGORITHM)
+    # jwt.encode knows to look for "exp" in the data and use that as the
+    # expiretime
     print("Token received:", encoded_jwt)
     return encoded_jwt
+
 
 def create_refresh_token(username: str) -> str:
     refresh_token = secrets.token_urlsafe(64)
@@ -59,13 +69,16 @@ def create_refresh_token(username: str) -> str:
     redis_client.setex(
         f"refresh_token:{refresh_token}",
         expire_seconds,
-        token_data.model_dump_json() # You can store anything you want in token_data
-        # it is just a json attached to the token so anything that could be useful you can input
+        token_data.model_dump_json()
+        # You can store anything you want in token_data
+        # it is just a json attached to the token so anything that could be
+        # useful you can input
    )
     # redis_client.bgsave()
     # No need to manually trigger to handle persistence anymore
     print("refresh_token", refresh_token)
     return refresh_token
+
 
 def verify_refresh_token(token: str, db: Session) -> Optional[User]:
     try:
@@ -82,6 +95,7 @@ def verify_refresh_token(token: str, db: Session) -> Optional[User]:
         print(f"Refresh token verification error: {e}")
         return None
 
+
 def revoke_refresh_token(token: str) -> bool:
     """This would be used in the case that you want to log out on one device,
     but not on the others"""
@@ -90,6 +104,7 @@ def revoke_refresh_token(token: str) -> bool:
         return result > 0
     except Exception:
         return False
+
 
 def revoke_all_user_refresh_tokens(username: str):
     """This is useful if someone gets a password of some sort and wants to log out on all of their devices. This function allows you to quickly do that. Not currently used but could be added for security if I wanted."""
@@ -105,6 +120,7 @@ def revoke_all_user_refresh_tokens(username: str):
 
     except Exception as e:
         print(f"Error in removing refresh token {e}")
+
 
 async def get_current_user(token: str = Depends(oauth_2_scheme),
                            db: Session = Depends(get_db)):

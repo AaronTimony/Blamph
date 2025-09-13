@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from fastapi import Depends, UploadFile, HTTPException
+from fastapi import UploadFile, HTTPException
 from app.services.subtitle_parser import SubtitleParser
 from app.models import Deck, CardDeck, User, UserCard, Card, UserDeck
 

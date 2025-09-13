@@ -1,11 +1,14 @@
 2) Check issues with tokenization + translation and see what can be done to improve.
 3) Fix SRS system make something more meaningful with better review intervals and more complexity.
 5) I need to fix my frontend as well. Pages should JUST contain components and not have all the code that should be in the components. Need to fix that.
-6) Inspect code and see if there are any unncessary parts that could be fixed or optimized. Perhaps look at other people's code for ideas and learn some stuff.
 8) So I also need a system where when a word is searched, there are several options for what word and then when you click on the word you get much more details. I can add all those details to the word later.
 9) Possible mismatch in true number of words and unique words count. Need to check if they are accurate.
 12) Add feature so click on a deck gives frequencies and words of deck.
 14) Authorizations
 16) Recreate user_cards with partitions.
 ui and ux, git actions, typescript?
-19) key press for reviews rather than click
+20) make API_BASE_URL an enivornment variable
+21) Zustand + react query
+22) Make the search component more smooth on decks page
+23) TODAY USING PERCENTAGE_DICT AS MAKESHIFT SOLUTION FIX TOMORROW
+PROBLEM IS THE OUTPUT OF known_percentage should just be a dict so i can extract easily by deck_name

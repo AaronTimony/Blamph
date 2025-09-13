@@ -1,4 +1,5 @@
 import "../css/deckPicker.css"
+import {useNavigate, Link} from "react-router-dom";
 import {useState, useEffect} from "react"
 import {
   SortableContext,
@@ -45,7 +46,7 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
 
           <div className="deck-section deck-property knowledge-section">
             <div className="property-label">Known</div>
-            <div className="property-value">{deck.known_percentage}</div>
+            <div className="property-value">{deck.known_percentage ?? 0}</div>
           </div>
           {added ? (
             <div className="deck-section add-button-section">
@@ -68,6 +69,7 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
 
 function DeckPicker({decks, addDecktoUser, added, delDeckfromUser}) {
   if (!decks) return <div>Loading...</div>
+  const navigate = useNavigate();
 
   return (
     <SortableContext

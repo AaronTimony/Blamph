@@ -50,7 +50,6 @@ class DeckService:
             db.refresh(new_deck)
             deck_exist = new_deck
 
-
         existing = db.query(UserDeck).filter(
             UserDeck.user_id == current_user.id,
             UserDeck.deck_id == deck_exist.id
@@ -77,13 +76,20 @@ class DeckService:
         .order_by(UserDeck.deck_order).all())
         decks_list = []
 
+        deck_names = [deck.deck_name for deck, deck_order in decks]
+
+        known_percentage = self.deck_known_percentage(deck_names, current_user, db)
+
+        percentage_dict = {deck["deck_name"]: deck["known_per"] for deck in known_percentage}
+
         for deck, deck_order in decks:
             deck_data = {
                 "deck_name" : deck.deck_name,
                 "image_url" : deck.image_url,
                 "unique_words" : deck.unique_words,
                 "total_words" : deck.total_words,
-                "deck_order" : deck_order
+                "deck_order" : deck_order,
+                "known_percentage" : round(percentage_dict.get(deck.deck_name, 0), 1)
             }
 
             decks_list.append(deck_data)
@@ -109,30 +115,39 @@ class DeckService:
         except Exception as e:
             print(f"Could not update decks", e)
 
-    def deck_known_percentage(self, current_user: User, db: Session):
-        decks = db.query(Deck).filter(Deck.user_created == False).all()
+    def deck_known_percentage(self, deck_names: List[str], current_user: User, db: Session):
+
+        known_percentages_query = (
+            db.query(Deck.deck_name,
+                     func.sum(CardDeck.word_frequency).label("known_words")
+                     )
+            .join(CardDeck, CardDeck.deck_id == Deck.id)
+            .join(UserCard, UserCard.card_id == CardDeck.card_id)
+            .filter(UserCard.user_id == current_user.id)
+            .filter(UserCard.known == True)
+            .group_by(Deck.deck_name)
+            .all()
+        )
+
+        known_words_dict = {deck_id: known_words for deck_id, known_words in known_percentages_query}
+
+        decks = (db.query(Deck)
+        .filter(Deck.user_created == False)
+        .filter(Deck.deck_name.in_(deck_names))
+        .all())
 
         known_per = []
+
         for deck in decks:
-            known_words = db.query(func.sum(CardDeck.word_frequency))\
-            .join(UserCard, UserCard.card_id == CardDeck.card_id)\
-            .filter(CardDeck.deck_id == deck.id)\
-            .filter(UserCard.user_id == current_user.id)\
-            .filter(UserCard.known == True)\
-            .scalar() or 0 # If no cards are known
-
-            known_words_percentage = (
-                known_words / deck.total_words if deck.total_words else 0
+            known_deck_words = known_words_dict.get(deck.deck_name, 0)
+            known_words_per = (
+                known_deck_words/deck.total_words if deck.total_words else 0
             )
-
-
             deck_per = {
-                "deck_name" : deck.deck_name,
-                "known_per" : known_words_percentage
+                "deck_name": deck.deck_name,
+                "known_per": known_words_per
             }
-
             known_per.append(deck_per)
 
         return known_per
-
 

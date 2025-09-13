@@ -25,16 +25,28 @@ def create_deck(decks: List[CreateDeck],
 def search_decks(q: str = Query(..., max_length = 50),
                  db: Session = Depends(get_db)):
     results = db.query(Deck).filter(func.lower(Deck.deck_name).contains(func.lower(q))).all()
+
     return results
 
 @router.get("/search/myDecks")
-def search_decks(q: str = Query(..., max_length = 50),
-                 current_user: User = Depends(get_current_active_user),
-                 db: Session = Depends(get_db)):
-    results = (db.query(Deck).join(UserDeck, UserDeck.deck_id == Deck.id)
-    .filter(UserDeck.user_id == current_user.id)
-    .filter(func.lower(Deck.deck_name).contains(func.lower(q))).all())
-    return results
+def search_user_decks(q: str = Query(..., max_length = 50),
+                      current_user: User = Depends(get_current_active_user),
+                      db: Session = Depends(get_db)):
+    results = (db.query(Deck.deck_name,
+                        Deck.image_url,
+                        UserDeck.deck_order
+                        )
+               .join(UserDeck, UserDeck.deck_id == Deck.id)
+               .filter(UserDeck.user_id == current_user.id)
+               .filter(func.lower(Deck.deck_name).contains(func.lower(q))).all())
+    return [
+        {
+            "deck_name": result.deck_name,
+            "image_url": result.image_url,
+            "deck_order": result.deck_order
+        }
+        for result in results
+    ]
 
 @router.delete("/delete/")
 def delete_a_users_deck(delDeck: DeleteDeck,
@@ -62,8 +74,3 @@ async def reorder_users_decks(request: DeckOrderRequest,
 
     return await decks_service.reorder_decks(request, current_user, db)
 
-@router.get("/known_percent")
-def get_users_deck_known_percentage(current_user: User = 
-                                    Depends(get_current_active_user),
-                                    db: Session = Depends(get_db)):
-    return decks_service.deck_known_percentage(current_user, db)

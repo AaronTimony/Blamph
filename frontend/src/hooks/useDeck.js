@@ -1,0 +1,101 @@
+import API_BASE_URL from "../config";
+import {useState, useEffect} from "react";
+import {useAuthContext} from "../contexts/AuthContext"
+
+export function useDeck() {
+  const [allDecks, setAllDecks] = useState([]);
+  const [decks, setDecks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const {apiCall} = useAuthContext();
+
+  const getDecksWithKnownPercent = async () => {
+    try{
+      const [ownedDecksResponse, allDecksResponse, knownPercentResponse] = await Promise.all([
+        apiCall(`${API_BASE_URL}/api/v1/decks/myDecks`).catch(() => null),
+        fetch(`${API_BASE_URL}/api/v1/decks`),
+        apiCall(`${API_BASE_URL}/api/v1/decks/known_percent`).catch(() => null)
+      ]);
+
+      let ownedDecks = []
+
+      if (ownedDecksResponse?.ok) {
+        ownedDecks = await ownedDecksResponse.json();
+      }
+
+      const allDecks = await allDecksResponse.json();
+
+      let knownPercentages = [];
+      /*We need this stuff in case knownPercentages doesn't return in that case things will break. */
+
+      if (knownPercentResponse?.ok) {
+        knownPercentages = await knownPercentResponse.json();
+      }
+
+      const knownPercentMap = new Map(
+        knownPercentages.map(item => [item.deck_name, item.known_per])
+      );
+
+      const ownedDecksSet = new Set(ownedDecks.map(deck => deck.deck_name));
+
+      const availableDecks = allDecks
+      .filter(deck => !ownedDecksSet.has(deck.deck_name))
+      .map(deck => ({
+        ...deck,
+        known_percentage: (knownPercentMap.get(deck.deck_name) || 0).toFixed(1)
+      }));
+
+      setDecks(availableDecks)
+      setAllDecks(availableDecks)
+    } catch (error) {
+      console.error("Failed to fetch deck data", error);
+    }
+  }
+
+  const addDecktoUser = async (e, deckName, image_url) => {
+    e.preventDefault()
+    try{
+      const response = await apiCall(`${API_BASE_URL}/api/v1/decks/AddDeck`, {
+        method: "POST",
+        body: JSON.stringify({deck_name: deckName, image_url}),
+      });
+      if (!response.ok) {
+        console.error("Failed to add deck:", response.status);
+      }
+      setDecks(prevDecks => prevDecks.filter(deck => deck.deck_name !== deckName))
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    if (!searchQuery) {
+      setDecks(allDecks)
+      return;
+    }
+
+  const searchDecks = setTimeout(async () => {
+    try{
+      const response = await fetch(`${API_BASE_URL}/api/v1/decks/search?q=${encodeURIComponent(searchQuery)}`)
+      if (!response.ok) {
+        throw new Error("Failed to find decks")
+      }
+      const searchDecks = await response.json()
+      setDecks(searchDecks)
+    } catch(error) {
+      console.error("failed to search decks", error)
+    }
+  }, 150);
+
+  return () => clearTimeout(searchDecks)
+  }, [searchQuery]);
+
+  return {
+    getDecksWithKnownPercent,
+    decks,
+    allDecks,
+    searchQuery,
+    setSearchQuery,
+    addDecktoUser
+  };
+};
+

@@ -1,107 +1,34 @@
 import DeckPicker from "../components/deckPicker"
-import API_BASE_URL from "../config"
-import SearchBar from "../components/searchBar"
-import {useState, useEffect} from "react";
+import SearchBar from "../components/searchBar";
+import { useDecks} from "../hooks/useNewDeck"
+
 /*import {createDecks, fetchTopAnime} from "../services/populate_decks_from_api" 
 /*only used when i want to update my decks from the api*/
-import {useAuthContext} from "../contexts/AuthContext"
 function Decks() {
-  const {apiCall} = useAuthContext();
-  const [allDecks, setAllDecks] = useState([])
-  const [decks, setDecks] = useState([])
-  const [searchQuery, setSearchQuery] = useState("")
 
-  useEffect(() => {
-    const getDecksWithKnownPercent = async () => {
-      try{
-        const [ownedDecksResponse, allDecksResponse, knownPercentResponse] = await Promise.all([
-          apiCall(`${API_BASE_URL}/api/v1/decks/myDecks`).catch(() => null),
-          fetch(`${API_BASE_URL}/api/v1/decks`),
-          apiCall(`${API_BASE_URL}/api/v1/decks/known_percent`).catch(() => null)
-        ]);
+  const {availableDecksQuery,
+    addDecktoUser,
+    searchDecksQuery,
+    setSearchQuery,
+    searchQuery
+  } = useDecks();
 
-        let ownedDecks = []
+  if (availableDecksQuery.isLoading) return <div>Loading Decks...</div>
 
-        if (ownedDecksResponse?.ok) {
-          ownedDecks = await ownedDecksResponse.json();
-        }
+  if (availableDecksQuery.isError) return <div>{availableDecksQuery.error}</div>
 
-        const allDecks = await allDecksResponse.json();
+  let decks = availableDecksQuery.data
 
-        let knownPercentages = [];
-        /*We need this stuff in case knownPercentages doesn't return in that case things will break. */
-
-        if (knownPercentResponse?.ok) {
-          knownPercentages = await knownPercentResponse.json();
-        }
-
-        const knownPercentMap = new Map(
-          knownPercentages.map(item => [item.deck_name, item.known_per])
-        );
-
-        const ownedDecksSet = new Set(ownedDecks.map(deck => deck.deck_name));
-
-        const availableDecks = allDecks
-        .filter(deck => !ownedDecksSet.has(deck.deck_name))
-        .map(deck => ({
-          ...deck,
-          known_percentage: (knownPercentMap.get(deck.deck_name) || 0).toFixed(1)
-        }));
-
-        setDecks(availableDecks)
-        setAllDecks(availableDecks)
-      } catch (error) {
-        console.error("Failed to fetch deck data", error);
-      }
-    }
-    getDecksWithKnownPercent();
-  }, []);
-
-  const addDecktoUser = async (e, deckName, image_url) => {
-    e.preventDefault()
-    try{
-      const response = await apiCall(`${API_BASE_URL}/api/v1/decks/AddDeck`, {
-        method: "POST",
-        body: JSON.stringify({deck_name: deckName, image_url}),
-      });
-      if (!response.ok) {
-        console.error("Failed to add deck:", response.status);
-      }
-      setDecks(prevDecks => prevDecks.filter(deck => deck.deck_name !== deckName))
-    } catch(error) {
-      console.log(error)
-    }
+  if (searchQuery) {
+    decks = searchDecksQuery.data
   }
-
-  /*This is to ensure when we remove something from the search query, it goes back to the default of showing all decks.*/
-  useEffect(() => {
-    if (!searchQuery) {
-      setDecks(allDecks)
-      return;
-    }
-
-  const searchDecks = setTimeout(async () => {
-    try{
-      const response = await fetch(`${API_BASE_URL}/api/v1/decks/search?q=${encodeURIComponent(searchQuery)}`)
-      if (!response.ok) {
-        throw new Error("Failed to find decks")
-      }
-      const searchDecks = await response.json()
-      setDecks(searchDecks)
-    } catch(error) {
-      console.error("failed to search decks", error)
-    }
-  }, 150);
-  return () => clearTimeout(searchDecks)
-  }, [searchQuery]);
 
   return (
     <>
-      <SearchBar onSearch={setSearchQuery}/>
-      <DeckPicker decks={decks} added={false} addDecktoUser={addDecktoUser}/>
+      <SearchBar onSearch={setSearchQuery} />
+      <DeckPicker decks={decks} added={false} addDecktoUser={addDecktoUser} />
     </>
   )
-
 }
 
 export default Decks;
