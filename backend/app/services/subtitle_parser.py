@@ -9,14 +9,14 @@ from app.models.card import Card
 from app.models.cardDeck import CardDeck
 from collections import Counter
 from typing import List, Dict, Tuple
+import fugashi
 import re
 import chardet
 
 class SubtitleParser:
     def __init__(self):
-        self.tokenizer_obj = dictionary.Dictionary(dict_type="full").create()
+        self.tagger = fugashi.Tagger()
 
-        self.mode = tokenizer.Tokenizer.SplitMode.C
 
         self.jamdict = Jamdict()
         
@@ -42,23 +42,51 @@ class SubtitleParser:
 
         return text
 
+    def _is_useful_word(self, word) -> bool:
+        """Filter non-useful word types"""
+
+        if word.is_unk:
+            return False
+
+        pos1 = word.feature.pos1
+        pos2 = word.feature.pos2
+        lemma = word.feature.lemma
+
+        if not lemma or lemma.isspace() or len(lemma.strip()) == 0:
+            return False
+
+        useful_pos = {'名詞', '動詞', '形容詞', '副詞'}
+
+        skip_pos = {'助詞', '助動詞', '記号', '補助記号', '感動詞'}
+
+        if pos1 in skip_pos:
+            return False
+
+        if pos1 in useful_pos:
+
+            if pos1 == '名詞':
+                skip_noun_types = {'数詞', '代名詞'}
+
+                if pos2 in skip_noun_types:
+                    return False
+
+            return True
+
+        return False
+
     def extract_cards(self, text: str, db: Session) -> List[str]:
-        tokens = self.tokenizer_obj.tokenize(text, self.mode)
-
         jp_words = []
-        for token in tokens:
-            jp_word = token.dictionary_form()
 
-            if jp_word and not jp_word.isspace() and jp_word not in badwords:
-                jp_words.append(jp_word)
-
-            else:
+        for word in self.tagger(text):
+            if not self._is_useful_word(word):
                 continue
 
-            db.query(Card).filter(Card.jp_word == jp_word)\
-            .update({Card.overall_frequency: Card.overall_frequency + 1})
+            dictionary_form = word.feature.lemma
 
-            db.commit()
+            if (dictionary_form and 
+                dictionary_form not in badwords):
+
+                jp_words.append(dictionary_form)
 
         return jp_words
 
@@ -93,16 +121,20 @@ class SubtitleParser:
             words_count = Counter(all_words)
 
             for word, count in words_count.items():
+
                 meaning, reading = self.extract_meaning_and_reading(word)
 
                 if meaning:
                     card = db.query(Card).filter(Card.jp_word == word).first()
                     if not card:
-                        card = Card(jp_word=word, meaning=meaning, reading=reading)
+                        card = Card(jp_word=word,
+                                    meaning=meaning,
+                                    reading=reading,
+                                    overall_frequency = count)
                         db.add(card)
                         db.flush()
                 else:
-                    continue
+                    card.overall_frequency += count
 
                 existing_relation = db.query(CardDeck).filter(
                     CardDeck.card_id == card.id,

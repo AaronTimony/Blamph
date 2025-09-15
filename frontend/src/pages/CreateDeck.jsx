@@ -1,12 +1,12 @@
 import {useState} from "react"
 import "../css/addFile.css"
 import API_BASE_URL from "../config"
-import {useAuthContext} from "../contexts/AuthContext"
+import {useCreateDeck} from "../hooks/useCreateDeck"
 
 function CreateDeck() {
-  const {apiCall} = useAuthContext();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [deckName, setDeckName] = useState("")
+  const {createDeckMutation} = useCreateDeck();
 
   const handleFileChange = (e) => {
     setSelectedFiles(Array.from(e.target.files)); // this is a FileList
@@ -26,20 +26,12 @@ function CreateDeck() {
       formData.append("files", file);
     })
 
-    try{
-      const token = localStorage.getItem("access_token")
-      const response = await fetch(`${API_BASE_URL}/api/v1/words/addSubs`, {
-      headers: {"Authorization" : `Bearer ${token}`},
-      method: "POST",
-      body: formData
-    })
 
-      const data = await response.json()
-      console.log("Upload success:", data);
-    } catch(error) {
-      console.error("Upload failed:", error)
-    }
+  createDeckMutation.mutate(formData)
   };
+
+
+  if (createDeckMutation.isError) return <h1>error</h1>
 
   return (
     <div className="create-deck-form">

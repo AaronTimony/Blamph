@@ -4,6 +4,7 @@ from sqlalchemy import func
 from fastapi import UploadFile, HTTPException
 from app.services.subtitle_parser import SubtitleParser
 from app.models import Deck, CardDeck, User, UserCard, Card, UserDeck
+from app.schemas.words import DeckWordsReq
 
 parser = SubtitleParser()
 
@@ -76,3 +77,24 @@ class WordService:
         cards = db.query(subq).filter(subq.c.id.in_(user_cards_ids)).all()
 
         return [{"jp_word" : card.jp_word, "meaning" : card.meaning, "overall_frequency" : card.overall_frequency, "rank": card.rank} for card in cards]
+
+    def get_decks_words(self, deck_name: DeckWordsReq, current_user: User, db: Session):
+
+        cards = (db.query(Deck.deck_name,
+                         CardDeck.word_frequency,
+                         Card.jp_word,
+                         Card.meaning)
+            .join(CardDeck, Deck.id == CardDeck.deck_id)
+            .join(Card, Card.id == CardDeck.card_id)
+            .filter(Deck.deck_name == deck_name.deck_name)
+            .all())
+
+        return [
+            {
+                "deck_name" : card.deck_name,
+                "word_frequency" : card.word_frequency,
+                "jp_word" : card.jp_word,
+                "meaning" : card.meaning
+            }
+            for card in cards
+        ]

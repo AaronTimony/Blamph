@@ -1,7 +1,6 @@
 import {Link} from "react-router-dom"
 import "../css/NavBar.css"
 import {useAuthContext} from "../contexts/AuthContext"
-import {useState, useEffect} from "react"
 
 function NavBar() {
   const {loading, user, logout} = useAuthContext();
@@ -13,11 +12,8 @@ function NavBar() {
     }
   };
 
-  if (loading) {
-    return (
-    <h1>Loading...</h1>
-    )
-  }
+  if (loading) return ;
+
   return (
   <nav>
     <div className="NavBar">

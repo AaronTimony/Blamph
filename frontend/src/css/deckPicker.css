@@ -13,14 +13,13 @@
 
 /* Deck title box connected above the card */
 .deck-title-box {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    display: flex;
+    align-items: center;
     background-color: #2a2a2a;
     border: 3px solid #3a3a3a;
-    border-radius: 16px 16px 0 0; /* Rounded top corners only */
+    border-radius: 16px 16px 0 0;
     padding: 1rem 1.5rem;
-    margin-bottom: 0; /* No gap between title box and card */
+    margin-bottom: 0;
     transition: all 0.3s ease;
 }
 
@@ -28,14 +27,47 @@
     font-size: 1.4rem;
     color: #ffffff;
     margin: 0;
+    flex: 1; /* Takes up all remaining space, pushing others to the right */
 }
 
-.deck-order{
-    font-size:1.4rem;
-    color:#ffffff;
-    margin:0;
+.deck-details-button {
+    background-color: #4a4a4a;
+    border-radius: 8px;
+    border: 2px solid #666666;
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+.deck-details-button:hover {
+    background-color: #5a5a5a;
+    border-color: #777777;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+.deck-details-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.deck-details-button:focus {
+    outline: none;
+    border-color: #888888;
+    box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.2);
+}
+
+.deck-order {
+    font-size: 1.4rem;
+    color: #ffffff;
+    margin: 0;
+    /* This will be pushed to the far right */
+}
 /* Hover effect for the entire component */
 .deck-component:hover .deck-title-box {
     border-color: rgba(59, 130, 246, 0.3);

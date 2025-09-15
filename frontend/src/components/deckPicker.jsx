@@ -1,6 +1,6 @@
 import "../css/deckPicker.css"
-import {useNavigate, Link} from "react-router-dom";
-import {useState, useEffect} from "react"
+import {useNavigate} from "react-router-dom";
+import {SearchLoading} from "../components/Loading"
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -9,6 +9,7 @@ import {
 import {CSS} from '@dnd-kit/utilities';
 
 function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
+  const navigate = useNavigate();
   const {
     attributes,
     listeners,
@@ -27,7 +28,13 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
       <div key={deck.deck_name} className="deck-component">
         <div className="deck-title-box">
           <h2 className="deck-title">{deck.deck_name}</h2>
+          <button onClick={() => navigate(`/decks/${deck.deck_name}`)} 
+            onPointerDown={(e) => e.stopPropagation()}
+            className="deck-details-button">
+            See Deck Details
+          </button>
           <h2 className="deck-order">{deck.deck_order}</h2>
+
         </div>
         <div className="deck-card">
           <div className="deck-section deck-image">
@@ -68,8 +75,9 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
 }
 
 function DeckPicker({decks, addDecktoUser, added, delDeckfromUser}) {
-  if (!decks) return <div>Loading...</div>
-  const navigate = useNavigate();
+  if (!decks) return <div>
+    <SearchLoading />
+  </div>
 
   return (
     <SortableContext

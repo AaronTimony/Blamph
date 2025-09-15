@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session 
 from sqlalchemy import func
 from fastapi import Depends, HTTPException
-from typing import List
+from typing import List, Optional
 from app.models import Deck, UserDeck, User, CardDeck, UserCard
 from app.schemas.decks import CreateDeck, DeleteDeck, DeckAdd, DeckOrderRequest
 
@@ -78,9 +78,7 @@ class DeckService:
 
         deck_names = [deck.deck_name for deck, deck_order in decks]
 
-        known_percentage = self.deck_known_percentage(deck_names, current_user, db)
-
-        percentage_dict = {deck["deck_name"]: deck["known_per"] for deck in known_percentage}
+        known_percentages = self.deck_known_percentage(deck_names, db, current_user)
 
         for deck, deck_order in decks:
             deck_data = {
@@ -89,7 +87,7 @@ class DeckService:
                 "unique_words" : deck.unique_words,
                 "total_words" : deck.total_words,
                 "deck_order" : deck_order,
-                "known_percentage" : round(percentage_dict.get(deck.deck_name, 0), 1)
+                "known_percentage" : round(known_percentages.get(deck.deck_name, 0), 1)
             }
 
             decks_list.append(deck_data)
@@ -115,39 +113,28 @@ class DeckService:
         except Exception as e:
             print(f"Could not update decks", e)
 
-    def deck_known_percentage(self, deck_names: List[str], current_user: User, db: Session):
+    def deck_known_percentage(self, deck_names: List[str], db: Session, current_user: Optional[User] = None):
 
-        known_percentages_query = (
+        query = (
             db.query(Deck.deck_name,
+                     func.coalesce(Deck.total_words, 0).label("total_words"),
                      func.sum(CardDeck.word_frequency).label("known_words")
                      )
             .join(CardDeck, CardDeck.deck_id == Deck.id)
             .join(UserCard, UserCard.card_id == CardDeck.card_id)
-            .filter(UserCard.user_id == current_user.id)
             .filter(UserCard.known == True)
-            .group_by(Deck.deck_name)
+            .filter(Deck.user_created == False)
+            .filter(Deck.deck_name.in_(deck_names))
+        )
+
+        if current_user:
+            query = query.filter(UserCard.user_id == current_user.id)
+
+        known_percentages_query = (
+            query.group_by(Deck.deck_name, Deck.total_words)
             .all()
         )
 
-        known_words_dict = {deck_id: known_words for deck_id, known_words in known_percentages_query}
+        known_words_per_dict = {deck_name: (known_words/total_words if total_words > 0 else 0) for deck_name, total_words, known_words in known_percentages_query}
 
-        decks = (db.query(Deck)
-        .filter(Deck.user_created == False)
-        .filter(Deck.deck_name.in_(deck_names))
-        .all())
-
-        known_per = []
-
-        for deck in decks:
-            known_deck_words = known_words_dict.get(deck.deck_name, 0)
-            known_words_per = (
-                known_deck_words/deck.total_words if deck.total_words else 0
-            )
-            deck_per = {
-                "deck_name": deck.deck_name,
-                "known_per": known_words_per
-            }
-            known_per.append(deck_per)
-
-        return known_per
-
+        return known_words_per_dict

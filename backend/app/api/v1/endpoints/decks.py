@@ -5,7 +5,7 @@ from app.core.database import get_db
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.models import Deck, User, UserDeck, UserCard
-from app.schemas.decks import DeckAdd, DeleteDeck, CreateDeck, MyDecksResponse, DeckOrderRequest, DeckReorder
+from app.schemas.decks import DeckAdd, DeleteDeck, CreateDeck, DeckOrderRequest
 from app.services.deck_services import DeckService
 from typing import List
 router = APIRouter()
@@ -14,7 +14,27 @@ decks_service = DeckService()
 @router.get("/")
 def get_decks(db: Session = Depends(get_db)):
 
-    return db.query(Deck).filter(Deck.user_created == False).all()
+    all_decks = (db.query(Deck.deck_name,
+                          Deck.image_url,
+                          Deck.total_words,
+                          Deck.unique_words)
+                 .filter(Deck.user_created == False).all())
+
+    deck_names = [deck.deck_name for deck in all_decks]
+
+    decks_known_percentages = decks_service.deck_known_percentage(deck_names, db)
+
+    return [
+        {
+            "deck_name" : deck.deck_name,
+            "image_url" : deck.image_url,
+            "total_words" : deck.total_words,
+            "unique_words" : deck.unique_words,
+            "known_percentage" : round(decks_known_percentages.get(deck.deck_name, 0), 1)
+        }
+        for deck in all_decks
+    ]
+
 
 @router.post("/create/")
 def create_deck(decks: List[CreateDeck],
@@ -24,7 +44,10 @@ def create_deck(decks: List[CreateDeck],
 @router.get("/search/")
 def search_decks(q: str = Query(..., max_length = 50),
                  db: Session = Depends(get_db)):
-    results = db.query(Deck).filter(func.lower(Deck.deck_name).contains(func.lower(q))).all()
+    results = (db.query(Deck)
+               .filter(func.lower(Deck.deck_name).contains(func.lower(q)))
+               .filter(Deck.user_created == False)
+               .all())
 
     return results
 
@@ -34,16 +57,26 @@ def search_user_decks(q: str = Query(..., max_length = 50),
                       db: Session = Depends(get_db)):
     results = (db.query(Deck.deck_name,
                         Deck.image_url,
+                        Deck.unique_words,
+                        Deck.total_words,
                         UserDeck.deck_order
                         )
                .join(UserDeck, UserDeck.deck_id == Deck.id)
                .filter(UserDeck.user_id == current_user.id)
                .filter(func.lower(Deck.deck_name).contains(func.lower(q))).all())
+
+    deck_names = [deck.deck_name for deck in results]
+
+    decks_known_percentages = decks_service.deck_known_percentage(deck_names, db, current_user)
+
     return [
         {
             "deck_name": result.deck_name,
             "image_url": result.image_url,
-            "deck_order": result.deck_order
+            "unique_words": result.unique_words,
+            "total_words": result.total_words,
+            "deck_order": result.deck_order,
+            "known_percentage" : round(decks_known_percentages.get(result.deck_name, 0), 1)
         }
         for result in results
     ]

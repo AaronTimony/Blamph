@@ -1,8 +1,10 @@
 import DeckPicker from "../components/deckPicker"
 import SearchBar from "../components/searchBar"
+import API_BASE_URL from "../config";
 import {useCallback, useState, useEffect} from "react"
 import {useAuthContext} from "../contexts/AuthContext"
-import {useMyDecks} from "../hooks/useNewDeck"
+import {SearchLoading} from "../components/Loading"
+import {useMyDecks} from "../hooks/useDeck"
 import {
   DndContext,
   closestCenter,
@@ -18,11 +20,20 @@ import {
 } from '@dnd-kit/sortable';
 
 function MyDecks() {
-  const {getMyDecks, deleteDeck, setSearchQuery, searchQuery, searchDecksQuery} = useMyDecks();
-  const {apiCall} = useAuthContext();
+  const {
+    getMyDecks,
+    deleteDeck,
+    setSearchQuery,
+    searchQuery,
+    searchDecksQuery,
+    reorderDecksMutation
+  } = useMyDecks();
+
   const [activeId, setActiveId] = useState(null);
-  const [userDecks, setUserDecks] = useState([])
-  /*We add a refresh trigger so that we update the order of the decks when a deck is deleted or moved we find the new orders and update them in the window.*/
+  const [localDecks, setLocalDecks] = useState([])
+
+  const decks = searchQuery ? searchDecksQuery.data : getMyDecks.data
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -30,46 +41,33 @@ function MyDecks() {
     })
   );
 
-  let decks = getMyDecks.data
-  console.log(decks)
-
-  if (searchQuery) {
-    decks = searchDecksQuery.data
-  }
+  useEffect(() => {
+    setLocalDecks(decks)
+  }, [decks])
 
 
   function handleDragEnd(event) {
     const {active, over} = event;
 
     if (active.id !== over.id) {
-      const oldIndex = userDecks.findIndex(deck => deck.deck_name === active.id)
-      const newIndex = userDecks.findIndex(deck => deck.deck_name === over.id)
+      const oldIndex = localDecks.findIndex(deck => deck.deck_name === active.id)
+      const newIndex = localDecks.findIndex(deck => deck.deck_name === over.id)
 
-      const reordered_decks = arrayMove(userDecks, oldIndex, newIndex);
+      const reordered_decks = arrayMove(localDecks, oldIndex, newIndex);
 
       const updatedDecks = reordered_decks.map((deck, index) => ({
         ...deck,
         deck_order: index + 1
       }));
 
-      setUserDecks(updatedDecks)
+      setLocalDecks(updatedDecks)
 
-      const update_order_backend = async () => {
-        try{
-          await apiCall('${API_BASE_URL}/api/v1/decks/reorder', {
-            method: "PUT",
-            body: JSON.stringify({
-              deckOrders: updatedDecks.map(deck => ({
-                deck_name: deck.deck_name,
-                deck_order: deck.deck_order
-              })),
-            })
-          });
-        } catch (error) {
-          console.error("Could not re-order decks", error)
-        }
-      }
-      update_order_backend();
+      reorderDecksMutation.mutate(
+        updatedDecks.map(deck => ({
+          deck_name: deck.deck_name,
+          deck_order: deck.deck_order
+        }))
+      );
     }
   }
 
@@ -79,6 +77,7 @@ function MyDecks() {
     setActiveId(active.id);
   }
 
+  if (reorderDecksMutation.isPending) return;
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>

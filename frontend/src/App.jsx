@@ -13,6 +13,7 @@ import RegisterPage from "./pages/register"
 import CreateDeck from "./pages/CreateDeck"
 import SearchWord from "./pages/Search"
 import CardReview from "./pages/CardReview"
+import DeckDetails from "./components/deckDetails"
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function AppContent() {
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/SearchWord" element={<SearchWord />} />
           <Route path="/Register" element={<RegisterPage />} />
+          <Route path="/decks/:deck_name" element={<DeckDetails />} /> 
           {user && <Route path={`/myDecks`} element={<MyDecks />} />}
           <Route path="/Create" element={<CreateDeck />} />
         </Routes>
