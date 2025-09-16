@@ -39,7 +39,7 @@
 }
 
 /* Main content layout */
-.card-content {
+.card-content-word {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;

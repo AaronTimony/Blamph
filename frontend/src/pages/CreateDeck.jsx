@@ -27,7 +27,8 @@ function CreateDeck() {
     })
 
 
-  createDeckMutation.mutate(formData)
+    createDeckMutation.mutate(formData)
+    console.log("Mutation object:", createDeckMutation.mutate);
   };
 
 

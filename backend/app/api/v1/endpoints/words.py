@@ -28,8 +28,8 @@ def get_users_words(current_user: User = Depends(get_current_active_user),
     return word_service.get_user_words(current_user, db)
 
 @router.post("/getDeckWords", response_model = List[DeckWordsRes])
-def get_decks_words(deck_name: DeckWordsReq,
+def get_decks_words(deck: DeckWordsReq,
                     current_user: User = Depends(get_current_active_user),
                     db: Session = Depends(get_db)):
 
-    return word_service.get_decks_words(deck_name, current_user, db)
+    return word_service.get_decks_words(deck, current_user, db, deck.page)

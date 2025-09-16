@@ -3,6 +3,7 @@ from typing import Optional
 
 class DeckWordsReq(BaseModel):
     deck_name: str
+    page: int
 
 class DeckWordsRes(BaseModel):
     deck_name: str
@@ -12,6 +13,8 @@ class DeckWordsRes(BaseModel):
     overall_rank: int
     level: Optional[int] = None
     known: Optional[bool] = None
+    page: int
+    total_pages: int
 
 
 

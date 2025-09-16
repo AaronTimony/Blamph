@@ -20,7 +20,7 @@ const JapaneseWordCards = ({ words, deck_name }) => {
       {words.map((word, index) => (
         <div key={index} className="word-card">
           {/* Main content area */}
-          <div className="card-content">
+          <div className="card-content-word">
             <div className="word-section">
               <h3 className="jp-word">{word.jp_word}</h3>
               <p className="meaning">{word.meaning}</p>

@@ -5,6 +5,7 @@ from fastapi import UploadFile, HTTPException
 from app.services.subtitle_parser import SubtitleParser
 from app.models import Deck, CardDeck, User, UserCard, Card, UserDeck
 from app.schemas.words import DeckWordsReq
+import math
 
 parser = SubtitleParser()
 
@@ -20,7 +21,6 @@ class WordService:
             if not deck:
                 deck = Deck(deck_name = deck_name, user_created = True)
                 db.add(deck)
-                db.commit()
                 db.refresh(deck)
 
                 add_to_user = UserDeck(deck_id = deck.id, user_id = user_id, deck_order = 1)
@@ -78,8 +78,15 @@ class WordService:
 
         return [{"jp_word" : card.jp_word, "meaning" : card.meaning, "overall_frequency" : card.overall_frequency, "rank": card.rank} for card in cards]
 
-    def get_decks_words(self, deck_name: DeckWordsReq, current_user: User, db: Session):
+    def get_decks_words(self,
+                        deck: DeckWordsReq,
+                        current_user: User,
+                        db: Session,
+                        page: int = 1,
+                        limit: int = 100):
         rank = func.rank().over(order_by=Card.overall_frequency.desc())
+
+        offset = (page - 1) * limit
 
         rank_subq = (
             db.query(
@@ -95,13 +102,16 @@ class WordService:
                               Card.meaning,
                               UserCard.known,
                               UserCard.level,
+                              Deck.unique_words,
                               rank_subq.c.rank)
                      .join(CardDeck, Deck.id == CardDeck.deck_id)
                      .join(Card, Card.id == CardDeck.card_id)
                      .join(rank_subq, rank_subq.c.id == Card.id)
                      .outerjoin(UserCard, (UserCard.card_id == Card.id) & (UserCard.user_id == current_user.id))
-                     .filter(Deck.deck_name == deck_name.deck_name)
+                     .filter(Deck.deck_name == deck.deck_name)
                      .order_by(CardDeck.word_frequency.desc())
+                     .limit(limit)
+                     .offset(offset)
                      .all())
 
             return [
@@ -112,7 +122,10 @@ class WordService:
                     "meaning" : card.meaning,
                     "overall_rank": card.rank,
                     "known": card.known if card.known is not None else False,
-                    "level": card.level if card.level is not None else 0
+                    "level": card.level if card.level is not None else 0,
+                    "page": page,
+                    "limit": limit,
+                    "total_pages": math.ceil(card.unique_words/limit)
                 }
                 for card in cards
             ]
@@ -127,7 +140,7 @@ class WordService:
                      .join(CardDeck, Deck.id == CardDeck.deck_id)
                      .join(Card, Card.id == CardDeck.card_id)
                      .join(rank_subq, rank_subq.c.id == Card.id)
-                     .filter(Deck.deck_name == deck_name.deck_name)
+                     .filter(Deck.deck_name == deck.deck_name)
                      .all())
 
             return [

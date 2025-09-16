@@ -16,6 +16,5 @@ export function useCreateDeck() {
       return await response.json()
     }
   })
-
   return {createDeckMutation}
 }

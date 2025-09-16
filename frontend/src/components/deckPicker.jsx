@@ -28,7 +28,8 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
       <div key={deck.deck_name} className="deck-component">
         <div className="deck-title-box">
           <h2 className="deck-title">{deck.deck_name}</h2>
-          <button onClick={() => navigate(`/decks/${deck.deck_name}`)} 
+          {/*Hardcoded so that users always start on page 1*/}
+          <button onClick={() => navigate(`/decks/${deck.deck_name}/1`)} 
             onPointerDown={(e) => e.stopPropagation()}
             className={deck.deck_order ? "deck-details-button" : "deck-details-button no_order"}>
             See Deck Details

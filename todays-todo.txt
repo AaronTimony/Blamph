@@ -7,4 +7,4 @@
 16) Recreate user_cards with partitions.
 ui and ux, git actions, typescript?
 23) add html closers byautomatically.
-24) Improve words of deck feature (improve how words look, show if user knows word or what level, add pagination, show overall frequency perhaps (Could be left for on click so we have more details on click and just basic overview here))
+24) Gotta fix the createDeck component it is scuffed again

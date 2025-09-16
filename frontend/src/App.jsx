@@ -37,7 +37,7 @@ function AppContent() {
           <Route path="/Login" element={<LoginPage />} />
           <Route path="/SearchWord" element={<SearchWord />} />
           <Route path="/Register" element={<RegisterPage />} />
-          <Route path="/decks/:deck_name" element={<DeckDetails />} /> 
+          <Route path="/decks/:deck_name/:page" element={<DeckDetails />} /> 
           {user && <Route path={`/myDecks`} element={<MyDecks />} />}
           <Route path="/Create" element={<CreateDeck />} />
         </Routes>

@@ -5,14 +5,14 @@ import {useParams} from "react-router-dom"
 
 export default function useWords() {
   const {apiCall} = useAuthContext();
-  const {deck_name} = useParams();
+  const {deck_name, page} = useParams();
 
   const wordsQuery = useQuery({
-    queryKey: ['words', deck_name],
+    queryKey: ['words', page, deck_name],
     queryFn: async () => {
       const res = await apiCall(`${API_BASE_URL}/api/v1/words/getDeckWords`, {
         method: 'POST',
-        body: JSON.stringify({deck_name})
+        body: JSON.stringify({deck_name, page})
       });
       if (!res.ok) throw new Error("Could not find words")
 
@@ -24,5 +24,5 @@ export default function useWords() {
     staleTime: 5 * 60 * 1000
   })
 
-  return {wordsQuery, deck_name}
+  return {wordsQuery, deck_name, page}
 }
