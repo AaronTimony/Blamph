@@ -13,7 +13,7 @@ import RegisterPage from "./pages/register"
 import CreateDeck from "./pages/CreateDeck"
 import SearchWord from "./pages/Search"
 import CardReview from "./pages/CardReview"
-import DeckDetails from "./components/deckDetails"
+import DeckDetails from "./pages/deckDetails"
 
 function App() {
   return (

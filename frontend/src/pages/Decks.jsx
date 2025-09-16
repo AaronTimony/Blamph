@@ -14,7 +14,7 @@ function Decks() {
     searchQuery
   } = useDecks();
 
-  if (availableDecksQuery.isLoading) return <div><SearchLoading /></div>
+  if (availableDecksQuery.isLoading) return <div><SearchLoading detail={"Decks"}/></div>
 
   if (availableDecksQuery.isError) return <div>{availableDecksQuery.error}</div>
 

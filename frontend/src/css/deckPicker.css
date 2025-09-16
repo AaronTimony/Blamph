@@ -31,17 +31,22 @@
 }
 
 .deck-details-button {
-    background-color: #4a4a4a;
-    border-radius: 8px;
-    border: 2px solid #666666;
-    margin-right: 1rem;
-    padding: 0.5rem 1rem;
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  background-color: #4a4a4a;
+  border-radius: 8px;
+  border: 2px solid #666666;
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+  color: #ffffff;
+  cursor: pointer;
+  justify-self: end;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.deck-details-button.no_order {
+  margin-right: 0rem;
 }
 
 .deck-details-button:hover {

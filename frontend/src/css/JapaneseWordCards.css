@@ -1,0 +1,187 @@
+.word-cards-container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.deck-title-word-details {
+  font-size: 2.5rem;
+  width: 50%;
+  margin: 1rem auto;
+  padding: 1.5rem 2rem;
+  background-color: #1f2937;
+  border: 3px solid grey;
+  border-radius: 16px;
+  font-weight: bold;
+  color: #f9fafb;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+/* Card styling */
+.word-card {
+  background-color: #1f2937;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #374151;
+  padding: 1.5rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.word-card:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  background-color: #2d3748;
+}
+
+/* Main content layout */
+.card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.word-section {
+  flex: 1;
+}
+
+.jp-word {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f9fafb;
+  margin: 0 0 0.25rem 0;
+  font-family: 'Hiragino Sans', 'Yu Gothic', sans-serif;
+}
+
+.meaning {
+  font-size: 1.125rem;
+  color: #d1d5db;
+  margin: 0;
+}
+
+/* Knowledge status */
+.knowledge-status {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.knowledge-unknown {
+  display: none
+}
+
+.knowledge-advanced {
+  background-color: #14532d;
+  color: #bbf7d0;
+  border-color: #16a34a;
+}
+
+.knowledge-intermediate {
+  background-color: #92400e;
+  color: #fde68a;
+  border-color: #d97706;
+}
+
+.knowledge-beginner {
+  background-color: #1e3a8a;
+  color: #bfdbfe;
+  border-color: #2563eb;
+}
+
+.knowledge-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.star-rating {
+  display: flex;
+}
+
+.star {
+  font-size: 0.75rem;
+}
+
+.star.filled {
+  color: inherit;
+}
+
+.star.empty {
+  color: #4b5563;
+}
+
+/* Footer */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-top: 1rem;
+  border-top: 1px solid #374151;
+}
+
+.frequency-info,
+.rank-info {
+  font-size: 0.875rem;
+}
+
+.label {
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.frequency-value {
+  margin-left: 0.25rem;
+  font-weight: bold;
+  color: #60a5fa;
+}
+
+.rank-value {
+  margin-left: 0.25rem;
+}
+
+.rank-excellent {
+  color: #4ade80;
+  font-weight: bold;
+}
+
+.rank-good {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.rank-average {
+  color: #facc15;
+}
+
+.rank-low {
+  color: #9ca3af;
+}
+
+/* Decorative accent */
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .word-cards-container {
+    padding: 1rem;
+  }
+  
+  .word-card {
+    padding: 1rem;
+  }
+  
+  .card-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .knowledge-status {
+    align-self: flex-start;
+  }
+}

@@ -79,22 +79,64 @@ class WordService:
         return [{"jp_word" : card.jp_word, "meaning" : card.meaning, "overall_frequency" : card.overall_frequency, "rank": card.rank} for card in cards]
 
     def get_decks_words(self, deck_name: DeckWordsReq, current_user: User, db: Session):
+        rank = func.rank().over(order_by=Card.overall_frequency.desc())
 
-        cards = (db.query(Deck.deck_name,
-                         CardDeck.word_frequency,
-                         Card.jp_word,
-                         Card.meaning)
-            .join(CardDeck, Deck.id == CardDeck.deck_id)
-            .join(Card, Card.id == CardDeck.card_id)
-            .filter(Deck.deck_name == deck_name.deck_name)
-            .all())
+        rank_subq = (
+            db.query(
+                Card.id,
+                rank.label("rank")
+            ).subquery()
+        )
 
-        return [
-            {
-                "deck_name" : card.deck_name,
-                "word_frequency" : card.word_frequency,
-                "jp_word" : card.jp_word,
-                "meaning" : card.meaning
-            }
-            for card in cards
-        ]
+        if current_user:
+            cards = (db.query(Deck.deck_name,
+                              CardDeck.word_frequency,
+                              Card.jp_word,
+                              Card.meaning,
+                              UserCard.known,
+                              UserCard.level,
+                              rank_subq.c.rank)
+                     .join(CardDeck, Deck.id == CardDeck.deck_id)
+                     .join(Card, Card.id == CardDeck.card_id)
+                     .join(rank_subq, rank_subq.c.id == Card.id)
+                     .outerjoin(UserCard, (UserCard.card_id == Card.id) & (UserCard.user_id == current_user.id))
+                     .filter(Deck.deck_name == deck_name.deck_name)
+                     .order_by(CardDeck.word_frequency.desc())
+                     .all())
+
+            return [
+                {
+                    "deck_name" : card.deck_name,
+                    "word_frequency" : card.word_frequency,
+                    "jp_word" : card.jp_word,
+                    "meaning" : card.meaning,
+                    "overall_rank": card.rank,
+                    "known": card.known if card.known is not None else False,
+                    "level": card.level if card.level is not None else 0
+                }
+                for card in cards
+            ]
+
+        else:
+            cards = (db.query(Deck.deck_name,
+                              CardDeck.word_frequency,
+                              Card.jp_word,
+                              Card.meaning,
+                              Card.overall_frequency
+                              )
+                     .join(CardDeck, Deck.id == CardDeck.deck_id)
+                     .join(Card, Card.id == CardDeck.card_id)
+                     .join(rank_subq, rank_subq.c.id == Card.id)
+                     .filter(Deck.deck_name == deck_name.deck_name)
+                     .all())
+
+            return [
+                {
+                    "deck_name" : card.deck_name,
+                    "word_frequency" : card.word_frequency,
+                    "jp_word" : card.jp_word,
+                    "meaning" : card.meaning,
+                    "overall_frequency": card.overall_frequency
+                }
+                for card in cards
+            ]

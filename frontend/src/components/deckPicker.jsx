@@ -30,7 +30,7 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
           <h2 className="deck-title">{deck.deck_name}</h2>
           <button onClick={() => navigate(`/decks/${deck.deck_name}`)} 
             onPointerDown={(e) => e.stopPropagation()}
-            className="deck-details-button">
+            className={deck.deck_order ? "deck-details-button" : "deck-details-button no_order"}>
             See Deck Details
           </button>
           <h2 className="deck-order">{deck.deck_order}</h2>
@@ -76,7 +76,7 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
 
 function DeckPicker({decks, addDecktoUser, added, delDeckfromUser}) {
   if (!decks) return <div>
-    <SearchLoading />
+    <SearchLoading detail={"Decks"}/>
   </div>
 
   return (

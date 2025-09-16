@@ -42,7 +42,7 @@ function ReviewPage() {
         {/* Top right - Words ready to review */}
         <div className="card review-card">
           <div className="card-header">
-            <h2>Words Ready to Review</h2>
+            <h2>Review Words</h2>
             <div className="icon">📚</div>
           </div>
           <div className="card-count due-count">
@@ -56,7 +56,7 @@ function ReviewPage() {
         {/* Left side - New words to learn */}
         <div className="card new-words-card">
           <div className="card-header">
-            <h2>New Words to Learn Today</h2>
+            <h2>New Words</h2>
             <div className="icon">✨</div>
           </div>
           <div className="card-count new-count">

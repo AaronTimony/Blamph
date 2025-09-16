@@ -14,7 +14,7 @@ if (typeof document !== 'undefined' && !document.getElementById('loading-animati
   document.head.appendChild(style);
 }
 
-export const SearchLoading = () => (
+export const SearchLoading = ({detail}) => (
   <div style={{
     display: 'flex',
     flexDirection: 'column',
@@ -35,6 +35,6 @@ export const SearchLoading = () => (
       color: '#6b7280',
       fontSize: '18px',
       margin: 0
-    }}>Loading decks...</p>
+    }}>{`Loading ${detail}`}</p>
   </div>
 );
