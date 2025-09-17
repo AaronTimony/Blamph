@@ -13,7 +13,12 @@ export function useCreateDeck() {
         body: formData
       })
 
-      return await response.json()
+      const responseData = await response.json()
+
+      return responseData
+    },
+    onError: (error) => {
+      console.log('Full error:', error.message)
     }
   })
   return {createDeckMutation}

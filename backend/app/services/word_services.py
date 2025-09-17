@@ -46,10 +46,10 @@ class WordService:
         db.refresh(deck)
 
         return {
-        "message": "successfully added",
-        "deck_id": deck.id,
-        "unique_words": total_words
-    }
+            "message": "successfully added",
+            "deck_id": deck.id,
+            "unique_words": total_words
+        }
 
     def get_user_words(self, current_user: User, db: Session):
 
@@ -114,6 +114,8 @@ class WordService:
                      .offset(offset)
                      .all())
 
+            total_pages = 0 if not cards else (math.ceil(cards[0].unique_words/limit))
+
             return [
                 {
                     "deck_name" : card.deck_name,
@@ -125,7 +127,7 @@ class WordService:
                     "level": card.level if card.level is not None else 0,
                     "page": page,
                     "limit": limit,
-                    "total_pages": math.ceil(card.unique_words/limit)
+                    "total_pages": total_pages
                 }
                 for card in cards
             ]

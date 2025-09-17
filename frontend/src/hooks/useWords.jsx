@@ -5,7 +5,7 @@ import {useParams} from "react-router-dom"
 
 export default function useWords() {
   const {apiCall} = useAuthContext();
-  const {deck_name, page} = useParams();
+  const {deck_name, page} = useParams()
 
   const wordsQuery = useQuery({
     queryKey: ['words', page, deck_name],

@@ -13,10 +13,12 @@ export default function DeckDetails() {
 
   if (wordsQuery.isError) return <h1>{wordsQuery.error}</h1>
 
+  const total_pages = (words && words.length > 0 && words[0].total_pages ? words[0].total_pages : 0)
+
   return (
     <>
       <JapaneseWordCards words={words} deck_name={deck_name}/>
-      <Pagination deck_name={deck_name} cur_page={Number(page)} total_pages={words[0].total_pages}/>
+      <Pagination deck_name={deck_name} cur_page={Number(page)} total_pages={total_pages}/>
 
     </>
   )

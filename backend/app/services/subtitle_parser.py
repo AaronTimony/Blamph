@@ -133,8 +133,11 @@ class SubtitleParser:
                                     overall_frequency = count)
                         db.add(card)
                         db.flush()
+                    else:
+                        card.overall_frequency += count
+
                 else:
-                    card.overall_frequency += count
+                    continue
 
                 existing_relation = db.query(CardDeck).filter(
                     CardDeck.card_id == card.id,
@@ -151,10 +154,12 @@ class SubtitleParser:
 
                 else:
                     continue
+
             db.commit()
 
             return {"success": True,
                     "total_words" : len(words_count)}
+
         except Exception as e:
             db.rollback()
             raise Exception(f"Error found in parsing SRT file: {str(e)}")
