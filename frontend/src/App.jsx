@@ -2,6 +2,7 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './css/App.css'
+import UserProfile from "./pages/UserProfilePage"
 import Review from "./pages/Review" 
 import NavBar from "./components/NavBar"
 import {Routes, Route} from "react-router-dom"
@@ -14,6 +15,7 @@ import CreateDeck from "./pages/CreateDeck"
 import SearchWord from "./pages/Search"
 import CardReview from "./pages/CardReview"
 import DeckDetails from "./pages/deckDetails"
+import UserSettings from './pages/Settings'
 
 function App() {
   return (
@@ -40,6 +42,8 @@ function AppContent() {
           <Route path="/decks/:deck_name/:page" element={<DeckDetails />} /> 
           {user && <Route path={`/myDecks`} element={<MyDecks />} />}
           <Route path="/Create" element={<CreateDeck />} />
+          <Route path="/Profile/:username" element={<UserProfile />} />
+          <Route path="/Settings/:username" element={<UserSettings />} />
         </Routes>
       </main>
     </>

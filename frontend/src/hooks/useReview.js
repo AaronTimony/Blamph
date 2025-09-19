@@ -1,9 +1,10 @@
 import API_BASE_URL from "../config"
 import {useAuthContext} from "../contexts/AuthContext"
-import {useQuery} from "@tanstack/react-query"
+import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query"
 
 export function useReview() {
   const {apiCall} = useAuthContext();
+  const queryClient = useQueryClient();
   const getWordCounts = useQuery({
     queryKey: ["WordCounts"],
     queryFn: async () => {
@@ -52,5 +53,36 @@ export function useReview() {
     gcTime: 0
   })
 
-  return {getWordCounts, getNewCard, getReviewCard}
+  const postNewCardRating = useMutation({
+    mutationFn: async ({japWord, rating}) => {
+          const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcardrating`, {
+            method: "POST",
+            body: JSON.stringify({"jp_word" : japWord, "rating" : rating})
+          })
+
+          if (!response.ok) {
+            throw new Error("Could not patch with new rating")
+          }
+    },
+    onSuccess: () => {queryClient.invalidateQueries(['NewWord']),
+    queryClient.invalidateQueries(['WordCounts'])}
+
+  })
+
+  const postReviewCardRating = useMutation({
+    mutationFn: async ({japWord, rating}) => {
+      const response = await apiCall(`${API_BASE_URL}/api/v1/review/reviewcardrating`, {
+        method: "PATCH",
+        body: JSON.stringify({"jp_word" : japWord, "rating": rating})
+      })
+
+      if (!response.ok) {
+        throw new Error("Could not patch with new rating")
+      }
+    },
+    onSuccess: () => {queryClient.invalidateQueries(['ReviewWord']),
+    queryClient.invalidateQueries(['WordCounts'])}
+  })
+
+  return {getWordCounts, postNewCardRating, getNewCard, getReviewCard, postReviewCardRating}
 }

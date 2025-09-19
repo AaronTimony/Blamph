@@ -1,116 +1,66 @@
-import API_BASE_URL from "../config"
-import {useAuthContext} from "../contexts/AuthContext"
 import "../css/reviewpage.css"
-import {useState, useEffect} from "react";
+import {useState} from "react";
+import {useReview} from "../hooks/useReview"
 
 export function CardReview({found_due_card, found_new_card}) {
-  const {apiCall} = useAuthContext();
-  const [japWord, setJapWord] = useState("")
-  const [meaning, setMeaning] = useState("")
-  const [reading, setReading] = useState("")
+  const {postNewCardRating, postReviewCardRating} = useReview();
   const [showMeaning, setShowMeaning] = useState(false)
-  const [rating, setRating] = useState("")
-  const [isCardNew, setIsCardNew] = useState(false)
-  useEffect(() => {
-    check_for_reviews();
 
-    setRating("")
-  }, [rating])
+  const current_card = found_due_card.jp_word ? found_due_card : found_new_card
 
-  const check_for_reviews = async () => {
+  const isCardNew = !found_due_card.jp_word && !!found_new_card.jp_word
 
-    if (found_due_card.jp_word) {
-      setJapWord(found_due_card.jp_word)
-      setMeaning(found_due_card.meaning)
-      setReading(found_due_card.reading)
-      setIsCardNew(false)
-    } else if (found_new_card.jp_word) {
-      setJapWord(found_new_card.jp_word)
-      setMeaning(found_new_card.meaning)
-      setReading(found_new_card.reading)
-      setIsCardNew(true)
+
+  const handleRating = (rating) => {
+    if (isCardNew) {
+      postNewCardRating.mutate({japWord: current_card.jp_word, rating})
     } else {
-      console.log("Could not find new or due cards")
+      postReviewCardRating.mutate({japWord: current_card.jp_word, rating})
     }
+
+    setShowMeaning(false)
   }
 
+  const isSubmitting = postNewCardRating.isLoading || postReviewCardRating.isLoading;
 
-  useEffect(() => {
-    if (!rating) return;
-    const send_rating = async () => {
-      if (isCardNew) {
-        try{
-          const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcardrating`, {
-            method: "POST",
-            body: JSON.stringify({"jp_word" : japWord, "rating" : rating})
-          })
-
-          if (!response.ok) {
-            throw new Error("Could not patch with new rating")
-          }
-
-        } catch(error) {
-          console.error("Could not establish new rating in data", error)
-        }
-      } else {
-        try{
-          const response = await apiCall(`${API_BASE_URL}/api/v1/review/reviewcardrating`, {
-            method: "PATCH",
-            body: JSON.stringify({"jp_word" : japWord, "rating": rating})
-          })
-
-          if (!response.ok) {
-            throw new Error("Could not patch with new rating")
-          }
-        } catch(error) {
-          console.error("Could not establish new rating in data", error)
-        }
-      }
-    }
-    send_rating();
-    setShowMeaning(false)
-  }, [rating])
-
-
-  const show_meaning_click = async () => {
-    setShowMeaning(true)
-    console.log(reading)
+  if (isSubmitting) {
+    return <h1> LOADING NEXT CARD.... </h1>
   }
 
   return (
     <div className="card-review-container">
       <div className="flashcard">
         <div className={`card-content ${showMeaning ? 'show-answer' : ''}`}>
-          <div className="japanese-word">{japWord}</div>
+          <div className="japanese-word">{current_card.jp_word}</div>
 
           {!showMeaning ? (
-            <button className="show-meaning-btn" onClick={show_meaning_click}>
+            <button className="show-meaning-btn" onClick={() => setShowMeaning(true)}>
               Show meaning
             </button>
           ) : (
               <>
-                <div className="meaning">{meaning}</div>
-                <div className="reading">{reading}</div>
+                <div className="meaning">{current_card.meaning}</div>
+                <div className="reading">{current_card.reading}</div>
 
                 <div className="rating-buttons">
                   {!isCardNew ? (
                     <>
-                      <button className="rating-btn easy" onClick={() => setRating("Easy")}>
+                      <button className="rating-btn easy" onClick={() => handleRating("Easy")}>
                         Easy
                       </button>
-                      <button className="rating-btn hard" onClick={() => setRating("Hard")}>
+                      <button className="rating-btn hard" onClick={() => handleRating("Hard")}>
                         Hard
                       </button>
-                      <button className="rating-btn again" onClick={() => setRating("Again")}>
+                      <button className="rating-btn again" onClick={() => handleRating("Again")}>
                         Again
                       </button>
                     </>
                   ) : (
                       <>
-                        <button className="rating-btn know" onClick={() => setRating("I know this word")}>
+                        <button className="rating-btn know" onClick={() => handleRating("I know this word")}>
                           I know this word
                         </button>
-                        <button className="rating-btn dont-know" onClick={() => setRating("I do not know this word")}>
+                        <button className="rating-btn dont-know" onClick={() => handleRating("I do not know this word")}>
                           I don't know this word
                         </button>
                       </>

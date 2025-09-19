@@ -15,6 +15,7 @@ function SearchBar({onSearch}) {
     onSearch(value)
 
   };
+
   return (
   <div className="search-bar">
         <input

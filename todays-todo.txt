@@ -8,9 +8,8 @@
 16) Recreate user_cards with partitions.
 17) ui and ux, git actions, typescript?
 23) add html closers byautomatically.
-24) Pagination is messed up for small pages there should only be as many pages as athere needs to be and if we have less than 2 pages completely scuffed. It's very scuffed actually once you get to the end needs fixing.
-
-25) The review page is scuffed due to caching issues and me being too lazy to fix it right now.
 26) Allow to sort deck words by different thing like frequency, overall_frequency, order in show. In order to do this need to create like a settings tab.
 27) Add to the review tab the search bar. Then make a nice formatting for those search results (I think going with same formatting as in deck details is good). Ensure search finds english and japanese like other page.
 28) Perhaps add stats page, like number of words reviewed today, 7 days, all time. Also add number of words known and stuff to that page instead. Change logout button to username with dropdown and options to go to options, stats etc.
+29) Also add in settings a way for users to choose the number of daily words they would like to do (new ones).
+30) NEED TO FIX CACHE ISSUES WHEN CHANGIN PFP CACHE NEEDS TO BE INVALIDATED. WE NEED TO REMOVE THE ENDPOINT FROM SOURCE AND CREATE FNC WITH ONSUCCESS INVALIDATION OF CACHE.

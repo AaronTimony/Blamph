@@ -21,6 +21,7 @@ nav {
   border-radius: 50px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   border: 1px solid #e2e8f0;
+  gap: 2rem;
 }
 
 /* Brand/Logo link - left side */
@@ -40,7 +41,8 @@ nav {
 .centre-of-navbar {
   display: flex;
   gap: 0.8rem;
-  align-items: center;
+  align-items: right;
+  position: relative;
 }
 
 /* Navigation links */
@@ -111,3 +113,55 @@ nav {
   }
 }
 
+.profile-dropdown {
+  position:relative;
+}
+
+.profile-dropdown .profile-picture-link {
+  padding: 0;
+  border-radius: 50%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.profile-dropdown .profile-picture-link:hover {
+  padding: 0;
+  border-radius: 50%;
+  background: none;
+  text-decoration: none;
+  transform: scale(1.05)
+}
+.cog-icon {
+  height: 2rem;
+  width: 2rem;
+}
+
+.logout-icon {
+  height: 2rem;
+  width: 2rem;
+}
+
+.profile-icon {
+  height: 2rem;
+  width: 2rem;
+}
+
+.profile-picture-image {
+  width:100px;
+  height: 50px;
+  border-radius:50px;
+}
+
+.centre-of-navbar a.profile-picture-link {
+  padding: 0;
+  border-radius: 50%;
+  text-decoration: none;
+  color: inherit;
+}
+
+.centre-of-navbar a.profile-picture-link:hover {
+  padding: 0;
+  border-radius: 50%;
+  background: none;
+  text-decoration: none;
+}

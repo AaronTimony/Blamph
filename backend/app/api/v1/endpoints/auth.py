@@ -1,11 +1,13 @@
 from app.core.auth import *
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.responses import FileResponse
 from datetime import timedelta
 from app.core.config import settings
 from app.schemas.auth import User, Token, TokenResponse, RefreshTokenRequest
 from app.schemas.decks import DeckResponse
 from app.core.database import get_db
+from pathlib import Path
 
 router = APIRouter()
 @router.post("/login", response_model=TokenResponse)
@@ -55,4 +57,16 @@ async def logout(request: RefreshTokenRequest, current_user: User = Depends(get_
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 
+@router.get("/profile_picture/{username}")
+async def get_profile_picture(username: str):
+    images_dir = Path("app/images")
+
+    matches = list(images_dir.glob(f"{username}.*"))
+
+    if not matches:
+        file_path = Path("app/images/boratcircle.png")
+    else:
+        file_path = matches[0]
+
+    return FileResponse(file_path)
 

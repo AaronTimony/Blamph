@@ -109,6 +109,7 @@ export const AuthProvider = ({children}) => {
         const userData = await validateToken(savedToken)
         if (userData) {
           setUser(userData)
+          console.log(userData)
           setToken(savedToken)
         }  
       } else if (refreshToken) {
