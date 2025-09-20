@@ -24,7 +24,7 @@ class ReviewService:
                 )
             offset += 1
 
-        raise HTTPEXception(status_code=404, detail="Could not find no card after 100 attemps")
+        raise HTTPException(status_code=404, detail="Could not find no card after 100 attemps")
 
     def get_review_card(self, current_user: User, db: Session):
 

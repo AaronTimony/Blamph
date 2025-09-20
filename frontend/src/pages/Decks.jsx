@@ -23,7 +23,6 @@ function Decks() {
   if (searchQuery) {
     decks = searchDecksQuery.data
   }
-  console.log(searchDecksQuery.data)
 
   return (
     <>

@@ -1,3 +1,4 @@
+import {SettingsComponent} from "../components/settings"
 export default function UserSettings() {
-  return <h1> AWESOME SETTINGS PAGAE ON THE HORIZON </h1>
+  return <SettingsComponent />
 }

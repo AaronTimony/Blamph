@@ -7,7 +7,7 @@ export default function useProfilePicUpload() {
       const token = localStorage.getItem("access_token")
       const response = await fetch(`${API_BASE_URL}/api/v1/users/profile_picture`, {
         headers: {"Authorization" : `Bearer ${token}`},
-        method: 'POST',
+        method: 'PATCH',
         body: formData
       })
 
@@ -15,16 +15,14 @@ export default function useProfilePicUpload() {
       if (!response.ok) {
         throw new Error("Upload Failed")
       }
-      console.log("WE ARE DOING IT??")
       const result = await response.json();
 
       return result
     },
-    onSuccess: (data) => {
-      console.log("Upload Success", data)
+    onSuccess: () => {
+      console.log("Profile picture successfully changed")
     },
     onError: (error) => {console.log(error)}
-
   })
 
   const handleSubmit = async (e) => {
@@ -35,7 +33,6 @@ export default function useProfilePicUpload() {
     formData.append('file', fileInput.files[0]);
     uploadMutation.mutate(formData);
   }
-
 
   return (
     <div className="Upload-file-box">

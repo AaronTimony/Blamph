@@ -34,6 +34,8 @@ function NavBar() {
 
   }, [showDropdown]);
 
+  if (loading) return;
+
   return (
     <nav>
       <div className="NavBar">
@@ -50,7 +52,11 @@ function NavBar() {
               e.preventDefault();
               setShowDropdown(!showDropdown);
             }} className="profile-picture-link">
+              {!loading && user.username ? (
               <img src={`${API_BASE_URL}/api/v1/auth/profile_picture/${user.username}`} alt={user.username} className="profile-picture-image"/>
+              ) : (
+              <div className="pfp-loading"> Loading... </div>
+              )}
             </Link>
             {showDropdown && <ProfileDropdown setShowDropdown={setShowDropdown}/>}
           </div>

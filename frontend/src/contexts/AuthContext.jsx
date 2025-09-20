@@ -179,13 +179,15 @@ export const AuthProvider = ({children}) => {
     } catch(error) {
       console.error("Login failed", error);
       return {success: false, error: "Network Error"}
+    } finally {
+      setLoading(false)
     }
   };
 
   const logout = async () => {
     try {
       const refreshToken = localStorage.getItem("refresh_token")
-      if (refreshtoken) {
+      if (refreshToken) {
         await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
           method: "POST",
           headers: {

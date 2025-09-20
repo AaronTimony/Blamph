@@ -7,6 +7,7 @@ from app.models import User
 from app.schemas.users import UserRegister
 from PIL import Image 
 import os
+import glob
 import io
 
 class UserService:
@@ -73,7 +74,7 @@ class UserService:
 
         return file_content, file_ext
 
-    async def upload_profile_picture(self, file: UploadFile, username: str):
+    async def upload_profile_picture(self, file: UploadFile, username: str, db: Session):
 
         file_content, file_ext = await self.validate_profile_picture(file)
 
@@ -82,7 +83,35 @@ class UserService:
 
         file_path = f"app/images/{username}{file_ext}"
 
+        self.delete_old_pfp(username)
+
         with open(file_path, "wb") as buffer:
             buffer.write(file_content)
 
+        self.save_to_database(username, file_ext, db)
+
         return {"message": "Profile picture uploaded successfully"}
+
+    def save_to_database(self, username: str, file_ext: str, db: Session):
+        profile_picture_url = f"app/images/{username}{file_ext}"
+        new_profile_pic = db.query(User)\
+                    .filter(User.username == username)\
+                    .update({User.profile_picture: profile_picture_url})
+
+        if new_profile_pic == 0:
+            return {"error" : "User has not updated profile picture"}
+
+        db.commit()
+
+        return {"message": "Profile picture has been saved to database"}
+
+    def delete_old_pfp(self, username: str):
+        file_path = f"app/images/{username}.*"
+        old_files = glob.glob(file_path)
+        for old_file in old_files:
+            try: 
+                os.remove(old_file)
+                print(f"Successfully deleted: {old_file}")
+
+            except Exception as e:
+                print(f"Error deleting file {old_file} : {e}")

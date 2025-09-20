@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from enum import Enum
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
@@ -116,7 +117,7 @@ class SRS:
         return newest_card
 
     def get_new_cards_count(self, user_id: int, db: Session):
-        new_cards_count = db.query(UserCard).filter(UserCard.user_id == user_id).filter(UserCard.level == 0).filter(UserCard.known == False).count()
+        new_cards_count = db.query(User.daily_new_words).filter(User.id == user_id).scalar()
 
         return new_cards_count
 
