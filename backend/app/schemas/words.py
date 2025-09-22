@@ -4,6 +4,7 @@ from typing import Optional
 class DeckWordsReq(BaseModel):
     deck_name: str
     page: int
+    ordering: str
 
 class DeckWordsRes(BaseModel):
     deck_name: str

@@ -35,7 +35,6 @@ def get_decks(db: Session = Depends(get_db)):
         for deck in all_decks
     ]
 
-
 @router.post("/create/")
 def create_deck(decks: List[CreateDeck],
                 db: Session = Depends(get_db)):

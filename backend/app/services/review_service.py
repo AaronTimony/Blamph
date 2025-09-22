@@ -1,8 +1,10 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
 from app.services.srs import SRS
-from app.models import User, UserCard, Card
-from app.schemas.review import Newest_cards, Review_cards, CardRatingRequest, CardCountsResponse
+from app.models import User, UserCard, Card, UserReview, UserNewWords
+from app.schemas.review import Newest_cards, Review_cards, CardRatingRequest, CardCountsResponse, ReviewStats
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
 srs = SRS()
 
@@ -14,7 +16,7 @@ class ReviewService:
         max_attempts = 100
 
         while offset < max_attempts:
-            card_tuple = srs.get_newest_card(current_user.id, db, offset)
+            card_tuple = srs.get_newest_card(current_user, db, offset)
 
             if card_tuple:
                 return Newest_cards(
@@ -58,6 +60,9 @@ class ReviewService:
 
         level, next_review, known = srs.calculate_next_review(0, req.rating, True)
 
+        # Ensuring to track users daily words learned
+        self.handle_new_card_statistics(current_user, db)
+
         new_user_card = UserCard(card_id = card_id,
                                  user_id = current_user.id,
                                  level = level,
@@ -85,15 +90,25 @@ class ReviewService:
 
         new_level, next_review, known = srs.calculate_next_review(cur_card.level, req.rating, False)
 
+        # Stores users daily reviews, weekly, all time here.
+        store_review = UserReview(user_id=current_user.id, review_date=datetime.now())
+
+        db.add(store_review)
+
+        current_user.all_time_words_reviewed += 1
+
+
         cur_card.level = new_level
         cur_card.next_review = next_review
         cur_card.known = known
 
         db.commit()
         db.refresh(cur_card)
+        db.refresh(store_review)
 
     def get_card_counts(self, current_user: User, db: Session):
-        new_count = srs.get_new_cards_count(current_user.id, db)
+        new_count = srs.get_new_cards_count(current_user.id, db) - current_user.daily_new_words_learned
+
         due_count = srs.get_due_cards_count(current_user.id, db)
         known_count = srs.get_known_cards_count(current_user.id, db)
 
@@ -102,3 +117,43 @@ class ReviewService:
             new_count=new_count,
             known_count=known_count
         )
+
+    def get_review_stats(self, current_user: User, db: Session):
+        daily_interval = timedelta(days=1)
+        weekly_interval = timedelta(days=7)
+        cur_time = datetime.now()
+
+        daily_reviews = (db.query(UserReview)\
+                         .filter(UserReview.user_id == current_user.id)\
+                         .filter(UserReview.review_date > cur_time - daily_interval)\
+                         .count())
+
+        weekly_reviews = (db.query(UserReview)\
+                         .filter(UserReview.user_id == current_user.id)\
+                         .filter(UserReview.review_date > cur_time - weekly_interval)\
+                         .count())
+
+        return ReviewStats(daily_reviews=daily_reviews,
+                           weekly_reviews=weekly_reviews,
+                           all_time_reviews=current_user.all_time_words_reviewed)
+
+    def handle_new_card_statistics(self, current_user: User, db: Session):
+        user_tz = ZoneInfo(current_user.timezone or 'UTC')
+        today = datetime.now(user_tz).date()
+
+        if current_user.last_daily_reset != today:
+            if current_user.last_daily_reset and current_user.daily_new_words_learned > 0:
+                yesterday_record = UserNewWords(
+                    user_id = current_user.id,
+                    date = current_user.last_daily_reset,
+                    new_words_count = current_user.daily_new_words_learned
+                )
+                db.add(yesterday_record)
+
+            current_user.daily_new_words_learned = 0
+            current_user.last_daily_reset = today
+
+        current_user.daily_new_words_learned += 1
+
+        db.commit()
+

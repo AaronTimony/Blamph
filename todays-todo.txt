@@ -5,11 +5,11 @@
 8) So I also need a system where when a word is searched, there are several options for what word and then when you click on the word you get much more details. I can add all those details to the word later.
 
 14) Authorizations
+
 16) Recreate user_cards with partitions.
-17) ui and ux, git actions, typescript?
+
+17) typescript, react router?
+
 23) add html closers byautomatically.
-26) Allow to sort deck words by different thing like frequency, overall_frequency, order in show. In order to do this need to create like a settings tab.
+
 27) Add to the review tab the search bar. Then make a nice formatting for those search results (I think going with same formatting as in deck details is good). Ensure search finds english and japanese like other page.
-28) Perhaps add stats page, like number of words reviewed today, 7 days, all time. Also add number of words known and stuff to that page instead. Change logout button to username with dropdown and options to go to options, stats etc.
-29) Also add in settings a way for users to choose the number of daily words they would like to do (new ones).
-30) NEED TO FIX CACHE ISSUES WHEN CHANGIN PFP CACHE NEEDS TO BE INVALIDATED. WE NEED TO REMOVE THE ENDPOINT FROM SOURCE AND CREATE FNC WITH ONSUCCESS INVALIDATION OF CACHE.

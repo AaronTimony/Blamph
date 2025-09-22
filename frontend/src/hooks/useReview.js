@@ -1,10 +1,13 @@
 import API_BASE_URL from "../config"
 import {useAuthContext} from "../contexts/AuthContext"
 import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query"
+import {useEffect, useState} from "react"
 
 export function useReview() {
   const {apiCall} = useAuthContext();
   const queryClient = useQueryClient();
+  const [newWordsCount, setNewWordsCount] = useState(0);
+
   const getWordCounts = useQuery({
     queryKey: ["WordCounts"],
     queryFn: async () => {
@@ -20,7 +23,7 @@ export function useReview() {
 
   const getNewCard = useQuery({
     queryKey: ["NewWord"],
-    queryFn: async () => {
+    queryFn: async (newWordOrder) => {
 
       const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcards`)
 

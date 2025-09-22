@@ -79,9 +79,10 @@ class WordService:
         return [{"jp_word" : card.jp_word, "meaning" : card.meaning, "overall_frequency" : card.overall_frequency, "rank": card.rank} for card in cards]
 
     def get_decks_words(self,
-                        deck: DeckWordsReq,
+                        deck_name: str,
                         current_user: User,
                         db: Session,
+                        ordering: str,
                         page: int = 1,
                         limit: int = 100):
         rank = func.rank().over(order_by=Card.overall_frequency.desc())
@@ -95,8 +96,16 @@ class WordService:
             ).subquery()
         )
 
+        if ordering == "deck_frequency":
+            order_method = CardDeck.word_frequency.desc()
+        elif ordering == "global_frequency":
+            order_method = rank_subq.c.rank.asc()
+        else:
+            order_method = CardDeck.id.asc()
+
         if current_user:
             cards = (db.query(Deck.deck_name,
+                              Card.id,
                               CardDeck.word_frequency,
                               Card.jp_word,
                               Card.meaning,
@@ -108,8 +117,8 @@ class WordService:
                      .join(Card, Card.id == CardDeck.card_id)
                      .join(rank_subq, rank_subq.c.id == Card.id)
                      .outerjoin(UserCard, (UserCard.card_id == Card.id) & (UserCard.user_id == current_user.id))
-                     .filter(Deck.deck_name == deck.deck_name)
-                     .order_by(CardDeck.word_frequency.desc())
+                     .filter(Deck.deck_name == deck_name)
+                     .order_by(order_method)
                      .limit(limit)
                      .offset(offset)
                      .all())
@@ -142,7 +151,7 @@ class WordService:
                      .join(CardDeck, Deck.id == CardDeck.deck_id)
                      .join(Card, Card.id == CardDeck.card_id)
                      .join(rank_subq, rank_subq.c.id == Card.id)
-                     .filter(Deck.deck_name == deck.deck_name)
+                     .filter(Deck.deck_name == deck_name)
                      .all())
 
             return [

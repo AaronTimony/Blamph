@@ -31,5 +31,4 @@ def get_users_words(current_user: User = Depends(get_current_active_user),
 def get_decks_words(deck: DeckWordsReq,
                     current_user: User = Depends(get_current_active_user),
                     db: Session = Depends(get_db)):
-
-    return word_service.get_decks_words(deck, current_user, db, deck.page)
+    return word_service.get_decks_words(deck.deck_name, current_user, db, deck.ordering, deck.page)

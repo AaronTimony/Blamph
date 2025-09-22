@@ -3,9 +3,11 @@ import "../css/JapaneseWordCards.css"
 import useWords from "../hooks/useWords"
 import {SearchLoading} from "../components/Loading"
 import {Pagination} from "../components/pagination"
+import {useState} from "react"
 
 export default function DeckDetails() {
-  const {wordsQuery, deck_name, page} = useWords();
+  const [deckSortMethod, setDeckSortMethod] = useState("deck_frequency")
+  const {wordsQuery, deck_name, page} = useWords(deckSortMethod);
 
   const words = wordsQuery.data
 
@@ -17,7 +19,7 @@ export default function DeckDetails() {
 
   return (
     <>
-      <JapaneseWordCards words={words} deck_name={deck_name}/>
+      <JapaneseWordCards words={words} deck_name={deck_name} deckSortMethod={deckSortMethod} setDeckSortMethod={setDeckSortMethod}/>
       <Pagination deck_name={deck_name} cur_page={Number(page)} total_pages={total_pages}/>
 
     </>

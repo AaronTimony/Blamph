@@ -1,5 +1,6 @@
 from fastapi import HTTPException
 from enum import Enum
+from sqlalchemy import func
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from app.models import User, UserCard, Card, CardDeck, UserDeck
@@ -88,17 +89,35 @@ class SRS:
 
         return get_due_card
 
-    def get_newest_card(self, user_id: int, db: Session, offset: int):
+    def get_newest_card(self, current_user: User, db: Session, offset: int):
         """Change this to just one query joining Card and UserCard"""
-
-        user_first_deck_id = db.query(UserDeck.deck_id).filter(UserDeck.user_id == user_id).filter(UserDeck.deck_order == 1).scalar()
+        user_first_deck_id = db.query(UserDeck.deck_id).filter(UserDeck.user_id == current_user.id).filter(UserDeck.deck_order == 1).scalar()
 
         if not user_first_deck_id:
             raise HTTPException(status_code=404, detail="User has no decks")
 
+        rank = func.rank().over(order_by=Card.overall_frequency.desc())
+
+        rank_subq = (
+            db.query(
+                Card.id,
+                rank.label("rank")
+            ).subquery()
+        )
+
+        if current_user.new_word_ordering == "deck_frequency":
+            order_method = CardDeck.word_frequency.desc()
+        elif current_user.new_word_ordering == "global_frequency":
+            order_method = rank_subq.c.rank.asc()
+        else:
+            order_method = CardDeck.id.asc()
+
         user_newest_card_id_tuple = (db.query(CardDeck.card_id)
-                               .filter(user_first_deck_id == CardDeck.deck_id)
-                               .offset(offset).first())
+                                     .join(Card, Card.id == CardDeck.card_id)
+                                     .join(rank_subq, rank_subq.c.id == Card.id)
+                                     .filter(CardDeck.deck_id == user_first_deck_id)
+                                     .order_by(order_method)
+                                     .offset(offset).first())
 
         user_newest_card_id = user_newest_card_id_tuple[0]
 
@@ -106,7 +125,7 @@ class SRS:
             return None
 
         already_exist = (db.query(UserCard)
-                         .filter(UserCard.user_id == user_id)
+                         .filter(UserCard.user_id == current_user.id)
                          .filter(UserCard.card_id == user_newest_card_id).first())
 
         if already_exist:

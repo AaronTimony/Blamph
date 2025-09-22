@@ -1,4 +1,6 @@
-const JapaneseWordCards = ({ words, deck_name }) => {
+import {SORT_OPTIONS} from "../constants/sortOptions"
+
+const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod }) => {
 
   const getKnowledgeClass = (known, level) => {
     if (!known) return "knowledge-unknown";
@@ -17,6 +19,16 @@ const JapaneseWordCards = ({ words, deck_name }) => {
   return (
     <div className="word-cards-container">
       <h2 className="deck-title-word-details">{deck_name}</h2>
+      <select 
+        value={deckSortMethod} 
+        onChange={(e) => setDeckSortMethod(e.target.value)}
+      >
+        {SORT_OPTIONS.map(option => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
       {words.map((word, index) => (
         <div key={index} className="word-card">
           {/* Main content area */}

@@ -27,5 +27,8 @@ class CardCountsResponse(BaseModel):
     due_count: int
     known_count: int
 
-
+class ReviewStats(BaseModel):
+    daily_reviews: int
+    weekly_reviews: int
+    all_time_reviews: int
 

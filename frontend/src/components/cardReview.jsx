@@ -21,12 +21,6 @@ export function CardReview({found_due_card, found_new_card}) {
     setShowMeaning(false)
   }
 
-  const isSubmitting = postNewCardRating.isLoading || postReviewCardRating.isLoading;
-
-  if (isSubmitting) {
-    return <h1> LOADING NEXT CARD.... </h1>
-  }
-
   return (
     <div className="card-review-container">
       <div className="flashcard">

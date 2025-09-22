@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.api.v1.endpoints.auth import get_current_active_user
 from app.core.database import get_db
 from app.models import User, UserCard, Card
-from app.schemas.review import Newest_cards, Review_cards, CardRatingRequest, CardCountsResponse
+from app.schemas.review import Newest_cards, Review_cards, CardRatingRequest, CardCountsResponse, ReviewStats
 from app.services.review_service import ReviewService
 
 router = APIRouter()
@@ -38,3 +38,8 @@ def get_number_of_cards(current_user: User = Depends(get_current_active_user),
                             db: Session = Depends(get_db)):
 
     return review_service.get_card_counts(current_user, db)
+
+@router.get("/ReviewStatValues", response_model = ReviewStats)
+def get_user_review_stats(current_user: User = Depends(get_current_active_user),
+                          db: Session = Depends(get_db)):
+    return review_service.get_review_stats(current_user, db)

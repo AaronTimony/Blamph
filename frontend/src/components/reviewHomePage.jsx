@@ -1,5 +1,8 @@
 import {Link} from "react-router-dom"
 export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCount}) {
+  const displayNewWordCount = newWordCount <= 0 ? "Complete" : newWordCount;
+
+  const displayReviewWordCount = dueWordCount <= 0 ? "Complete" : dueWordCount;
   return (
     <div className="review-container">
       {/* Main content area */}
@@ -11,7 +14,7 @@ export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCou
             <div className="icon">📚</div>
           </div>
           <div className="card-count due-count">
-            {dueWordCount}
+            {displayReviewWordCount}
           </div>
           <div className="card-description">
             Cards waiting for your review
@@ -25,7 +28,7 @@ export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCou
             <div className="icon">✨</div>
           </div>
           <div className="card-count new-count">
-            {newWordCount}
+            {displayNewWordCount}
           </div>
           <div className="card-description">
             Fresh vocabulary to discover

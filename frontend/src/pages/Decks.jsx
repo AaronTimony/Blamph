@@ -24,6 +24,10 @@ function Decks() {
     decks = searchDecksQuery.data
   }
 
+  if (decks.length === 0) {
+    return <h1> No decks added yet! </h1>
+  }
+
   return (
     <>
       <SearchBar onSearch={setSearchQuery} />

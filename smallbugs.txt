@@ -1,0 +1,5 @@
+1) new word feature not working fully. I need to have the words save when the user logs in or something because as of right now i just call the function that saves to that table when a new word is done that day (what if user studies a bunch of words then doesnt do any words one day, it will not have updated in stats. I guess i could call it anytime a user checks his stats as doing it every time they join site is expensive)
+2) Another issue is that my website doesnt wait to check tokens so you will have a flash of the "logged out" state before seeing the normal screen. Improper loading states need to be fixed.
+3) The images in full screen have weird bars. Also the deck details page only takes up half the screen?
+4) When you drag the deck to the bottom in my decks it just stays permanently scrolling downwards.
+5) when i reset pfp it doesnt update on taskbar (maybe irrelevant as that isnt ultimate purpose of pfp and likely to be removed.)
