@@ -5,12 +5,23 @@ from app.models import User, UserCard, Card, UserReview, UserNewWords
 from app.schemas.review import Newest_cards, Review_cards, CardRatingRequest, CardCountsResponse, ReviewStats
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
+import json
 
 srs = SRS()
 
 class ReviewService:
     def get_newest_card(self, current_user: User, db: Session):
         """Code here is a bit weird, when I don't find a card, I want to run this again until i do find one. I created a max_attempts, meaning if 100 words are cycled through with no new word we give up. If we already have a word in users database, we go again to try find new one."""
+
+
+        if current_user.new_word_priority_queue and len(current_user.new_word_priority_queue) > 0:
+            card = db.query(Card.jp_word, Card.meaning, Card.reading).filter(Card.id == current_user.new_word_priority_queue[0]).first()
+
+            return Newest_cards(
+                jp_word = card[0],
+                meaning = card[1],
+                reading = card[2]
+            )
 
         offset = 0
         max_attempts = 100
@@ -43,6 +54,17 @@ class ReviewService:
     def new_card_rating(self, req: CardRatingRequest,
                         current_user: User,
                         db: Session):
+        print(current_user.new_word_priority_queue)
+
+        if current_user.new_word_priority_queue != []:
+            updated_queue = current_user.new_word_priority_queue[1:]
+
+            db.query(User).filter(User.id == current_user.id).update({
+                User.new_word_priority_queue: json.dumps(updated_queue)
+            })
+
+            db.commit()
+
 
         card_id = db.query(Card.id).filter(Card.jp_word == req.jp_word).scalar()
 

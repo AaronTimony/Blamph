@@ -91,6 +91,7 @@ class SRS:
 
     def get_newest_card(self, current_user: User, db: Session, offset: int):
         """Change this to just one query joining Card and UserCard"""
+
         user_first_deck_id = db.query(UserDeck.deck_id).filter(UserDeck.user_id == current_user.id).filter(UserDeck.deck_order == 1).scalar()
 
         if not user_first_deck_id:

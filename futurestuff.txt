@@ -1,0 +1,3 @@
+25) Two things, i need to have results sorted and i need to have it so you can type romaji and get results in jp. Further i need more reuslts in japanese if i type iu i just get one word and i want more.
+26) The way i implemented the priority queue system is kinda janky probably can find better solution if i research.
+28) add type of media to deck columns (DONT HAVE WAY OF SPECIFYING RN :( )

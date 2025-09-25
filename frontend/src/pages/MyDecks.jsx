@@ -81,7 +81,7 @@ function MyDecks() {
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
-      <SearchBar onSearch={setSearchQuery} />
+      <SearchBar onSearch={setSearchQuery} detail={"decks"}/>
       <DeckPicker decks={decks} added={true} delDeckfromUser={deleteDeck}/>
     </DndContext>
   )

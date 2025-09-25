@@ -11,6 +11,7 @@ class Deck(Base):
     total_words = Column(Integer)
     unique_words = Column(Integer)
     user_created = Column(Boolean)
+    media_type = Column(String, nullable = True)
     
     card_associations = relationship("CardDeck", back_populates="deck")
     user_associations = relationship("UserDeck", back_populates="deck")

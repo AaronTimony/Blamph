@@ -19,5 +19,7 @@ class User(Base):
 
     daily_new_words = Column(Integer, default=20)
 
+    new_word_priority_queue = Column(Integer, default=list)
+
     deck_associations = relationship("UserDeck", back_populates="user")
     cards = relationship("UserCard", back_populates="user")

@@ -1,0 +1,166 @@
+/* WordSearch.css */
+
+.search-results-boxes {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.search-results-container {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+}
+
+.word-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.word-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.word-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.word-rank {
+  background: linear-gradient(45deg, #667eea, #764ba2);
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  min-width: 40px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.word-frequency {
+  background: #f8f9fa;
+  color: #495057;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.word-content {
+  margin-top: 12px;
+}
+
+.japanese-word-search {
+  font-size: 24px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+  font-family: 'Hiragino Kaku Gothic Pro', 'Yu Gothic', sans-serif;
+  line-height: 1.2;
+}
+
+.add-word-to-new {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+}
+
+.add-to-new-queue-button {
+  display: flex;
+  background-color: green;
+  flex-shrink: 0;
+  height: 2rem;
+  width: 0.2rem;
+  justify-content: center;
+  align-items:center;
+  border-radius: 50%;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .search-results-boxes {
+    margin: 10px;
+    padding: 16px;
+  }
+  
+  .search-results-container {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .word-card {
+    padding: 16px;
+  }
+  
+  .japanese-word {
+    font-size: 20px;
+  }
+  
+  .word-meaning {
+    font-size: 14px;
+  }
+}
+
+/* Loading animation for when new results come in */
+.word-card {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger animation for multiple cards */
+.word-card:nth-child(1) { animation-delay: 0.05s; }
+.word-card:nth-child(2) { animation-delay: 0.1s; }
+.word-card:nth-child(3) { animation-delay: 0.15s; }
+.word-card:nth-child(4) { animation-delay: 0.2s; }
+.word-card:nth-child(5) { animation-delay: 0.25s; }
+.word-card:nth-child(6) { animation-delay: 0.3s; }
+
+/* Empty state styling */
+.no-results {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 18px;
+  padding: 40px 20px;
+}
+
+/* Optional: Add a subtle pattern to the background */
+.search-results-boxes::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                    radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  border-radius: 16px;
+}

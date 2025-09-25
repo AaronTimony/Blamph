@@ -1,7 +1,10 @@
-.word-cards-container { max-width: 64rem;
+.word-cards-container { 
   padding: 1.5rem;
   display: flex;
+  justify-content: center;
   flex-direction: column;
+  width: 80%;
+  margin: 0 auto;
   gap: 1rem;
 }
 

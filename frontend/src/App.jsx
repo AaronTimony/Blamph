@@ -12,7 +12,6 @@ import {AuthProvider, useAuthContext} from "./contexts/AuthContext"
 import LoginPage from "./pages/login"
 import RegisterPage from "./pages/register"
 import CreateDeck from "./pages/CreateDeck"
-import SearchWord from "./pages/Search"
 import CardReview from "./pages/CardReview"
 import DeckDetails from "./pages/deckDetails"
 import UserSettings from './pages/Settings'
@@ -37,7 +36,6 @@ function AppContent() {
           <Route path="/decks" element={<Decks />} />
           <Route path="/CardReview" element={<CardReview />} />
           <Route path="/Login" element={<LoginPage />} />
-          <Route path="/SearchWord" element={<SearchWord />} />
           <Route path="/Register" element={<RegisterPage />} />
           <Route path="/decks/:deck_name/:page" element={<DeckDetails />} /> 
           {user && <Route path={`/myDecks`} element={<MyDecks />} />}

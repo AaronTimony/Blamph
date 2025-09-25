@@ -63,7 +63,7 @@ const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod
             {/* Word frequency - Bottom left */}
             <div className="frequency-info">
               <span className="label">Deck Frequency:</span>
-              <span className="frequency-value">{word.word_frequency.toLocaleString()}</span>
+              <span className="frequency-value">{word.word_frequency}</span>
             </div>
 
             {/* Overall rank - Bottom right */}

@@ -24,15 +24,16 @@ function Decks() {
     decks = searchDecksQuery.data
   }
 
-  if (decks.length === 0) {
+  if (decks === null) {
     return <h1> No decks added yet! </h1>
   }
 
   return (
     <>
-      <SearchBar onSearch={setSearchQuery} />
+      <SearchBar onSearch={setSearchQuery} detail={"Decks"}/>
       <DeckPicker decks={decks} added={false} addDecktoUser={addDecktoUser} />
     </>
+
   )
 }
 
