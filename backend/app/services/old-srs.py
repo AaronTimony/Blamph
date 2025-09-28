@@ -1,119 +1,85 @@
-from fsrs import Scheduler, Rating  
-from fsrs import Card as FSRSCard
 from fastapi import HTTPException
+from enum import Enum
 from sqlalchemy import func
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from app.models import User, UserCard, Card, CardDeck, UserDeck
-from datetime import datetime, timezone, timedelta
-# I need to pass a rating (that i translate to the ratings here), card_id, first_time
+from typing import Tuple
 
-# I need to return, due_date, level (manual), card_id
 class SRS:
     def __init__(self):
-        self.scheduler = Scheduler(
-            parameters = (
-                    0.212,
-                    1.2931,
-                    2.3065,
-                    8.2956,
-                    6.4133,
-                    0.8334,
-                    3.0194,
-                    0.001,
-                    1.8722,
-                    0.1666,
-                    0.796,
-                    1.4835,
-                    0.0614,
-                    0.2629,
-                    1.6483,
-                    0.6014,
-                    1.8729,
-                    0.5425,
-                    0.0912,
-                    0.0658,
-                    0.1542,
-            ),
-            desired_retention = 0.9,
-            learning_steps = (timedelta(minutes=3), timedelta(minutes=10)),
-            relearning_steps = (timedelta(minutes=10),),
-            maximum_interval = 36500,
-            enable_fuzzing = True
-        )
+        """Here we define the learning steps for when a user rates a card (easy, hard, again). The ratings for new cards and learning cards are different as defined here."""
+        self.new_learning_steps = {'Easy': timedelta(minutes=10),
+                                   'Hard': timedelta(minutes=5),
+                                   'Again': timedelta(minutes=3)}
 
-    def calculate_next_review(self, card_id: int, rating: str, first_time: bool):
-        card = FSRSCard(card_id=card_id)
+        self.learning_steps = {'Easy': timedelta(days=5),
+                               'Hard': timedelta(days=1),
+                               'Again': timedelta(minutes=3)}
+
+    def calculate_next_review(self, level: int, rating: str, first_time: bool) -> Tuple[int, datetime, bool]:
+
+        cur_time = datetime.now()
 
         if first_time:
-            return self.handle_first_time_card(rating, card)
+            return self.handle_first_time_card(level, cur_time, rating)
 
-        else:
-            return self.handle_review(rating, card)
+        elif level == 1:
+            return self.handle_new_card(level, cur_time, rating)
 
+        elif level > 1:
+            return self.handle_learning_card(level, cur_time, rating)
 
-    def handle_first_time_card(self, user_rating: str, card: FSRSCard):
+    def handle_first_time_card(self, level: int, cur_time: datetime, user_rating: str):
         """When the user first encounters a card, i want to ask them and see if they already feel they know the card. If so, they will have the card will be registered as known for them and will display as known. Known cards will not be encountered in the SRS system."""
-        cur_time = datetime.now(timezone.utc)
 
         if user_rating == "I know this word":
             known_state = True
-            level = 5
-            due_date = cur_time + timedelta(days=10000)
-            return (level, due_date, known_state)
+            return (level, cur_time, known_state)
 
         elif user_rating == "I do not know this word":
             known_state = False
-            card, review_log = self.scheduler.review_card(card, Rating.Again) 
-            due_date = card.due
-            level = card.state
-
+            level += 1
+            due_date = cur_time + self.new_learning_steps['Again']
             return (level, due_date, known_state)
 
-    def handle_review(self, user_rating: str, card: FSRSCard):
-        if user_rating == "Easy":
-            card_rating = Rating.Easy
+    def handle_new_card(self, level: int, cur_date: datetime, rating: str):
+        """For new cards, once the user has said they are not familiar with the word, we will make sure that they see it twice before moving it to the learning phase (any card with level > 1). It is possible for a learning card to become new again if the user clicks again on a level 1 card."""
 
-        elif user_rating == "Good":
-            card_rating = Rating.Good
+        known_state = False
+        if rating == "Again":
+            due_date = cur_date + self.new_learning_steps['Again']
+            return (level, due_date, known_state)
+
+        elif rating == "Hard":
+            due_date = cur_date + self.new_learning_steps['Hard']
+            return (level, due_date, known_state)
+
+        elif rating == "Easy":
+            due_date = cur_date + self.new_learning_steps['Easy']
+            level += 1
+            return (level, due_date, known_state)
+
+    def handle_learning_card(self, level: int, cur_date: datetime, user_rating: str):
+        """This is for cards which are beyond the new phase. Levels will adjust based on user ratings. Intervals are determined by the users current level for this card."""
+
+        known_state = False
+        if user_rating == "Again":
+            due_date = cur_date + level*self.learning_steps['Again']
+            level -= 1
+            return (level, due_date, known_state)
 
         elif user_rating == "Hard":
-            card_rating = Rating.Hard
+            due_date = cur_date + level*self.learning_steps['Hard']
+            return (level, due_date, known_state)
 
-        elif user_rating == "Again":
-            card_rating = Rating.Again
-
-        card, review_log = self.scheduler.review_card(card, card_rating)
-
-        due_date = card.due
-
-        time_delta = due_date - datetime.now(timezone.utc)
-
-        # Here we hardcode some values to save users level of a certain card
-        # I just wanted the levels to go up to 5 so I hardcode certain intervals
-        # where if the users next review is in say 5 days, the level of that card
-        # will adapt to that length. (the longer the interval the higher the level)
-        if time_delta < timedelta(days=3):
-            level = 1
-
-        elif timedelta(days=3) <= time_delta < timedelta(days=7):
-            level = 2
-
-        elif timedelta(days=7) <= time_delta < timedelta(days=30):
-            level = 3
-
-        elif timedelta(days=21) <= time_delta < timedelta(days=90):
-            level  = 4
-
-        elif timedelta(days=90) <= time_delta < timedelta(days=365):
-            level = 5
-
-        else:
-            level = 5
-
-        return (level, due_date)
+        elif user_rating == "Easy":
+            due_date = cur_date + level*self.learning_steps['Easy']
+            level += 2
+            return (level, due_date, known_state)
 
     def get_due_cards(self, user_id: int, db: Session):
-        cur_date = datetime.now(timezone.utc)
+        cur_date = datetime.now()
 
         get_due_card = (db.query(Card.jp_word, Card.meaning, Card.reading).
         join(UserCard, Card.id == UserCard.card_id).

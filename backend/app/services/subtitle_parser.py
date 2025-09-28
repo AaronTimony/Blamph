@@ -10,15 +10,23 @@ from app.models.cardDeck import CardDeck
 from collections import Counter
 from typing import List, Dict, Tuple
 import fugashi
+import unidic
 import re
 import chardet
+unidic_path = unidic.DICDIR
 
 class SubtitleParser:
     def __init__(self):
-        self.tagger = fugashi.Tagger()
+        try:
+            self.tokenizer_obj = dictionary.Dictionary().create()
 
+            self.mode = tokenizer.Tokenizer.SplitMode.C
 
-        self.jamdict = Jamdict()
+            self.jamdict = Jamdict()
+
+        except Exception as e:
+            print(f"Error in __init__: {e}")
+            raise
         
     def detect_encoding(self, file_content: bytes) -> str:
         """Detect file encoding for Japanese text (UTF-8, Shift_JIS)
@@ -55,9 +63,9 @@ class SubtitleParser:
         if not lemma or lemma.isspace() or len(lemma.strip()) == 0:
             return False
 
-        useful_pos = {'名詞', '動詞', '形容詞', '副詞'}
+        useful_pos = {'名詞', '動詞', '形容詞', '副詞', '形状詞','代名詞', '接尾辞', '接頭辞'}
 
-        skip_pos = {'助詞', '助動詞', '記号', '補助記号', '感動詞'}
+        skip_pos = {'助詞', '助動詞', '記号', '補助記号'}
 
         if pos1 in skip_pos:
             return False
@@ -65,7 +73,7 @@ class SubtitleParser:
         if pos1 in useful_pos:
 
             if pos1 == '名詞':
-                skip_noun_types = {'数詞', '代名詞'}
+                skip_noun_types = {'数詞'}
 
                 if pos2 in skip_noun_types:
                     return False
@@ -77,17 +85,30 @@ class SubtitleParser:
     def extract_cards(self, text: str, db: Session) -> List[str]:
         jp_words = []
 
-        for word in self.tagger(text):
-            if not self._is_useful_word(word):
-                continue
+        try:
+            tokens = self.tokenizer_obj.tokenize(text, self.mode)
 
-            dictionary_form = word.feature.lemma
+            for i, token in enumerate(tokens):
+                try:
+                    word_surface = token.dictionary_form()
+                    pos = token.part_of_speech()[0]
 
-            if (dictionary_form and 
-                dictionary_form not in badwords):
 
-                jp_words.append(dictionary_form)
+                    if pos in {'名詞', '動詞', '形容詞', '副詞', '形状詞', '代名詞'}:
+                        if word_surface and word_surface not in badwords:
+                            jp_words.append(word_surface)
 
+                except Exception as e:
+                    continue
+
+        except Exception as e:
+            print(f"Error in tokenization: {e}")
+            print(f"Tokenizer object: {self.tokenizer_obj}")
+            print(f"Mode: {self.mode}")
+            raise
+
+        print(f"Final jp_words: {jp_words}")
+        print(unidic.DICDIR)
         return jp_words
 
     def extract_meaning_and_reading(self, word: str) -> Tuple[str | None, str | None]:
@@ -117,6 +138,7 @@ class SubtitleParser:
             text = self.clean_subtitle_text(content)
 
             all_words = self.extract_cards(text, db)
+            print(all_words)
 
             words_count = Counter(all_words)
 

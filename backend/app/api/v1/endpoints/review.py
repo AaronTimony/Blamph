@@ -13,6 +13,7 @@ review_service = ReviewService()
 @router.get("/newcards", response_model = Newest_cards)
 def get_users_newest_card(current_user: User = Depends(get_current_active_user),
                           db: Session = Depends(get_db)):
+    print("We get here right?")
     return review_service.get_newest_card(current_user, db)
 
 @router.get("/reviewcards", response_model = Review_cards)

@@ -10,7 +10,6 @@ export function CardReview({found_due_card, found_new_card}) {
 
   const isCardNew = !found_due_card.jp_word && !!found_new_card.jp_word
 
-
   const handleRating = (rating) => {
     if (isCardNew) {
       postNewCardRating.mutate({japWord: current_card.jp_word, rating})

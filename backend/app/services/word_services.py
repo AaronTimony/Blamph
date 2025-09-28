@@ -14,20 +14,22 @@ class WordService:
         supported_extensions = ('.srt',)
 
         deck = db.query(Deck).filter(Deck.deck_name == deck_name).first()
+
+        if not deck:
+            new_deck = Deck(deck_name = deck_name, user_created = True)
+            db.add(new_deck)
+            db.flush()
+
+            add_to_user = UserDeck(deck_id = new_deck.id, user_id = user_id, deck_order = 1)
+            db.query(UserDeck).filter(UserDeck.user_id == user_id).update({UserDeck.deck_order: UserDeck.deck_order + 1})
+            db.add(add_to_user)
+            db.commit()
+
+            deck = new_deck
+
         for file in files:
             if not file.filename.lower().endswith(supported_extensions):
                 raise HTTPException(status_code=400, detail="This file type is not supported)")
-
-            if not deck:
-                deck = Deck(deck_name = deck_name, user_created = True)
-                db.add(deck)
-                db.refresh(deck)
-
-                add_to_user = UserDeck(deck_id = deck.id, user_id = user_id, deck_order = 1)
-                db.query(UserDeck).filter(UserDeck.user_id == user_id).update({UserDeck.deck_order: UserDeck.deck_order + 1})
-                db.add(add_to_user)
-                db.commit()
-                db.refresh(add_to_user)
 
             try:
                 content = await file.read()
@@ -43,7 +45,6 @@ class WordService:
         deck.total_words = total_words
         deck.unique_words = unique_words
         db.commit()
-        db.refresh(deck)
 
         return {
             "message": "successfully added",

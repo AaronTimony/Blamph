@@ -67,8 +67,8 @@ export function useReview() {
             throw new Error("Could not patch with new rating")
           }
     },
-    onSuccess: () => {queryClient.invalidateQueries(['NewWord']),
-    queryClient.invalidateQueries(['WordCounts'])}
+    onMutate: () => {queryClient.invalidateQueries(['NewWord'])},
+    onSuccess: () => {queryClient.invalidateQueries(['WordCounts'])}
 
   })
 

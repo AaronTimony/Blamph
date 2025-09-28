@@ -13,21 +13,17 @@ class ReviewService:
     def get_newest_card(self, current_user: User, db: Session):
         """Code here is a bit weird, when I don't find a card, I want to run this again until i do find one. I created a max_attempts, meaning if 100 words are cycled through with no new word we give up. If we already have a word in users database, we go again to try find new one."""
 
+        try:
+            if current_user.new_word_priority_queue and len(current_user.new_word_priority_queue) > 0:
+                card = db.query(Card.jp_word, Card.meaning, Card.reading).filter(Card.id == current_user.new_word_priority_queue[0]).first()
 
-        if current_user.new_word_priority_queue and len(current_user.new_word_priority_queue) > 0:
-            card = db.query(Card.jp_word, Card.meaning, Card.reading).filter(Card.id == current_user.new_word_priority_queue[0]).first()
+                return Newest_cards(
+                    jp_word = card[0],
+                    meaning = card[1],
+                    reading = card[2]
+                )
 
-            return Newest_cards(
-                jp_word = card[0],
-                meaning = card[1],
-                reading = card[2]
-            )
-
-        offset = 0
-        max_attempts = 100
-
-        while offset < max_attempts:
-            card_tuple = srs.get_newest_card(current_user, db, offset)
+            card_tuple = srs.get_newest_card(current_user, db)
 
             if card_tuple:
                 return Newest_cards(
@@ -35,9 +31,8 @@ class ReviewService:
                     meaning = card_tuple[1],
                     reading = card_tuple[2]
                 )
-            offset += 1
-
-        raise HTTPException(status_code=404, detail="Could not find no card after 100 attemps")
+        except Exception as e:
+            print("SOMETHING BAD HAPPENED!", e)
 
     def get_review_card(self, current_user: User, db: Session):
 
@@ -54,7 +49,6 @@ class ReviewService:
     def new_card_rating(self, req: CardRatingRequest,
                         current_user: User,
                         db: Session):
-        print(current_user.new_word_priority_queue)
 
         if current_user.new_word_priority_queue != []:
             updated_queue = current_user.new_word_priority_queue[1:]
@@ -64,7 +58,6 @@ class ReviewService:
             })
 
             db.commit()
-
 
         card_id = db.query(Card.id).filter(Card.jp_word == req.jp_word).scalar()
 
@@ -80,7 +73,7 @@ class ReviewService:
         if cur_card:
             raise HTTPException(status_code=404, detail="User already has card, not new")
 
-        level, next_review, known = srs.calculate_next_review(0, req.rating, True)
+        level, next_review, known = srs.calculate_next_review(card_id, req.rating, True)
 
         # Ensuring to track users daily words learned
         self.handle_new_card_statistics(current_user, db)
@@ -110,7 +103,7 @@ class ReviewService:
         if not cur_card:
             raise HTTPException(status_code=404, detail="Could not find user's card")
 
-        new_level, next_review, known = srs.calculate_next_review(cur_card.level, req.rating, False)
+        new_level, next_review = srs.calculate_next_review(card_id, req.rating, False)
 
         # Stores users daily reviews, weekly, all time here.
         store_review = UserReview(user_id=current_user.id, review_date=datetime.now())
@@ -119,10 +112,8 @@ class ReviewService:
 
         current_user.all_time_words_reviewed += 1
 
-
         cur_card.level = new_level
         cur_card.next_review = next_review
-        cur_card.known = known
 
         db.commit()
         db.refresh(cur_card)

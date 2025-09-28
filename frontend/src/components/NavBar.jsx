@@ -6,16 +6,16 @@ import API_BASE_URL from "../config"
 import {ProfileDropdown} from "../components/profileDropdown"
 
 function NavBar() {
-  const {loading, user, logout} = useAuthContext();
+  const {loading, user} = useAuthContext();
   const [showDropdown, setShowDropdown] = useState(false)
   const dropdownRef = useRef(null)
-  const handleLogout = () => {
-    if (window.confirm('Are you sure you wish to log out?')) {
-      logout().then(() => {
-        window.location.href = "/Decks";
-      });
+
+  const samePage = (e, path) => {
+    if (window.location.pathname === path) {
+      e.preventDefault();
+      window.location.reload();
     }
-  };
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -39,11 +39,11 @@ function NavBar() {
   return (
     <nav>
       <div className="NavBar">
-        <Link to="/Review">Blamph</Link>
+        <Link to="/Review" onClick={(e) => samePage(e, "/Review")}>Blamph</Link>
         <div className="centre-of-navbar">
-          <Link to="/Create">Create Deck</Link>
-          <Link to="/Decks">Decks</Link>
-          {user && <Link to="/myDecks">My Decks</Link>}
+          {user && <Link to="/Create" onClick={(e) => samePage(e, "/Create")}>Create Deck</Link>}
+          <Link to="/Decks" onClick={(e) => samePage(e, "/Decks")}>Decks</Link>
+          {user && <Link to="/myDecks" onClick={(e) => samePage(e, "/myDecks")}>My Decks</Link>}
         </div>
         {user ? (
           <div className="profile-dropdown" ref={dropdownRef}>

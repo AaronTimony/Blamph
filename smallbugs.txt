@@ -3,3 +3,4 @@
 3) The images in full screen have weird bars. Also the deck details page only takes up half the screen?
 4) When you drag the deck to the bottom in my decks it just stays permanently scrolling downwards.
 5) when i reset pfp it doesnt update on taskbar (maybe irrelevant as that isnt ultimate purpose of pfp and likely to be removed.)
+6) The new words feature does not reset until you do a new word then it goes to the number that you want it to.

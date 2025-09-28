@@ -1,10 +1,13 @@
-1) In review, there is too long between new cards, and there is no proper loading
 2) Check issues with tokenization + translation and see what can be done to improve. I can also check like if the words are really being caught by my algorithm accurately by looking at subs then at the tokenization.
-
-3) Fix SRS system make something more meaningful with better review intervals and more complexity.
 
 14) Authorizations
 
 16) Recreate user_cards with partitions.
 
 17) typescript, react router?
+
+18) need to add some way of going backwards in the review tab
+
+19) Need to stop having words always be kanji form, add more readings and meanings for words. Get most common reading first. 
+
+20) add romaji to search for jp words and need less search results.
