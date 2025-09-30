@@ -18,6 +18,7 @@ export default function useWords(deckSortMethod) {
 
       const words = await res.json();
 
+      console.log(words)
       return words
     },
     enabled: !!deck_name,

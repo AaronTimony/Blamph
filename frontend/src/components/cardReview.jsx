@@ -32,7 +32,7 @@ export function CardReview({found_due_card, found_new_card}) {
             </button>
           ) : (
               <>
-                <div className="meaning">{current_card.meaning}</div>
+                <div className="meaning">{current_card.meaning[0]}</div>
                 <div className="reading">{current_card.reading}</div>
 
                 <div className="rating-buttons">

@@ -120,7 +120,7 @@ class ReviewService:
         db.refresh(store_review)
 
     def get_card_counts(self, current_user: User, db: Session):
-        new_count = srs.get_new_cards_count(current_user.id, db) - current_user.daily_new_words_learned
+        new_count = srs.get_new_cards_count(current_user, db) - current_user.daily_new_words_learned
 
         due_count = srs.get_due_cards_count(current_user.id, db)
         known_count = srs.get_known_cards_count(current_user.id, db)
@@ -161,6 +161,7 @@ class ReviewService:
                     date = current_user.last_daily_reset,
                     new_words_count = current_user.daily_new_words_learned
                 )
+
                 db.add(yesterday_record)
 
             current_user.daily_new_words_learned = 0

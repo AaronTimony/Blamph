@@ -1,17 +1,17 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 class Newest_cards(BaseModel):
-    meaning: str
+    meaning: List[str]
     jp_word: str
-    reading: str
+    reading: Optional[str]
 
     class Config:
         from_attributes = True
 
 class Review_cards(BaseModel):
-    meaning: Optional[str]
+    meaning: Optional[List[str]]
     jp_word: Optional[str]
     reading: Optional[str]
 

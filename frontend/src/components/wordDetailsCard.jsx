@@ -34,8 +34,8 @@ const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod
           {/* Main content area */}
           <div className="card-content-word">
             <div className="word-section">
-              <h3 className="jp-word">{word.jp_word}</h3>
-              <p className="meaning">{word.meaning}</p>
+              <h3 className="jp-word">{word.jp_word}{word.reading ? ` (${word.reading})` : ``}</h3>
+              <p className="meaning">{word.meaning[0]}</p>
             </div>
 
             {/* Knowledge status - Top right */}

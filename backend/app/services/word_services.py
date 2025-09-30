@@ -40,6 +40,7 @@ class WordService:
                 raise HTTPException(status_code=500, detail=f"Could not add subtitles: {e}")
 
         unique_words = db.query(CardDeck).filter(CardDeck.deck_id == deck.id).count()
+        # This only works if CardDeck was not previously defined,
         total_words = db.query(func.sum(CardDeck.word_frequency)).filter(CardDeck.deck_id == deck.id).scalar()
 
         deck.total_words = total_words
@@ -110,6 +111,7 @@ class WordService:
                               CardDeck.word_frequency,
                               Card.jp_word,
                               Card.meaning,
+                              Card.reading,
                               UserCard.known,
                               UserCard.level,
                               Deck.unique_words,
@@ -132,6 +134,7 @@ class WordService:
                     "word_frequency" : card.word_frequency,
                     "jp_word" : card.jp_word,
                     "meaning" : card.meaning,
+                    "reading" : card.reading,
                     "overall_rank": card.rank,
                     "known": card.known if card.known is not None else False,
                     "level": card.level if card.level is not None else 0,

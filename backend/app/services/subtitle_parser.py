@@ -4,7 +4,7 @@ from jamdict import Jamdict
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from app.core.database import get_db
-from app.core.badwords import badwords
+from app.core.badwords import badwords, broken_words
 from app.models.card import Card
 from app.models.cardDeck import CardDeck
 from collections import Counter
@@ -53,25 +53,25 @@ class SubtitleParser:
     def _is_useful_word(self, word) -> bool:
         """Filter non-useful word types"""
 
-        if word.is_unk:
-            return False
+        pos1 = word.part_of_speech()[0]
+        pos2 = word.part_of_speech()[1]
+        lemma = word.dictionary_form()
 
-        pos1 = word.feature.pos1
-        pos2 = word.feature.pos2
-        lemma = word.feature.lemma
-
-        if not lemma or lemma.isspace() or len(lemma.strip()) == 0:
-            return False
-
-        useful_pos = {'名詞', '動詞', '形容詞', '副詞', '形状詞','代名詞', '接尾辞', '接頭辞'}
+        useful_pos = {'名詞', '動詞', '形容詞', '副詞', '形状詞', '代名詞'}
 
         skip_pos = {'助詞', '助動詞', '記号', '補助記号'}
 
-        if pos1 in skip_pos:
+        skip_pos2 = {
+            '助動詞語幹'
+        }
+
+        if pos1 in skip_pos or pos2 in skip_pos2 or lemma in badwords:
+            return False
+
+        if pos1 == '名詞' and pos2 == '固有名詞':
             return False
 
         if pos1 in useful_pos:
-
             if pos1 == '名詞':
                 skip_noun_types = {'数詞'}
 
@@ -80,7 +80,7 @@ class SubtitleParser:
 
             return True
 
-        return False
+        return True
 
     def extract_cards(self, text: str, db: Session) -> List[str]:
         jp_words = []
@@ -88,18 +88,13 @@ class SubtitleParser:
         try:
             tokens = self.tokenizer_obj.tokenize(text, self.mode)
 
-            for i, token in enumerate(tokens):
+            for token in tokens:
                 try:
-                    word_surface = token.dictionary_form()
-                    pos = token.part_of_speech()[0]
-
-
-                    if pos in {'名詞', '動詞', '形容詞', '副詞', '形状詞', '代名詞'}:
-                        if word_surface and word_surface not in badwords:
-                            jp_words.append(word_surface)
+                    if self._is_useful_word(token):
+                        jp_words.append(token.dictionary_form())
 
                 except Exception as e:
-                    continue
+                    print(e)
 
         except Exception as e:
             print(f"Error in tokenization: {e}")
@@ -107,28 +102,48 @@ class SubtitleParser:
             print(f"Mode: {self.mode}")
             raise
 
-        print(f"Final jp_words: {jp_words}")
-        print(unidic.DICDIR)
         return jp_words
 
-    def extract_meaning_and_reading(self, word: str) -> Tuple[str | None, str | None]:
-        """Function used to get the meaning of Japanese word passed by extract_cards"""
+    def extract_meaning_and_reading(self, word: str) -> Tuple[str | None, List | None]:
+        """This function is a bit weird. I have created a list called broken_words, jamdict has this issue where its first entry will usually be the most common form a verb but not always. Sudachipy when two verbs are the same in kana form eg. いる it will not distinguish what form of verb this is based on context. So what I have done is manually set what the most common form of the verb isin kana form for these verbs. If the kanji form is found, then sudachi can use that form, otherwise it defaults to the form of the verb which i have manually set. I don't know how else to do this because the NLP simply does not do it for me so I have no other method other than manual."""
         meaning = None
         reading = None
 
         res = self.jamdict.lookup(word)
-        if res.entries != []:
+
+        has_kanji = any('\u4e00' <= c <= '\u9fff' for c in word)
+
+        if word in broken_words:
+            if has_kanji:
+                meaning = broken_words[word][0]
+                reading = broken_words[word][1]
+
+            else:
+                meaning = broken_words[word]
+                reading = None
+
+            return reading, [meaning]
+
+        if res.entries:
             entry = res.entries[0]
 
-            if entry.kana_forms[0]:
-                reading = str(entry.kana_forms[0])
-            if entry.senses:
-                first_sense = entry.senses[0]
-                if first_sense.gloss:
-                    meaning = str(first_sense.gloss[0])
+            if has_kanji:
+                for entry in res.entries:
 
+                    for kanji_form in entry.kanji_forms:
 
-        return meaning, reading
+                        if kanji_form.text == word:
+                            reading = str(entry.kana_forms[0]) if entry.kana_forms else None
+                            meaning = [sense.text().replace('/', '; ') for sense in entry.senses] if entry.senses else None
+                            return reading, meaning
+
+            else:
+                reading = None
+
+                if entry.senses:
+                    meaning = [sense.text() for sense in entry.senses] if entry.senses else None
+
+        return reading, meaning
 
     def parse_srt_file(self, file_content: bytes, deck_id: int, db: Session) -> Dict:
         try:
@@ -138,28 +153,30 @@ class SubtitleParser:
             text = self.clean_subtitle_text(content)
 
             all_words = self.extract_cards(text, db)
-            print(all_words)
 
             words_count = Counter(all_words)
 
             for word, count in words_count.items():
+                reading, meaning = self.extract_meaning_and_reading(word)
 
-                meaning, reading = self.extract_meaning_and_reading(word)
+                try:
+                    if meaning:
+                        card = db.query(Card).filter(Card.jp_word == word).first()
+                        if not card:
+                            card = Card(jp_word=word,
+                                        meaning=meaning,
+                                        reading=reading,
+                                        overall_frequency = count)
+                            db.add(card)
+                            db.flush()
+                        else:
+                            card.overall_frequency += count
 
-                if meaning:
-                    card = db.query(Card).filter(Card.jp_word == word).first()
-                    if not card:
-                        card = Card(jp_word=word,
-                                    meaning=meaning,
-                                    reading=reading,
-                                    overall_frequency = count)
-                        db.add(card)
-                        db.flush()
                     else:
-                        card.overall_frequency += count
+                        continue
 
-                else:
-                    continue
+                except Exception as e:
+                    print(e)
 
                 existing_relation = db.query(CardDeck).filter(
                     CardDeck.card_id == card.id,

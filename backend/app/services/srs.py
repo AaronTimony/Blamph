@@ -1,4 +1,5 @@
 from fsrs import Scheduler, Rating  
+from zoneinfo import ZoneInfo
 from fsrs import Card as FSRSCard
 from fastapi import HTTPException
 from sqlalchemy import func
@@ -173,8 +174,13 @@ class SRS:
         except Exception as e:
             print("Error in obtaining new word (User may have no decks added)", e)
 
-    def get_new_cards_count(self, user_id: int, db: Session):
-        new_cards_count = db.query(User.daily_new_words).filter(User.id == user_id).scalar()
+    def get_new_cards_count(self, current_user: User, db: Session):
+        user_tz = ZoneInfo(current_user.timezone or 'UTC')
+        today = datetime.now(user_tz).date()
+        if current_user.last_daily_reset != today:
+            return current_user.daily_new_words
+
+        new_cards_count = db.query(User.daily_new_words).filter(User.id == current_user.id).scalar()
 
         return new_cards_count
 
