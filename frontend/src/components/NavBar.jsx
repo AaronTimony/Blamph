@@ -52,7 +52,7 @@ function NavBar() {
               setShowDropdown(!showDropdown);
             }} className="profile-picture-link">
               {!loading && user.username ? (
-              <img src={`${API_BASE_URL}/api/v1/auth/profile_picture/${user.username}`} alt={user.username} className="profile-picture-image"/>
+              <p> CLICK ME </p>
               ) : (
               <div className="pfp-loading"> Loading... </div>
               )}
