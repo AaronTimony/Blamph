@@ -1,5 +1,5 @@
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, JSON
 from app.core.database import Base
 
 class User(Base):
@@ -19,7 +19,7 @@ class User(Base):
 
     daily_new_words = Column(Integer, default=20)
 
-    new_word_priority_queue = Column(Integer, default=list)
+    new_word_priority_queue = Column(JSON, default=list)
 
     deck_associations = relationship("UserDeck", back_populates="user")
     cards = relationship("UserCard", back_populates="user")
