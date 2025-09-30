@@ -1,4 +1,5 @@
 from pydantic import EmailStr, BaseModel
+from typing import Optional
 
 class Token(BaseModel):
     access_token: str
@@ -24,7 +25,7 @@ class RefreshTokenData(BaseModel):
 class User(BaseModel):
     username: str
     email: str or None = None
-    profile_picture: str
+    profile_picture: Optional[str]
 
 
 class UserInDB(User):
