@@ -1,3 +1,5 @@
+import API_BASE_URL from "../config"
+
 export const fetchTopAnime = async () => {
   try{
     const response = await fetch(`https://api.jikan.moe/v4/top/anime?limit=10`)
