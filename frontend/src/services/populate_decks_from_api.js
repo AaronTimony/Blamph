@@ -1,6 +1,6 @@
 export const fetchTopAnime = async () => {
   try{
-    const response = await fetch(`https://api.jikan.moe/v4/anime/32847`)
+    const response = await fetch(`https://api.jikan.moe/v4/top/anime?limit=10`)
 
     if (!response.ok) {
       throw new Error("Failed to retrieve data")
@@ -26,7 +26,7 @@ export const createDecks = async () => {
       deck_name: deck.title,
       image_url: deck.image
     }));
-    const response = await fetch(`${API_BASE_URL}/api/v1/decks/create/`, {
+    const response = await fetch(`https://blamph.vercel.app/api/v1/decks/create/`, {
       method: "POST",
       headers: {"Content-Type" : "application/json", "Authorization" : `Bearer ${token}`},
       body: JSON.stringify(mappedDecks)

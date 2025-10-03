@@ -8,7 +8,7 @@ import requests
 import base64
 from app.models import Deck, CardDeck, UserDeck, UserCard, User, Card
 from app.schemas.words import DeckWordsReq, DeckWordsRes
-from app.api.v1.endpoints.auth import get_current_active_user
+from app.api.v1.endpoints.auth import get_current_active_user, check_admin
 from app.core.database import get_db
 from app.services.word_services import WordService
 
@@ -20,6 +20,7 @@ async def assign_words_to_deck(deck_name: str = Form(...),
                                files: List[UploadFile] = File(...),
                                current_user: User = Depends(get_current_active_user),
                                db: Session = Depends(get_db)):
+    check_admin(current_user)
     return await word_service.assign_cards_to_deck(deck_name, files, db, current_user.id)
 
 @router.get("/getWords")

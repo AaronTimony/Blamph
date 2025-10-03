@@ -21,7 +21,11 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    access_token = create_access_token(data={"sub":user.username})
+    access_token = create_access_token(data={
+        "sub":user.username,
+        "user_id": user.id,
+        "role": user.role
+    })
 
     refresh_token = create_refresh_token(user.username)
 

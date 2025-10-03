@@ -128,6 +128,8 @@ async def get_current_user(token: str = Depends(oauth_2_scheme),
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]) # if fails returns JWTError 
         username: str = payload.get("sub") # Even if decodes, you need to check
+        role: str = payload.get("role")
+        user_id: int = payload.get("user_id")
         # if the username is even present
         if username is None:
             raise credential_exception
@@ -149,3 +151,7 @@ async def get_current_user(token: str = Depends(oauth_2_scheme),
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
     return current_user
+
+def check_admin(user: User):
+    if user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")

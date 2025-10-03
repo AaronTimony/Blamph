@@ -15,6 +15,7 @@ import CreateDeck from "./pages/CreateDeck"
 import CardReview from "./pages/CardReview"
 import DeckDetails from "./pages/deckDetails"
 import UserSettings from './pages/Settings'
+import AdminPage from "./pages/adminPage"
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function AppContent() {
           <Route path="/Create" element={<CreateDeck />} />
           <Route path="/Profile/:username" element={<UserProfile />} />
           <Route path="/Settings/:username" element={<UserSettings />} />
+          <Route path="/Admin" element={<AdminPage />} />
         </Routes>
       </main>
     </>

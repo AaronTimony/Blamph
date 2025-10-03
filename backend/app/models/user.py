@@ -9,6 +9,7 @@ class User(Base):
     username = Column(String, unique = False, nullable= False)
     email = Column(String, unique = True, nullable = False)
     password = Column(String, nullable = False)
+    role = Column(String, default="user")
     profile_picture = Column(String, nullable = True)
     all_time_words_reviewed = Column(Integer, default=0)
     new_word_ordering = Column(String, default="deck_frequency")
