@@ -3,29 +3,35 @@ import {useAuthContext} from "../contexts/AuthContext"
 import {useQuery, useQueryClient, useMutation} from "@tanstack/react-query"
 import {useEffect, useState} from "react"
 
-export function useReview() {
+export function useReviewPage() {
   const {apiCall} = useAuthContext();
-  const queryClient = useQueryClient();
-  const [newWordsCount, setNewWordsCount] = useState(0);
 
   const getWordCounts = useQuery({
     queryKey: ["WordCounts"],
     queryFn: async () => {
-      const response = await apiCall(`${API_BASE_URL}/api/v1/review/AllCardCounts`)
+      const response = await apiCall(`${API_BASE_URL}/api/v1/review/AllCardCounts/`)
       if (!response.ok) {
         throw new Error("Failed to find new word count")
       }
       const counts = await response.json()
 
       return counts
-    }
+    },
   })
+
+  return {getWordCounts}
+}
+
+export function useReview() {
+  const {apiCall} = useAuthContext();
+  const queryClient = useQueryClient();
+  const [newWordsCount, setNewWordsCount] = useState(0);
 
   const getNewCard = useQuery({
     queryKey: ["NewWord"],
     queryFn: async (newWordOrder) => {
 
-      const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcards`)
+      const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcards/`)
 
       if (!response.ok) {
         throw new Error("Failed to find new card")
@@ -35,14 +41,12 @@ export function useReview() {
 
       return new_card
     },
-    staleTime: 0,
-    gcTime: 0
   })
 
   const getReviewCard = useQuery({
     queryKey: ["ReviewWord"],
     queryFn: async () => {
-      const response = await apiCall(`${API_BASE_URL}/api/v1/review/reviewcards`)
+      const response = await apiCall(`${API_BASE_URL}/api/v1/review/reviewcards/`)
 
       if (!response.ok) {
         throw new Error("Failed to find due card")
@@ -52,13 +56,12 @@ export function useReview() {
 
       return due_card
     },
-    staleTime: 0,
-    gcTime: 0
+    staleTime: 10000,
   })
 
   const postNewCardRating = useMutation({
     mutationFn: async ({japWord, rating}) => {
-          const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcardrating`, {
+          const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcardrating/`, {
             method: "POST",
             body: JSON.stringify({"jp_word" : japWord, "rating" : rating})
           })
@@ -67,14 +70,13 @@ export function useReview() {
             throw new Error("Could not patch with new rating")
           }
     },
-    onMutate: () => {queryClient.invalidateQueries(['NewWord'])},
-    onSuccess: () => {queryClient.invalidateQueries(['WordCounts'])}
+    onSuccess: () => {queryClient.invalidateQueries(['NewWord'])}
 
   })
 
   const postReviewCardRating = useMutation({
     mutationFn: async ({japWord, rating}) => {
-      const response = await apiCall(`${API_BASE_URL}/api/v1/review/reviewcardrating`, {
+      const response = await apiCall(`${API_BASE_URL}/api/v1/review/reviewcardrating/`, {
         method: "PATCH",
         body: JSON.stringify({"jp_word" : japWord, "rating": rating})
       })
@@ -83,9 +85,8 @@ export function useReview() {
         throw new Error("Could not patch with new rating")
       }
     },
-    onSuccess: () => {queryClient.invalidateQueries(['ReviewWord']),
-    queryClient.invalidateQueries(['WordCounts'])}
+    onSuccess: () => {queryClient.invalidateQueries(['ReviewWord'])}
   })
 
-  return {getWordCounts, postNewCardRating, getNewCard, getReviewCard, postReviewCardRating}
+  return {postNewCardRating, getNewCard, getReviewCard, postReviewCardRating}
 }

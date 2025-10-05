@@ -15,7 +15,7 @@ from app.services.word_services import WordService
 router = APIRouter()
 word_service = WordService()
 
-@router.post("/addSubs")
+@router.post("/addSubs/")
 async def assign_words_to_deck(deck_name: str = Form(...),
                                files: List[UploadFile] = File(...),
                                current_user: User = Depends(get_current_active_user),
@@ -23,12 +23,12 @@ async def assign_words_to_deck(deck_name: str = Form(...),
     check_admin(current_user)
     return await word_service.assign_cards_to_deck(deck_name, files, db, current_user.id)
 
-@router.get("/getWords")
+@router.get("/getWords/")
 def get_users_words(current_user: User = Depends(get_current_active_user),
                     db: Session = Depends(get_db)):
     return word_service.get_user_words(current_user, db)
 
-@router.post("/getDeckWords", response_model = List[DeckWordsRes])
+@router.post("/getDeckWords/", response_model = List[DeckWordsRes])
 def get_decks_words(deck: DeckWordsReq,
                     current_user: User = Depends(get_current_active_user),
                     db: Session = Depends(get_db)):

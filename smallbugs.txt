@@ -4,3 +4,6 @@
 4) When you drag the deck to the bottom in my decks it just stays permanently scrolling downwards.
 5) when i reset pfp it doesnt update on taskbar (maybe irrelevant as that isnt ultimate purpose of pfp and likely to be removed.)
 6) The new words feature does not reset until you do a new word then it goes to the number that you want it to.
+7) cannot go backwards in return page all places link to the same route page would be better to have different pages.
+8) cannot add words for some reason in search anymore
+9) When you switch ordering of new words, it doesnt update cache so old one still shows in.

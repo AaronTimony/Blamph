@@ -35,31 +35,47 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
             See Deck Details
           </button>
           <h2 className="deck-order">{deck.deck_order}</h2>
-
         </div>
         <div className="deck-card">
           <div className="deck-section deck-image">
             <img src={deck.image_url} alt={deck.deck_name} />
           </div>
 
-          <div className="deck-section deck-property difficulty-section">
-            <div className="property-label">Unique Words</div>
-            <div className="property-value">{deck.unique_words}</div>
+          <div className="deck-middle-container">
+            <div className="deck-middle-row">
+              <div className="deck-middle-box unique-word-section">
+                <div className="property-label">Unique Words</div>
+                <div className="property-value">{deck.unique_words}</div>
+              </div>
+              <div className="deck-middle-box word-count-section">
+                <div className="property-label">Words</div>
+                <div className="property-value">{deck.total_words}</div>
+              </div>
+              <div className="deck-middle-box knowledge-section">
+                <div className="property-label">Known</div>
+                <div className="property-value">{deck.known_percentage ?? 0}</div>
+              </div>
+            </div>
+            <div className="deck-middle-row">
+              <div className="deck-middle-box difficulty-box">
+                <div className="property-label">Difficulty</div>
+                <div className="property-value">6</div>
+              </div> 
+              <div className="deck-middle-box media-section">
+                <div className="property-label">Media Type</div>
+                <div className="property-value">Anime</div>
+              </div>
+              <div className="deck-middle-box rating-section">
+                <div className="property-label">Rating</div>
+                <div className="property-value">7.2</div>
+              </div>
+            </div>
           </div>
 
-          <div className="deck-section deck-property word-count-section">
-            <div className="property-label">Words</div>
-            <div className="property-value">{deck.total_words}</div>
-          </div>
-
-          <div className="deck-section deck-property knowledge-section">
-            <div className="property-label">Known</div>
-            <div className="property-value">{deck.known_percentage ?? 0}</div>
-          </div>
           {added ? (
-            <div className="deck-section add-button-section">
+            <div className="deck-section minus-button-section">
               <form onSubmit={(e) => delDeckfromUser(e, deck.deck_name, deck.deck_order)} className="add-deck-form">
-                <button type="submit" className="add-deck-btn">-</button>
+                <button type="submit" className="minus-deck-btn">-</button>
               </form>
             </div>
           ) : (
@@ -99,4 +115,4 @@ function DeckPicker({decks, addDecktoUser, added, delDeckfromUser}) {
   )
 }
 
-export default DeckPicker
+export default DeckPicker;

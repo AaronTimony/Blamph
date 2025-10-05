@@ -1,5 +1,9 @@
+24) I need to add the properties on the first page that are currently hardcoded. Need to somehow get a rating (probably MAL) and make a way to have media type when creating decks, also add difficulty.
 25) Two things, i need to have results sorted and i need to have it so you can type romaji and get results in jp. Further i need more reuslts in japanese if i type iu i just get one word and i want more.
 26) The way i implemented the priority queue system is kinda janky probably can find better solution if i research.
 28) add type of media to deck columns (DONT HAVE WAY OF SPECIFYING RN :( )
+29) Perhaps adjust deck picture to adapt to page size so big ones on big pages and small ones on small pages.
+
 
 Ok so, I need to track cards a user knows already so i think i should query the deck and then see if the card is new. THe problem is i cant just query from the first card. I need to get deeper into the deck. But simultaneously i need to  
+

@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from fastapi import APIRouter, Depends, HTTPException
 from app.services.srs import SRS
 from app.models import User, UserCard, Card, UserReview, UserNewWords
@@ -15,12 +16,31 @@ class ReviewService:
 
         try:
             if current_user.new_word_priority_queue and len(current_user.new_word_priority_queue) > 0:
-                card = db.query(Card.jp_word, Card.meaning, Card.reading).filter(Card.id == current_user.new_word_priority_queue[0]).first()
+                rank = func.rank().over(order_by=Card.overall_frequency.desc())
+
+                rank_subq = (
+                    db.query(
+                        Card.id,
+                        rank.label("rank")
+                    ).subquery()
+                )
+                print(type(current_user.new_word_priority_queue))
+                card = (db.query(Card.jp_word,
+                                 Card.meaning,
+                                 Card.reading,
+                                 Card.overall_frequency,
+                                 rank_subq.c.rank)
+                        .filter(Card.id == current_user.new_word_priority_queue[0])
+                        .first())
+
 
                 return Newest_cards(
                     jp_word = card[0],
                     meaning = card[1],
-                    reading = card[2]
+                    reading = card[2],
+                    overall_frequency = card[3],
+                    rank = card[4],
+                    card_type = "New"
                 )
 
             card_tuple = srs.get_newest_card(current_user, db)
@@ -29,7 +49,10 @@ class ReviewService:
                 return Newest_cards(
                     jp_word = card_tuple[0],
                     meaning = card_tuple[1],
-                    reading = card_tuple[2]
+                    reading = card_tuple[2],
+                    overall_frequency = card_tuple[4],
+                    rank = card_tuple[5],
+                    card_type = "New"
                 )
         except Exception as e:
             print("SOMETHING BAD HAPPENED!", e)
@@ -38,12 +61,15 @@ class ReviewService:
 
         user_due_card = srs.get_due_cards(current_user.id, db)
         if not user_due_card:
-            return Review_cards(jp_word=None, meaning=None, reading=None)
+            return Review_cards(jp_word=None, meaning=None, reading=None, overall_frequency=None, rank=None, card_type=None)
 
         return Review_cards(
             jp_word=user_due_card[0],
             meaning=user_due_card[1],
-            reading=user_due_card[2]
+            reading=user_due_card[2],
+            overall_frequency=user_due_card[3],
+            rank=user_due_card[4],
+            card_type="Review"
         )
 
     def new_card_rating(self, req: CardRatingRequest,

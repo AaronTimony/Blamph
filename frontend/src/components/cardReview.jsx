@@ -1,10 +1,9 @@
 import "../css/reviewpage.css"
-import {useState} from "react";
 import {useReview} from "../hooks/useReview"
+import {useState} from "react"
 
-export function CardReview({found_due_card, found_new_card}) {
+export function CardReview({found_due_card, found_new_card, showMeaning, setShowMeaning}) {
   const {postNewCardRating, postReviewCardRating} = useReview();
-  const [showMeaning, setShowMeaning] = useState(false)
 
   const current_card = found_due_card.jp_word ? found_due_card : found_new_card
 
@@ -16,8 +15,6 @@ export function CardReview({found_due_card, found_new_card}) {
     } else {
       postReviewCardRating.mutate({japWord: current_card.jp_word, rating})
     }
-
-    setShowMeaning(false)
   }
 
   return (

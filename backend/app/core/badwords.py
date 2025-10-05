@@ -20,4 +20,5 @@ broken_words = {
     '彼': ('He/him', 'かれ'),
     'なさる':  ('(honorific) to do; polite/respectful form of する.'),
     'ほう': ('oh?” / “is that so?” / “I see,'),
+    'する': ('to do; to carry out; to make')
 }

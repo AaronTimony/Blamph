@@ -6,25 +6,26 @@ import API_BASE_URL from "../config"
 
 const deckQueries = {
   allDecks: async () => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/decks`)
+    const response = await fetch(`${API_BASE_URL}/api/v1/decks/`)
     if (!response.ok) throw new Error("Failed to fetch all decks")
     return await response.json()
   },
 
   myDecks: async (apiCall) => {
-    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/myDecks`)
+    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/myDecks/`)
     if (!response.ok) throw new Error("Failed to retrieve user decks")
     return await response.json()
   },
 
   knownPercentages: async (apiCall) => {
-    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/known_percent`)
+    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/known_percent/`)
     if (!response.ok) throw new Error("Failed to find deck percentages")
     return response.json()
   },
 
   searchDecks: async (query) => {
     const response = await fetch(`${API_BASE_URL}/api/v1/decks/search?q=${encodeURIComponent(query)}`)
+    console.log(query)
     if (!response.ok) throw new Error('Failed to search decks')
     const data =  await response.json()
     return data
@@ -39,7 +40,7 @@ const deckQueries = {
 
 const deckMutations = {
   addDeck: async (apiCall, {deck_name, image_url}) => {
-    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/AddDeck`, {
+    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/AddDeck/`, {
       method: "POST",
       body: JSON.stringify({deck_name: deck_name, image_url})
     })
@@ -49,7 +50,7 @@ const deckMutations = {
   },
 
   deleteDeck: async (apiCall, {deck_name, deck_order}) => {
-      const response = await apiCall(`${API_BASE_URL}/api/v1/decks/delete`, {
+      const response = await apiCall(`${API_BASE_URL}/api/v1/decks/delete/`, {
       method: "DELETE",
       body: JSON.stringify({deck_name, deck_order})
     })
@@ -59,7 +60,7 @@ const deckMutations = {
   },
 
   reorderDecks: async (apiCall, deckOrders) => {
-    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/reorder`, {
+    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/reorder/`, {
       method: 'PUT',
       body: JSON.stringify({deckOrders})
     })
@@ -75,7 +76,7 @@ export function useDecks() {
   const queryClient = useQueryClient()
 
   const availableDecksQuery = useQuery({
-    queryKey: ['decks', 'available'],
+    queryKey: ['decks', 'available', user?.id],
     queryFn: async () => {
       const [allDecks, ownedDecks] = await Promise.all([
         deckQueries.allDecks(),
@@ -87,8 +88,6 @@ export function useDecks() {
 
       return availableDecks
     },
-
-    staleTime: 5 * 60 * 1000,
     onError: (error) => {
         console.error("Error occurred", error)
       }
@@ -100,7 +99,7 @@ export function useDecks() {
       queryClient.setQueryData(['decks', 'available'], (old) => 
         old?.filter(deck => deck.deck_name !== data.deck_name)
       )
-      queryClient.invalidateQueries(['decks', 'my', user?.id])
+      queryClient.refetchQueries(['myDecks', user?.id]);
       },
     onError: (error) => console.log(error)
   })
@@ -140,7 +139,7 @@ export function useMyDecks() {
         queryClient.setQueryData(['myDecks', user?.id], (old) =>
       old?.filter(deck => deck.deck_name !== data.deck_name)
       )
-      queryClient.invalidateQueries(['myDecks', user?.id])
+      queryClient.refetchQueries(['decks', 'available', user?.id])
       }
   })
 

@@ -18,7 +18,6 @@ export function ReviewStats() {
     }
   })
 
-
   if (getReviewValues.isLoading) return <SearchLoading detail={"Profile"} />
 
   return (

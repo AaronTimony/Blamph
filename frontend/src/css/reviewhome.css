@@ -1,251 +1,317 @@
-/* ReviewPage.css */
+/* reviewHome.css */
 
-.review-container {
-  min-height: 100vh;
-  padding: 1rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  position: relative;
+/* Container with margins matching deck picker */
+.review-home-container {
+  margin: 0 8.33%; /* 1/12 from each edge to match deck picker */
+  padding: 2rem 0;
+  width: 85%;
+  display:flex;
+  flex-direction: column;
+  min-height: calc(100vh - 100px); /* Adjust 100px based on your navbar height */
 }
 
-.main-content {
-  display: flex;
-  flex-direction: column; /* stack items vertically */
-  align-items: center;    /* center them horizontally */
-  gap: 2rem;              /* space between cards */
-  max-width: 600px;       /* optional: limit width */
-  margin: 0 auto;
-  padding: 1.5rem 0;
-}
-
-.card {
-  background-color: lightgrey;
-  border-radius: 20px;
-  padding: 1.5rem;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  width:70%;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 25px 45px rgba(0, 0, 0, 0.15);
-}
-
-
-
-.review-card::before {
-  background: linear-gradient(90deg, #ff9068, #fd746c);
-}
-
-
-.new-words-card::before {
-  background: linear-gradient(90deg, #4facfe, #00f2fe);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+/* Grid layout for the three stat boxes */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
-.card-header h2 {
-  color: #2c3e50;
-  font-size: 2.2rem;
+.bottom-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 100%;
+  height:200px;
+
+  gap: 1rem;
+}
+
+.word-search-section {
+  min-height:200px;
+}
+
+.quick-stats-section {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+.quick-stat-item {
+  background-color: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  flex: 1;
+}
+
+.quick-stat-label {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   font-weight: 600;
+}
+
+.quick-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+/* Individual stat component */
+.stat-component {
   margin: 0;
 }
 
-.icon {
-  font-size: 2rem;
-  opacity: 0.8;
-}
-
-.card-count {
-  font-size: 4rem;
-  font-weight: 700;
-  margin: 1rem 0;
-  text-align: center;
-}
-
-.due-count {
-  color: #fd746c;
-}
-
-.new-count {
-  color: #4facfe;
-}
-
-.card-description {
-  color: #6c757d;
-  text-align: center;
-  font-size: 1.5rem;
-  margin-top: 1rem;
-}
-
-.known-words-badge {
-  position: relative;
-  left: 50%;             /* horizontal center */
-  transform: translateX(-50%); /* shift left by half its width */
-  z-index:1000;
-  width:12rem;
-}
-
-.badge-content {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 15px;
-  padding: 1rem 1.5rem;
+/* Title box above each stat card */
+.stat-title-box {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: #2a2a2a;
+  border: 3px solid #3a3a3a;
+  border-radius: 16px 16px 0 0;
+  padding: 1rem 1.5rem;
+  margin-bottom: 0;
+  transition: all 0.3s ease;
 }
 
-.badge-label {
-  color: #6c757d;
-  font-size: 0.9rem;
-  font-weight: 500;
+.stat-title {
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin: 0;
+  flex: 1;
 }
 
-.badge-count {
-  background: #28a745;
-  color: white;
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.action-section {
-  display: flex;
-  justify-content: center;
-  margin-top: 3rem;
-  padding-bottom: 2rem;
-}
-
-.start-button-link {
-  text-decoration: none;
-}
-
-.start-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border: none;
-  color: white;
-  padding: 1rem 3rem;
-  border-radius: 50px;
-  font-size: 1.2rem;
-  font-weight: 600;
-  cursor: pointer;
+/* Main stat card */
+.stat-card {
+  background-color: #2a2a2a;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
   transition: all 0.3s ease;
   display: flex;
+  align-items: stretch;
+  margin: 0;
+  width: 100%;
+  height: 180px;
+  border: 3px solid #3a3a3a;
+  border-top: none;
+}
+
+/* Hover effect for entire component */
+
+
+/* Icon section (left side) */
+.stat-icon-section {
+  flex: 0 0 40%;
+  display: flex;
   align-items: center;
-  gap: 1rem;
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  justify-content: center;
+  border-right: 1px solid #3a3a3a;
   position: relative;
   overflow: hidden;
 }
 
-.start-button:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+.icon-text {
+  font-size: 4rem;
+  filter: grayscale(0.3) brightness(1.2);
 }
 
-.start-button:active {
-  transform: translateY(-1px);
+/* Different gradient backgrounds for each stat type */
+.review-icon {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
-.button-text {
-  transition: transform 0.3s ease;
+.known-icon {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
 }
 
-.button-arrow {
-  transition: transform 0.3s ease;
+.new-icon {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+/* Value section (right side) */
+.stat-value-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  gap: 0.5rem;
+}
+
+.stat-value {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+}
+
+/* Different colors for each stat type */
+.review-value {
+  color: #a78bfa;
+}
+
+.known-value {
+  color: #10b981;
+}
+
+.new-value {
+  color: #f59e0b;
+}
+
+.stat-subtitle {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .review-home-container {
+    margin: 0 6%;
+  }
+
+  .stat-value {
+    font-size: 3rem;
+  }
+
+  .icon-text {
+    font-size: 3.5rem;
+  }
+
+  .bottom-section {
+    flex-direction: column;
+  }
+
+  .word-search-section {
+    flex: 1;
+  }
+}
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .review-home-container {
+    margin: 0 4%;
+  }
+
+  .stat-card {
+    height: 150px;
+  }
+
+  .stat-value {
+    font-size: 2.5rem;
+  }
+
+  .bottom-section {
+    flex-direction: column;
+  }
+
+  .word-search-section {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .review-home-container {
+    margin: 0 2%;
+    padding: 1rem 0;
+  }
+
+  .stat-card {
+    height: 120px;
+  }
+
+  .stat-icon-section {
+    flex: 0 0 35%;
+  }
+
+  .icon-text {
+    font-size: 2.5rem;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .stat-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .stat-title {
+    font-size: 1.1rem;
+  }
+}
+
+.start-button-link {
+  margin-top: auto;
+  margin-bottom: 8rem;
+  display: block;
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  text-decoration: none;
+}
+
+.start-review-button {
+  width: 100%;
+  padding: 1.25rem 2rem;
+  background: linear-gradient(135deg, #3f3f3f 0%, #2f2f2f 100%);
+  color: #ffffff;
   font-size: 1.1rem;
+  font-weight: 600;
+  border: 1px solid #5a5a5a;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  position: relative;
+  overflow: hidden;
 }
 
-.start-button:hover .button-arrow {
-  transform: translateX(5px);
-}
-
-.start-button::before {
+.start-review-button::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   transition: left 0.5s;
 }
 
-.start-button:hover::before {
+.start-review-button:hover::before {
   left: 100%;
 }
 
-/* Mobile responsiveness */
-@media (max-width: 768px) {
-  .review-container {
-    padding: 1rem;
-  }
-
-  .main-content {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .review-card {
-    grid-column: 1;
-  }
-
-  .new-words-card {
-    grid-column: 1;
-  }
-
-
-  .card {
-    padding: 1.5rem;
-  }
-
-  .card-count {
-    font-size: 3rem;
-  }
-
-  .start-button {
-    padding: 0.875rem 2rem;
-    font-size: 1.1rem;
-  }
-
-  .card-header h2 {
-    font-size: 1.3rem;
-  }
+.start-review-button:hover {
+  transform: translateY(-3px);
+  background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+  border-color: #6a6a6a;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+  color: #ffffff;
 }
 
-/* Small mobile devices */
-@media (max-width: 480px) {
-  .review-container {
-    padding: 0.5rem;
-  }
-
-  .card {
-    padding: 1rem;
-  }
-
-  .card-count {
-    font-size: 2.5rem;
-  }
-
-  .card-header h2 {
-    font-size: 1.1rem;
-  }
-
-
-  .start-button {
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-  }
+.start-review-button:active {
+  transform: translateY(-1px);
 }

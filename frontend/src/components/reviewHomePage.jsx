@@ -1,58 +1,107 @@
+import "../css/reviewhome.css"
+import {WordSearchReviewPage} from "../components/nextReviewWord.jsx"
+import {useReview} from "../hooks/useReview"
+import {SearchLoading} from "../components/Loading"
 import {Link} from "react-router-dom"
+
 export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCount}) {
-  const displayNewWordCount = newWordCount <= 0 ? "Complete" : newWordCount;
+  const {
+    getNewCard,
+    getReviewCard,
+  } = useReview()
 
-  const displayReviewWordCount = dueWordCount <= 0 ? "Complete" : dueWordCount;
-  return (
-    <div className="review-container">
-      {/* Main content area */}
-      <div className="main-content">
-        {/* Top right - Words ready to review */}
-        <div className="card review-card">
-          <div className="card-header">
-            <h2>Review Words</h2>
-            <div className="icon">📚</div>
+  const isPending = getNewCard.isPending || getReviewCard.isPending
+  
+  const isLoading = getNewCard.isFetching ||
+    getReviewCard.isFetching 
+
+  if (isPending || isLoading) return <SearchLoading detail={"Reviews..."} />
+
+  const displayNewWordCount = newWordCount <= 0 ? "Done" : newWordCount;
+
+  const displayReviewWordCount = dueWordCount <= 0 ? "Done" : dueWordCount;
+
+  const current_card = getReviewCard.data.jp_word ? getReviewCard.data : getNewCard.data
+  console.log(current_card)
+
+
+return (
+    <div className="review-home-container">
+      <div className="stats-grid">
+        {/* Words to Review */}
+        <div className="stat-component">
+          <div className="stat-title-box">
+            <h2 className="stat-title">Words to Review</h2>
           </div>
-          <div className="card-count due-count">
-            {displayReviewWordCount}
-          </div>
-          <div className="card-description">
-            Cards waiting for your review
+          <div className="stat-card">
+            <div className="stat-icon-section review-icon">
+              <span className="icon-text">📝</span>
+            </div>
+            <div className="stat-value-section">
+              <div className="stat-value review-value">{displayReviewWordCount}</div>
+              <div className="stat-subtitle">Due today</div>
+            </div>
           </div>
         </div>
 
-        {/* Left side - New words to learn */}
-        <div className="card new-words-card">
-          <div className="card-header">
-            <h2>New Words</h2>
-            <div className="icon">✨</div>
+        {/* Words Known */}
+        <div className="stat-component">
+          <div className="stat-title-box">
+            <h2 className="stat-title">Words Known</h2>
           </div>
-          <div className="card-count new-count">
-            {displayNewWordCount}
+          <div className="stat-card">
+            <div className="stat-icon-section known-icon">
+              <span className="icon-text">✓</span>
+            </div>
+            <div className="stat-value-section">
+              <div className="stat-value known-value">{knownWordCount}</div>
+              <div className="stat-subtitle">Total mastered</div>
+            </div>
           </div>
-          <div className="card-description">
-            Fresh vocabulary to discover
+        </div>
+
+        {/* New Words */}
+        <div className="stat-component">
+          <div className="stat-title-box">
+            <h2 className="stat-title">New Words</h2>
+          </div>
+          <div className="stat-card">
+            <div className="stat-icon-section new-icon">
+              <span className="icon-text">✨</span>
+            </div>
+            <div className="stat-value-section">
+              <div className="stat-value new-value">{displayNewWordCount}</div>
+              <div className="stat-subtitle">Ready to learn</div>
+            </div>
           </div>
         </div>
       </div>
-
-      {/* Known words - smaller, out of the way */}
-      <div className="known-words-badge">
-        <div className="badge-content">
-          <span className="badge-label">Known Words</span>
-          <span className="badge-count">{knownWordCount}</span>
+      <div className="bottom-section">
+        <div className="word-search-section">
+          <WordSearchReviewPage word={current_card} />
         </div>
-      </div>
 
-      {/* Start reviewing button */}
-      <div className="action-section">
-        <Link to="/CardReview" className="start-button-link">
-          <button className="start-button">
-            <span className="button-text">Start Reviewing</span>
-            <span className="button-arrow">→</span>
-          </button>
-        </Link>
+        <div className="quick-stats-section">
+          <div className="quick-stat-item">
+            <div className="quick-stat-label">Study Streak</div>
+            <div className="quick-stat-value">7 days</div>
+          </div>
+          <div className="quick-stat-item">
+            <div className="quick-stat-label">Today's Progress</div>
+            <div className="quick-stat-value">24/42</div>
+          </div>
+          <div className="quick-stat-item">
+            <div className="quick-stat-label">Accuracy</div>
+            <div className="quick-stat-value">85%</div>
+          </div>
+        </div>
+
       </div>
+      <Link to="/CardReview" className="start-button-link">
+        <button className="start-review-button">
+          Start Reviews
+        </button>
+      </Link>
     </div>
-  )
+  );
 }

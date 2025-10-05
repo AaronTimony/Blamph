@@ -10,36 +10,36 @@ from app.services.review_service import ReviewService
 router = APIRouter()
 review_service = ReviewService()
 
-@router.get("/newcards", response_model = Newest_cards)
+@router.get("/newcards/", response_model = Newest_cards)
 def get_users_newest_card(current_user: User = Depends(get_current_active_user),
                           db: Session = Depends(get_db)):
     return review_service.get_newest_card(current_user, db)
 
-@router.get("/reviewcards", response_model = Review_cards)
+@router.get("/reviewcards/", response_model = Review_cards)
 def get_users_review_cards(current_user: User = Depends(get_current_active_user),
                            db: Session = Depends(get_db)):
     return review_service.get_review_card(current_user, db)
 
-@router.post("/newcardrating")
+@router.post("/newcardrating/")
 def get_users_new_card_rating(req: CardRatingRequest,
                               current_user: User = Depends(get_current_active_user),
                               db: Session = Depends(get_db)):
     return review_service.new_card_rating(req, current_user, db)
 
-@router.patch("/reviewcardrating")
+@router.patch("/reviewcardrating/")
 def get_users_review_card_rating(req: CardRatingRequest,
                                  current_user: User = Depends(get_current_active_user),
                                  db: Session = Depends(get_db)):
 
     return review_service.review_card_rating(req, current_user, db)
 
-@router.get("/AllCardCounts", response_model = CardCountsResponse)
+@router.get("/AllCardCounts/", response_model = CardCountsResponse)
 def get_number_of_cards(current_user: User = Depends(get_current_active_user),
                             db: Session = Depends(get_db)):
 
     return review_service.get_card_counts(current_user, db)
 
-@router.get("/ReviewStatValues", response_model = ReviewStats)
+@router.get("/ReviewStatValues/", response_model = ReviewStats)
 def get_user_review_stats(current_user: User = Depends(get_current_active_user),
                           db: Session = Depends(get_db)):
     return review_service.get_review_stats(current_user, db)

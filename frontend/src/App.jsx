@@ -33,7 +33,7 @@ function AppContent() {
       <main>
         <Routes>
           <Route path="/Review" element={<Review />} />
-          <Route path="/" element={<Review />} />
+          <Route path="/" element={<CreateDeck />} />
           <Route path="/decks" element={<Decks />} />
           <Route path="/CardReview" element={<CardReview />} />
           <Route path="/Login" element={<LoginPage />} />

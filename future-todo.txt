@@ -1,0 +1,7 @@
+1) need to add some way of going backwards in the review tab
+
+2) Need to stop having words always be kanji form, add more readings and meanings for words. Get most common reading first. 
+
+3) add romaji to search for jp words and need less search results.
+
+4) Auto-login on account creation

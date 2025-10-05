@@ -13,7 +13,7 @@ user_service = UserService()
 def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
     return user_service.register_user_service(user_data, db)
 
-@router.patch("/profile_picture")
+@router.patch("/profile_picture/")
 async def post_profile_picture(file: UploadFile = File(...),
                          current_user: User = Depends(get_current_active_user),
                                db: Session = Depends(get_db)):

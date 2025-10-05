@@ -1,18 +1,19 @@
-import {Link} from "react-router-dom"
+import {Link, useNavigate} from "react-router-dom"
 import {useAuthContext} from "../contexts/AuthContext"
 import "../css/profiledropdown.css"
 import cog from "../icons/cog.svg"
 import profile from "../icons/profile.svg"
 import logoutIcon from "../icons/logout.svg"
 
-export function ProfileDropdown(setShowDropdown) {
+export function ProfileDropdown({setShowDropdown}) {
   const {user, logout} = useAuthContext();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     if (window.confirm('Are you sure you wish to log out?')) {
       try {
         await logout()
-        window.location.href = "/Decks"
+        navigate("/Decks")
       } catch(error) {
         console.error("Logout failed:", error);
       }

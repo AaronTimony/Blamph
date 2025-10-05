@@ -116,9 +116,24 @@ class SRS:
     def get_due_cards(self, user_id: int, db: Session):
         cur_date = datetime.now(timezone.utc)
 
-        get_due_card = (db.query(Card.jp_word, Card.meaning, Card.reading).
-        join(UserCard, Card.id == UserCard.card_id).
-        filter(UserCard.user_id == user_id).
+        rank = func.rank().over(order_by=Card.overall_frequency.desc())
+
+        rank_subq = (
+            db.query(
+                Card.id,
+                rank.label("rank")
+            ).subquery()
+        )
+
+        get_due_card = (db.query(Card.jp_word,
+                                 Card.meaning,
+                                 Card.reading,
+                                 Card.overall_frequency,
+                                 rank_subq.c.rank,
+                                 )
+        .join(UserCard, Card.id == UserCard.card_id)
+        .join(rank_subq, Card.id == rank_subq.c.id)  # ADD THIS LINE
+        .filter(UserCard.user_id == user_id).
         filter(UserCard.next_review < cur_date).
         filter(UserCard.level > 0).first())
 
@@ -158,7 +173,9 @@ class SRS:
             newest_card = (db.query(Card.jp_word,
                                     Card.meaning,
                                     Card.reading,
-                                    CardDeck.card_id)
+                                    CardDeck.card_id,
+                                    Card.overall_frequency,
+                                    rank_subq.c.rank)
                            .join(Card, Card.id == CardDeck.card_id)
                            .join(rank_subq, rank_subq.c.id == Card.id)
                            .filter(CardDeck.deck_id == user_first_deck_id)

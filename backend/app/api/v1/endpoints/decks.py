@@ -43,6 +43,7 @@ def create_deck(decks: List[CreateDeck],
 @router.get("/search/")
 def search_decks(q: str = Query(..., max_length = 50),
                  db: Session = Depends(get_db)):
+    print(q)
     results = (db.query(Deck)
                .filter(func.lower(Deck.deck_name).contains(func.lower(q)))
                .filter(Deck.user_created == False)
@@ -50,7 +51,7 @@ def search_decks(q: str = Query(..., max_length = 50),
 
     return results
 
-@router.get("/search/myDecks")
+@router.get("/search/myDecks/")
 def search_user_decks(q: str = Query(..., max_length = 50),
                       current_user: User = Depends(get_current_active_user),
                       db: Session = Depends(get_db)):
@@ -86,20 +87,20 @@ def delete_a_users_deck(delDeck: DeleteDeck,
                         db: Session = Depends(get_db)):
     return decks_service.delete_deck(delDeck, current_user, db)
 
-@router.post("/AddDeck")
+@router.post("/AddDeck/")
 def add_deck_to_user(deck: DeckAdd,
                      current_user: User = Depends(get_current_active_user),
                      db: Session =  Depends(get_db)):
 
     return decks_service.add_user_deck(deck, current_user, db)
 
-@router.get("/myDecks")
+@router.get("/myDecks/")
 def get_users_decks(current_user: User = Depends(get_current_active_user),
                     db: Session = Depends(get_db)):
 
     return decks_service.extract_user_decks(current_user, db)
 
-@router.put("/reorder")
+@router.put("/reorder/")
 async def reorder_users_decks(request: DeckOrderRequest,
                         current_user: User = Depends(get_current_active_user),
                         db: Session = Depends(get_db)):

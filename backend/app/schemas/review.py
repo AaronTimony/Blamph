@@ -6,6 +6,9 @@ class Newest_cards(BaseModel):
     meaning: List[str]
     jp_word: str
     reading: Optional[str]
+    overall_frequency: Optional[int]
+    rank: Optional[int]
+    card_type: Optional[str]
 
     class Config:
         from_attributes = True
@@ -14,6 +17,9 @@ class Review_cards(BaseModel):
     meaning: Optional[List[str]]
     jp_word: Optional[str]
     reading: Optional[str]
+    overall_frequency: Optional[int]
+    rank: Optional[int]
+    card_type: Optional[str]
 
     class Config:
         from_attributes = True

@@ -2,8 +2,10 @@ import {Link} from "react-router-dom"
 import "../css/NavBar.css"
 import {useAuthContext} from "../contexts/AuthContext"
 import {useState, useEffect, useRef} from "react"
+import menubars from "../icons/menu-bars.svg"
 import API_BASE_URL from "../config"
 import {ProfileDropdown} from "../components/profileDropdown"
+import logo from "../images/Site_logo_temp.png"
 
 function NavBar() {
   const {loading, user} = useAuthContext();
@@ -13,7 +15,7 @@ function NavBar() {
   const samePage = (e, path) => {
     if (window.location.pathname === path) {
       e.preventDefault();
-      window.location.reload();
+      <Link to={path} />
     }
   }
 
@@ -39,11 +41,16 @@ function NavBar() {
   return (
     <nav>
       <div className="NavBar">
-        <Link to="/Review" onClick={(e) => samePage(e, "/Review")}>Blamph</Link>
+        <div className="navbar-left">
+          <Link to="/Review" onClick={(e) => samePage(e, "/Review")} className="navbar-image-link">
+            <img className="navbar-logo-image" src={logo} alt={"Blamph"} />
+          </Link>
+        </div>
         <div className="centre-of-navbar">
-          {user && <Link to="/Create" onClick={(e) => samePage(e, "/Create")}>Create Deck</Link>}
+          {user && <Link to="/Review" onClick = {(e) => samePage(e, "/Review")}>Review</Link>}
           <Link to="/Decks" onClick={(e) => samePage(e, "/Decks")}>Decks</Link>
           {user && <Link to="/myDecks" onClick={(e) => samePage(e, "/myDecks")}>My Decks</Link>}
+          {user && <Link to="/Create" onClick={(e) => samePage(e, "/Create")}>Create Deck</Link>}
         </div>
         {user ? (
           <div className="profile-dropdown" ref={dropdownRef}>
@@ -51,11 +58,7 @@ function NavBar() {
               e.preventDefault();
               setShowDropdown(!showDropdown);
             }} className="profile-picture-link">
-              {!loading && user.username ? (
-              <p> CLICK ME </p>
-              ) : (
-              <div className="pfp-loading"> Loading... </div>
-              )}
+              <img src={menubars} alt={"Click for more"} className="menu-bars" />
             </Link>
             {showDropdown && <ProfileDropdown setShowDropdown={setShowDropdown}/>}
           </div>

@@ -10,7 +10,7 @@ from app.core.database import get_db
 from pathlib import Path
 
 router = APIRouter()
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login/", response_model=TokenResponse)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(),
                                  db: Session = Depends(get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
@@ -36,7 +36,7 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         "user": form_data.username
     }
 
-@router.post("/refresh", response_model=TokenResponse)
+@router.post("/refresh/", response_model=TokenResponse)
 async def refresh_token(request: RefreshTokenRequest, db: Session = Depends(get_db)):
     user = verify_refresh_token(request.refresh_token, db)
     if not user:
@@ -53,7 +53,7 @@ async def refresh_token(request: RefreshTokenRequest, db: Session = Depends(get_
     return {"access_token": token, "token_type": "bearer",
             "refresh_token" : new_refresh_token, "user": user.username}
 
-@router.post("/logout")
+@router.post("/logout/")
 async def logout(request: RefreshTokenRequest, current_user: User = Depends(get_current_active_user)):
     return revoke_refresh_token(request.refresh_token)
 
@@ -61,7 +61,7 @@ async def logout(request: RefreshTokenRequest, current_user: User = Depends(get_
 async def read_users_me(current_user: User = Depends(get_current_active_user)):
     return current_user
 
-@router.get("/profile_picture/{username}")
+@router.get("/profile_picture/{username}/")
 async def get_profile_picture(username: str):
     images_dir = Path("app/images")
 

@@ -2,32 +2,32 @@
 
 /* Container to add margins from page edges */
 .deck-picker-container {
-    margin: 0 8.33%; /* 1/12 from each edge */
-    padding: 1rem 0;
+  margin: 0 8.33%; /* 1/12 from each edge */
+  padding: 1rem 0;
 }
 
 /* Complete deck component with title and card */
 .deck-component {
-    margin: 1.5rem 0;
+  margin: 1.5rem 0;
 }
 
 /* Deck title box connected above the card */
 .deck-title-box {
-    display: flex;
-    align-items: center;
-    background-color: #2a2a2a;
-    border: 3px solid #3a3a3a;
-    border-radius: 16px 16px 0 0;
-    padding: 1rem 1.5rem;
-    margin-bottom: 0;
-    transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  background-color: #2a2a2a;
+  border: 3px solid #3a3a3a;
+  border-radius: 16px 16px 0 0;
+  padding: 1rem 1.5rem;
+  margin-bottom: 0;
+  transition: all 0.3s ease;
 }
 
 .deck-title {
-    font-size: 1.4rem;
-    color: #ffffff;
-    margin: 0;
-    flex: 1; /* Takes up all remaining space, pushing others to the right */
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin: 0;
+  flex: 1; /* Takes up all remaining space, pushing others to the right */
 }
 
 .deck-details-button {
@@ -50,311 +50,388 @@
 }
 
 .deck-details-button:hover {
-    background-color: #5a5a5a;
-    border-color: #777777;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  background-color: #5a5a5a;
+  border-color: #777777;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
 .deck-details-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .deck-details-button:focus {
-    outline: none;
-    border-color: #888888;
-    box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.2);
+  outline: none;
+  border-color: #888888;
+  box-shadow: 0 0 0 3px rgba(136, 136, 136, 0.2);
 }
 
 .deck-order {
-    font-size: 1.4rem;
-    color: #ffffff;
-    margin: 0;
-    /* This will be pushed to the far right */
+  font-size: 1.4rem;
+  color: #ffffff;
+  margin: 0;
+  /* This will be pushed to the far right */
 }
 /* Hover effect for the entire component */
 .deck-component:hover .deck-title-box {
-    border-color: rgba(59, 130, 246, 0.3);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .deck-component:hover .deck-card {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.2);
-    transform: translateY(-2px);
-    border-color: rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
 .deck-component:hover .deck-title-box {
-    transform: translateY(-2px);
+  transform: translateY(-2px);
 }
 
 .deck-card {
-    background-color: #2a2a2a;
-    border-radius: 0 0 16px 16px; /* Rounded bottom corners only */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: stretch;
-    margin: 0; /* Remove margin since title box handles spacing */
-    width: 100%;
-    height: 120px;
-    border: 1px solid #3a3a3a;
-    border-top: none; /* Remove top border to connect with title box */
+  background-color: #2a2a2a;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  width: 100%;
+  height: 319px;
+  border: 1px solid #3a3a3a;
+  border-top: none;
 }
 
-.deck-card:hover {
-    /* Removed individual hover since it's now handled by .deck-component:hover */
-}
-
-/* Each section takes up 1/5 of the width */
+/* Default section - takes up 1 part */
 .deck-section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 1rem;
-    border-right: 1px solid #3a3a3a;
-    transition: all 0.3s ease;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  border-right: 1px solid #3a3a3a;
+  transition: all 0.3s ease;
 }
 
+/* Image section */
+.deck-section.deck-image {
+  flex: 0.6;
+}
+
+/* Container for the three middle boxes */
+.deck-middle-container {
+  flex: 3; /* Takes up space for 3 boxes */
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #3a3a3a;
+}
+
+/* Top and bottom rows in middle container */
+.deck-middle-row {
+  flex: 1;
+  display: flex;
+  width: 100%;
+}
+
+.deck-middle-row:first-child {
+  border-bottom: 1px solid #3a3a3a;
+}
+
+/* Individual boxes in the middle section */
+.deck-middle-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.deck-middle-box:not(:last-child) {
+  border-right: 1px solid #3a3a3a;
+}
 .deck-section:last-child {
-    border-right: none;
+  border-right: none;
 }
 
 .deck-section:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
 /* Image section (first container) */
 .deck-image {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    position: relative;
-    overflow: hidden;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  position: relative;
+  overflow: hidden;
 }
 
 .deck-image::after {
-    font-size: 2rem;
-    color: white;
+  font-size: 2rem;
+  color: white;
 }
 
 /* Property sections with heading and value */
 .deck-property {
-    text-align: center;
-    gap: 0.25rem;
+  text-align: center;
+  gap: 0.25rem;
 }
 
 .property-label {
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-bottom: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
 }
 
 .property-value {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ffffff;
-    line-height: 1;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
 }
 
 /* Difficulty section specific styling */
-.difficulty-section .property-value {
-    color: #10b981; /* Green for difficulty */
+.unique-word-section .property-value {
+  color: #10b981; /* Green for difficulty */
 }
 
 /* Word count section specific styling */
 .word-count-section .property-value {
-    color: #3b82f6; /* Blue for word count */
+  color: #3b82f6; /* Blue for word count */
 }
 
 /* Knowledge percentage section specific styling */
 .knowledge-section .property-value {
-    color: #f59e0b; /* Orange for percentage */
+  color: #f59e0b; /* Orange for percentage */
 }
 
+.difficulty-box .property-value {
+}
+
+
+
 .knowledge-section .property-value::after {
-    content: "%";
-    font-size: 1rem;
-    margin-left: 2px;
+  content: "%";
+  font-size: 1rem;
+  margin-left: 2px;
 }
 
 .add-button-section {
-    background-color: #2a2a2a;
-    border-left: 1px solid #333333;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
+  background-color: #2a2a2a;
+  border-left: 1px solid #333333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.minus-button-section {
+  background-color: #2a2a2a;
+  border-left: 1px solid #333333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .add-button-section::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60%;
-    height: 60%;
-    border-radius: 50%;
-    background-color: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60%;
+  height: 60%;
+  border-radius: 50%;
+  background-color: radial-gradient(circle, rgba(220, 38, 38, 0.1) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 
 .add-button-section:hover::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .add-deck-form {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0;
-    padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
 }
 
 .add-deck-btn {
-    font-size: 2.2rem;
-    color: #666666;
-    background: none;
-    border: 2px solid #333333;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 300;
-    margin: 0;
-    padding: 0;
-    transform: translateZ(0);
-    will-change: transform;
+  font-size: 3.2rem;
+  color: #666666;
+  background: none;
+  border: 2px solid #333333;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.minus-deck-btn {
+  font-size: 3.2rem;
+  color: #666666;
+  background: none;
+  border: 2px solid #333333;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.minus-deck-btn:hover {
+  color: #dc2626;
+  border-color: #dc2626;
+  box-shadow: 
+    0 0 20px rgba(220, 38, 38, 0.3),
+    inset 0 0 10px rgba(220, 38, 38, 0.1);
+  transform: scale(1.1);
 }
 
 .add-deck-btn:hover {
-    color: #dc2626;
-    border-color: #dc2626;
-    box-shadow: 
-        0 0 20px rgba(220, 38, 38, 0.3),
-        inset 0 0 10px rgba(220, 38, 38, 0.1);
-    transform: rotate(90deg) scale(1.1);
+  color: green;
+  border-color: green;
+  box-shadow: 
+    0 0 20px rgba(0, 128, 0, 0.3),
+    inset 0 0 10px rgba(0, 128, 0, 0.1);
 }
-/* Loading state styling */
+
 .loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 120px;
-    font-size: 1.1rem;
-    color: #9ca3af;
-    font-weight: 500;
-    border-radius: 16px;
-    background-color: #2a2a2a;
-    border: 1px solid #3a3a3a;
-    margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 120px;
+  font-size: 1.1rem;
+  color: #9ca3af;
+  font-weight: 500;
+  border-radius: 16px;
+  background-color: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  margin: 1rem 0;
 }
 
 /* Responsive design */
 @media (max-width: 1024px) {
-    .deck-picker-container {
-        margin: 0 6%; /* Slightly less margin on medium screens */
-    }
+  .deck-picker-container {
+    margin: 0 6%; /* Slightly less margin on medium screens */
+  }
 
-    .property-value {
-        font-size: 1.25rem;
-    }
+  .property-value {
+    font-size: 1.25rem;
+  }
 
-    .property-label {
-        font-size: 0.7rem;
-    }
+  .property-label {
+    font-size: 0.7rem;
+  }
 
-    .add-deck-btn {
-        font-size: 2rem;
-    }
+  .add-deck-btn {
+    font-size: 2rem;
+  }
 }
 
 @media (max-width: 768px) {
-    .deck-picker-container {
-        margin: 0 4%; /* Less margin on smaller screens */
-    }
+  .deck-picker-container {
+    margin: 0 4%;
+  }
 
-    .deck-card {
-        height: 100px;
-    }
+  .deck-section.deck-image {
+    flex: 2; /* Makes it twice as wide as the others */
+  }
+  .deck-card {
+    height: 300px;
+  }
 
-    .deck-section {
-        padding: 0.5rem;
-    }
+  .deck-section {
+    padding: 0.5rem;
+  }
 
-    .property-value {
-        font-size: 1rem;
-    }
+  .property-value {
+    font-size: 1rem;
+  }
 
-    .property-label {
-        font-size: 0.65rem;
-    }
+  .property-label {
+    font-size: 0.65rem;
+  }
 
-    .add-deck-btn {
-        font-size: 1.5rem;
-    }
+  .add-deck-btn {
+    font-size: 1.5rem;
+  }
 
-    .deck-image::after {
-        font-size: 1.5rem;
-    }
+  .deck-image::after {
+    font-size: 1.5rem;
+  }
 }
 
 @media (max-width: 480px) {
-    .deck-picker-container {
-        margin: 0 2%; /* Minimal margin on very small screens */
-    }
+  .deck-picker-container {
+    margin: 0 2%; /* Minimal margin on very small screens */
+  }
 
-    .deck-card {
-        height: 80px;
-        flex-direction: row; /* Keep horizontal even on mobile */
-    }
+  .deck-card {
+    height: 80px;
+    flex-direction: row; /* Keep horizontal even on mobile */
+  }
 
-    .deck-section {
-        padding: 0.25rem;
-        border-right: 1px solid #4a4a4a;
-    }
+  .deck-section {
+    padding: 0.25rem;
+    border-right: 1px solid #4a4a4a;
+  }
 
-    .property-value {
-        font-size: 0.9rem;
-    }
+  .property-value {
+    font-size: 0.9rem;
+  }
 
-    .property-label {
-        font-size: 0.6rem;
-    }
+  .property-label {
+    font-size: 0.6rem;
+  }
 
-    .add-deck-btn {
-        font-size: 1.25rem;
-    }
+  .add-deck-btn {
+    font-size: 1.25rem;
+  }
 
-    .deck-image::after {
-        font-size: 1.25rem;
-    }
+  .deck-image::after {
+    font-size: 1.25rem;
+  }
 }
 
 /* Animation for when deck loads */
 @keyframes fadeInUp {
 from {
-    opacity: 0;
-    transform: translateY(30px);
+  opacity: 0;
+  transform: translateY(30px);
 }
 to {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 }
 
 .deck-card {
-    animation: fadeInUp 0.5s ease-out;
+  animation: fadeInUp 0.5s ease-out;
 }

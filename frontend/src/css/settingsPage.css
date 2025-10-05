@@ -1,9 +1,70 @@
 .Settings-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 30vh;
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
 }
 
-.daily-words-box {
+.Settings-box form {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #2a2a2a;
+  border-radius: 8px;
+}
+
+.Settings-box form:last-child {
+  margin-bottom: 0;
+}
+
+.Settings-box label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.daily-words-box,
+.Settings-box select {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background: #1a1a1a;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  color: #e0e0e0;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.daily-words-box:focus,
+.Settings-box select:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.daily-words-button,
+.Settings-box button[type="submit"] {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.daily-words-button:hover,
+.Settings-box button[type="submit"]:hover {
+  background: #357abd;
+}
+
+@media (max-width: 640px) {
+  .Settings-box {
+    margin: 1rem;
+    padding: 1.5rem;
+  }
+  
+  .Settings-box form {
+    padding: 1rem;
+  }
 }

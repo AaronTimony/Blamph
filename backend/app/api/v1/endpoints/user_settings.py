@@ -9,13 +9,13 @@ from app.schemas.settings import UpdateNewWordsRequest, UpdateNewWordOrder
 router = APIRouter()
 settings_service = UserSettings()
 
-@router.patch("/updateNewWords")
+@router.patch("/updateNewWords/")
 def update_user_new_daily_words(request: UpdateNewWordsRequest,
                                 current_user: User = Depends(get_current_active_user), 
                                 db: Session = Depends(get_db)):
     return settings_service.update_user_daily_words(request.newDailyWords, current_user.username, db)
 
-@router.patch("/updateNewWordsAppearanceOrder")
+@router.patch("/updateNewWordsAppearanceOrder/")
 def update_user_new_word_order(request: UpdateNewWordOrder,
                                 current_user: User = Depends(get_current_active_user), 
                                 db: Session = Depends(get_db)):

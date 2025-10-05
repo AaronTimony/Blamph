@@ -38,7 +38,7 @@ export function SettingsComponent() {
             </option>
           ))}
         </select>
-        <button type="submit"> Save new word ordering </button>
+        <button type="submit" className="apply-new-word-button">Apply New Ordering </button>
       </form>
     </div>
   )

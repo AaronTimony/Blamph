@@ -1,0 +1,101 @@
+.next-word-box {
+  background-color: #2a2a2a;
+  max-width: 1000px;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border: 1px solid #3a3a3a;
+  height: 362px;
+  display: flex;
+  flex-direction: column;
+}
+
+.next-word-card {
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.next-word-content {
+  flex: 1;
+}
+
+.japanese-next-word-search {
+  font-size: 4rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 8px;
+  font-family: 'Hiragino Kaku Gothic Pro', 'Yu Gothic', sans-serif;
+  line-height: 1.2;
+}
+
+.next-word-meaning {
+  color: #b0b0b0;
+  font-size: 1.1rem;
+}
+
+.next-word-information {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.next-word-rank,
+.next-word-deck-appearances {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  background: rgba(58, 58, 58, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e0e0e0;
+  transition: all 0.2s ease;
+}
+
+
+.next-word-rank strong,
+.next-word-deck-appearances strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .next-word-box {
+    margin: 10px;
+    padding: 16px;
+    height: auto;
+  }
+  
+  .next-word-card {
+    padding: 16px;
+  }
+  
+  .japanese-next-word-search {
+    font-size: 2.5rem;
+  }
+  
+  .next-word-meaning {
+    font-size: 1rem;
+  }
+  
+  .next-word-information {
+    gap: 8px;
+  }
+  
+  .next-word-rank,
+  .next-word-deck-appearances {
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+  }
+}

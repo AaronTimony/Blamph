@@ -1,5 +1,5 @@
 import "../css/reviewhome.css"
-import {useReview} from "../hooks/useReview"
+import {useReviewPage} from "../hooks/useReview"
 import ReviewHomePage from "../components/reviewHomePage"
 import {SearchLoading} from "../components/Loading"
 import {useAuthContext} from "../contexts/AuthContext"
@@ -10,9 +10,14 @@ import {WordSearch} from "../components/wordSearchResults"
 
 export default function ReviewPage() {
   const [searchedWord, setSearchWord] = useState("")
-  const {user} = useAuthContext();
-  const {getWordCounts} = useReview()
+  const {user, loading} = useAuthContext();
+  const {getWordCounts} = useReviewPage()
+
   const {searchAllWords, addWordToPriorityQueue} = useSearch(searchedWord);
+
+  if (loading) {
+    return <h1><SearchLoading detail={"Reviews..."} /></h1>
+  }
 
   if (!user) {
     return <h1> Login to see this page! </h1>
@@ -24,15 +29,14 @@ export default function ReviewPage() {
 
   if (searchedWord && searchAllWords.isLoading) return <h1> <SearchLoading detail={"Words..."} /> </h1>
 
-
   return (
     <>
       <SearchBar onSearch={setSearchWord} detail={"Words"}/>
       {searchedWord ? (
-      <WordSearch words={searchAllWords.data} addWordToPriorityQueue={addWordToPriorityQueue}/>
+        <WordSearch words={searchAllWords.data} addWordToPriorityQueue={addWordToPriorityQueue}/>
       ) : (
-      <ReviewHomePage dueWordCount={getWordCounts.data.due_count} newWordCount={getWordCounts.data.new_count} knownWordCount={getWordCounts.data.known_count}/>
-      )}
+          <ReviewHomePage dueWordCount={getWordCounts.data.due_count} newWordCount={getWordCounts.data.new_count} knownWordCount={getWordCounts.data.known_count}/>
+        )}
     </>
   )
 }

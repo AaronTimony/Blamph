@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import func, or_
+from sqlalchemy import cast, String, func, or_
 from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models import Card, Deck, CardDeck, User, UserCard
@@ -9,15 +9,16 @@ import json
 
 router = APIRouter()
 
-@router.get("/words")
+@router.get("/words/")
 def search_saved_words(query: str = Query(..., max_length=50), db: Session = Depends(get_db)):
     if not query:
         return []
 
+    # This is a bit werid but because there is a lot of meanings I am for now just getting the first meaning in the list.
     card_query = db.query(Card.id).filter(
         or_(
             Card.jp_word.contains(query),
-            func.lower(Card.meaning).contains(func.lower(query))
+            func.lower(cast(Card.meaning[0], String)).contains(func.lower(query))
         )
     ).all()
 
@@ -42,7 +43,7 @@ def search_saved_words(query: str = Query(..., max_length=50), db: Session = Dep
 
     return [{"card_id": card.id, "jp_word" : card.jp_word, "meaning" : card.meaning, "overall_frequency":card.overall_frequency, "rank" : card.rank} for card in cards]
 
-@router.get("/deckWords")
+@router.get("/deckWords/")
 def search_deck_words(query: str = Query(..., max_length = 50),
                       deck_name: str = Query(..., max_length = 200),
                       db: Session = Depends(get_db)):
@@ -81,7 +82,7 @@ def search_deck_words(query: str = Query(..., max_length = 50),
 
     return [{"jp_word" : card.jp_word, "meaning" : card.meaning, "overall_frequency":card.overall_frequency, "word_frequency": card.word_frequency,  "overall_rank": card.rank} for card in cards]
 
-@router.patch("/addWordPriority")
+@router.patch("/addWordPriority/")
 def add_word_to_priority_queue(request: NewWordPriorityRequest,
                                current_user: User = Depends(get_current_active_user),
                                db: Session = Depends(get_db)):
