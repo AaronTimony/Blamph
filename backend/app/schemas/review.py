@@ -32,6 +32,8 @@ class CardCountsResponse(BaseModel):
     new_count: int
     due_count: int
     known_count: int
+    current_streak: int
+    longest_streak: int
 
 class ReviewStats(BaseModel):
     daily_reviews: int

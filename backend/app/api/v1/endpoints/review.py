@@ -33,10 +33,9 @@ def get_users_review_card_rating(req: CardRatingRequest,
 
     return review_service.review_card_rating(req, current_user, db)
 
-@router.get("/AllCardCounts/", response_model = CardCountsResponse)
+@router.get("/AllUserReviewInfo/", response_model = CardCountsResponse)
 def get_number_of_cards(current_user: User = Depends(get_current_active_user),
                             db: Session = Depends(get_db)):
-
     return review_service.get_card_counts(current_user, db)
 
 @router.get("/ReviewStatValues/", response_model = ReviewStats)

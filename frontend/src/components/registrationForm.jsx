@@ -2,6 +2,7 @@ import {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import "../css/register.css";
 import API_BASE_URL from "../config"
+import {useAuthContext} from "../contexts/AuthContext" 
 
 function RegisterForm({setError}) {
   const [username, setUsername] = useState("")
@@ -9,6 +10,7 @@ function RegisterForm({setError}) {
   const [email, setEmail] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
   const navigate = useNavigate();
+  const {validateToken} = useAuthContext();
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -26,16 +28,29 @@ function RegisterForm({setError}) {
         body: JSON.stringify(userData)
       })
 
-      const data = await response.json()
 
       if (!response.ok) {
         setError(data.message || data.detail?.[0]?.msg || data.detail || "Registration Failed")
 
       } else {
         setError("")
-        navigate("/Login")
-      }
+        navigate("/Decks")
+        const data = await response.json()
+        console.log(data, "get this")
 
+        const {access_token, refresh_token} = data;
+
+        const userData = await validateToken(access_token);
+        console.log(userData, "got this")
+        if (userData) {
+          localStorage.setItem('user', JSON.stringify(userData));
+          localStorage.setItem('access_token', access_token);
+          localStorage.setItem('refresh_token', refresh_token);
+          return {success: true};
+        } else {
+          return {success: false, error: "Failed to register user"};
+        }
+      }
     } catch(error) {
       console.log("Failed to create user", error.message)
     }

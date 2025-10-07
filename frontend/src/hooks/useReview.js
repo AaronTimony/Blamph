@@ -6,10 +6,10 @@ import {useEffect, useState} from "react"
 export function useReviewPage() {
   const {apiCall} = useAuthContext();
 
-  const getWordCounts = useQuery({
+  const getUserInfo = useQuery({
     queryKey: ["WordCounts"],
     queryFn: async () => {
-      const response = await apiCall(`${API_BASE_URL}/api/v1/review/AllCardCounts/`)
+      const response = await apiCall(`${API_BASE_URL}/api/v1/review/AllUserReviewInfo/`)
       if (!response.ok) {
         throw new Error("Failed to find new word count")
       }
@@ -19,7 +19,7 @@ export function useReviewPage() {
     },
   })
 
-  return {getWordCounts}
+  return {getUserInfo}
 }
 
 export function useReview() {

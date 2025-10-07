@@ -96,8 +96,12 @@ class ReviewService:
 
         level, next_review, known = srs.calculate_next_review(card_id, req.rating, True)
 
-        # Ensuring to track users daily words learned
+        # Ensuring to track users daily words learned and update streak
+        current_user.daily_new_words_learned += 1
+
         self.handle_new_card_statistics(current_user, db)
+
+        current_user.daily_new_words_learned += 1
 
         new_user_card = UserCard(card_id = card_id,
                                  user_id = current_user.id,
@@ -111,8 +115,9 @@ class ReviewService:
     def review_card_rating(self, req: CardRatingRequest,
                            current_user: User,
                            db: Session):
-
+        self.handle_new_card_statistics(current_user, db)
         card_id = db.query(Card.id).filter(Card.jp_word == req.jp_word).scalar()
+
         if not card_id:
             raise HTTPException(status_code=404, detail="Card not found")
 
@@ -131,6 +136,7 @@ class ReviewService:
 
         db.add(store_review)
 
+
         current_user.all_time_words_reviewed += 1
 
         cur_card.level = new_level
@@ -145,11 +151,15 @@ class ReviewService:
 
         due_count = srs.get_due_cards_count(current_user.id, db)
         known_count = srs.get_known_cards_count(current_user.id, db)
+        current_streak = current_user.current_streak
+        longest_streak = current_user.longest_streak
 
         return CardCountsResponse(
             due_count=due_count,
             new_count=new_count,
-            known_count=known_count
+            known_count=known_count,
+            current_streak=current_streak,
+            longest_streak=longest_streak
         )
 
     def get_review_stats(self, current_user: User, db: Session):
@@ -176,19 +186,32 @@ class ReviewService:
         today = datetime.now(user_tz).date()
 
         if current_user.last_daily_reset != today:
-            if current_user.last_daily_reset and current_user.daily_new_words_learned > 0:
-                yesterday_record = UserNewWords(
-                    user_id = current_user.id,
-                    date = current_user.last_daily_reset,
-                    new_words_count = current_user.daily_new_words_learned
-                )
+            # This handles in a bit of a clunky way the first time
+            # a user does a new word so we get the database started.
+            # I could default to the previous day or something but I
+            # chose this instead.
 
-                db.add(yesterday_record)
+            if not current_user.last_daily_reset:
+                current_user.last_daily_reset = today - timedelta(days=1)
 
-            current_user.daily_new_words_learned = 0
-            current_user.last_daily_reset = today
+            previous_day_record = UserNewWords(
+                user_id = current_user.id,
+                date = current_user.last_daily_reset,
+                new_words_count = current_user.daily_new_words_learned
+            )
 
-        current_user.daily_new_words_learned += 1
+            if current_user.last_daily_reset == today - timedelta(days=1):
+                current_user.current_streak += 1
+                current_user.longest_streak = max(current_user.current_streak, current_user.longest_streak)
+
+            else:
+                current_user.current_streak = 0
+
+            db.add(previous_day_record)
+
+        current_user.daily_new_words_learned = 0
+        current_user.last_daily_reset = today
+
 
         db.commit()
 

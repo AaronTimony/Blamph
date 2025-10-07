@@ -152,14 +152,14 @@ export const AuthProvider = ({children}) => {
       const formData = new FormData();
       formData.append('username', username);
       formData.append('password', password);
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/login/`, {
         method: "POST",
         body: formData,
       });
       const data = await response.json()
       if (!response.ok) {
         setError(data.detail)
-        console.log(data.detaill)
+        console.log(data.detail)
       }
 
       const {access_token, refresh_token, token_type} = data;
@@ -215,6 +215,7 @@ export const AuthProvider = ({children}) => {
     loading,
     setLoading,
     apiCall,
+    validateToken,
     refreshAccessToken
   }
   return <AuthContext.Provider value={value}>

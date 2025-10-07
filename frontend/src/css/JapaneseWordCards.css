@@ -7,10 +7,12 @@
   background: #2a2a2a;
   border: 3px solid #3a3a3a;
   border-radius: 8px;
+  gap: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .deck-title-word-details {
+  flex:1;
   margin: 0;
   font-size: 1.75rem;
   color: #333;
@@ -45,7 +47,8 @@
   border-color: #007bff;
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
 }
-.word-cards-container { 
+
+.deck-word-cards-container { 
   padding: 1.5rem;
   display: flex;
   justify-content: center;
@@ -71,7 +74,7 @@
 }
 
 /* Card styling */
-.word-card {
+.deck-word-card {
   background-color: #1f2937;
   border-radius: 0.5rem;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -81,7 +84,7 @@
   transition: all 0.3s ease;
 }
 
-.word-card:hover {
+.deck-word-card:hover {
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   background-color: #2d3748;
 }
@@ -112,17 +115,19 @@
   margin: 0;
 }
 
-/* Knowledge status */
+/* Knowledge status - positioned top right */
 .knowledge-status {
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
   border: 1px solid;
   font-size: 0.875rem;
   font-weight: 500;
+  flex-shrink: 0;
+  margin-left: 1rem;
 }
 
 .knowledge-unknown {
-  display: none
+  display: none;
 }
 
 .knowledge-advanced {
@@ -212,10 +217,8 @@
   color: #9ca3af;
 }
 
-/* Decorative accent */
-
 /* Responsive design */
-@media (max-width: 768px) 
+@media (max-width: 768px) {
   .deck-header {
     flex-direction: column;
     align-items: flex-start;
@@ -241,11 +244,11 @@
     padding: 0.75rem;
   }
   
-  .word-cards-container {
+  .deck-word-cards-container {
     padding: 1rem;
   }
   
-  .word-card {
+  .deck-word-card {
     padding: 1rem;
   }
   
@@ -256,5 +259,6 @@
   
   .knowledge-status {
     align-self: flex-start;
+    margin-left: 0;
   }
 }

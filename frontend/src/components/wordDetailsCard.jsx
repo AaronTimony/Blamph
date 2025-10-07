@@ -25,7 +25,7 @@ const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod
   };
 
   return (
-    <div className="word-cards-container">
+    <div className="deck-word-cards-container">
       <div className="deck-header">
         <h2 className="deck-title-word-details">{deck_name}</h2>
         <div className="sort-controls">
@@ -45,7 +45,7 @@ const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod
       </div>
       {words.map((word, index) => (
         console.log(word),
-        <div key={index} className="word-card">
+        <div key={index} className="deck-word-card">
           {/* Main content area */}
           <div className="card-content-word">
             <div className="word-section">

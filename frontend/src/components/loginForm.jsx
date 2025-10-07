@@ -29,7 +29,6 @@ function LoginForm({setError}) {
         <input
         type="text"
         id="Username-Field"
-        placeholder="Please Enter Username"
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         />
@@ -37,7 +36,6 @@ function LoginForm({setError}) {
       <input
       id="Password-Input"
       type="password"
-      placeholder="Please Enter Password"
       value={password}
       onChange={(e) => setPassword(e.target.value)}
       />

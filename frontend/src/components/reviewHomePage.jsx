@@ -4,7 +4,7 @@ import {useReview} from "../hooks/useReview"
 import {SearchLoading} from "../components/Loading"
 import {Link} from "react-router-dom"
 
-export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCount}) {
+export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCount, current_streak, longest_streak}) {
   const {
     getNewCard,
     getReviewCard,
@@ -22,7 +22,6 @@ export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCou
   const displayReviewWordCount = dueWordCount <= 0 ? "Done" : dueWordCount;
 
   const current_card = getReviewCard.data.jp_word ? getReviewCard.data : getNewCard.data
-  console.log(current_card)
 
 
 return (
@@ -83,8 +82,8 @@ return (
 
         <div className="quick-stats-section">
           <div className="quick-stat-item">
-            <div className="quick-stat-label">Study Streak</div>
-            <div className="quick-stat-value">7 days</div>
+            <div className="quick-stat-label">Current Streak</div>
+            <div className="quick-stat-value">{current_streak}</div>
           </div>
           <div className="quick-stat-item">
             <div className="quick-stat-label">Today's Progress</div>

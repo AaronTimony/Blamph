@@ -5,12 +5,11 @@
   margin: 0 8.33%; /* 1/12 from each edge to match deck picker */
   padding: 2rem 0;
   width: 85%;
-  display:flex;
+  display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 100px); /* Adjust 100px based on your navbar height */
+  min-height: calc(100vh - 200px); /* Adjust 100px based on your navbar height */
 }
 
-/* Grid layout for the three stat boxes */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -23,13 +22,13 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   width: 100%;
-  height:200px;
-
+  height: 200px;
   gap: 1rem;
+  margin-bottom: 10rem; 
 }
 
 .word-search-section {
-  min-height:200px;
+  min-height: 200px;
 }
 
 .quick-stats-section {
@@ -91,7 +90,6 @@
   flex: 1;
 }
 
-/* Main stat card */
 .stat-card {
   background-color: #2a2a2a;
   border-radius: 0 0 16px 16px;
@@ -106,9 +104,6 @@
   border: 3px solid #3a3a3a;
   border-top: none;
 }
-
-/* Hover effect for entire component */
-
 
 /* Icon section (left side) */
 .stat-icon-section {
@@ -178,96 +173,17 @@
   font-weight: 600;
 }
 
-
-/* Responsive design */
-@media (max-width: 1200px) {
-  .review-home-container {
-    margin: 0 6%;
-  }
-
-  .stat-value {
-    font-size: 3rem;
-  }
-
-  .icon-text {
-    font-size: 3.5rem;
-  }
-
-  .bottom-section {
-    flex-direction: column;
-  }
-
-  .word-search-section {
-    flex: 1;
-  }
-}
-
-@media (max-width: 900px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-  }
-
-  .review-home-container {
-    margin: 0 4%;
-  }
-
-  .stat-card {
-    height: 150px;
-  }
-
-  .stat-value {
-    font-size: 2.5rem;
-  }
-
-  .bottom-section {
-    flex-direction: column;
-  }
-
-  .word-search-section {
-    flex: 1;
-  }
-}
-
-@media (max-width: 480px) {
-  .review-home-container {
-    margin: 0 2%;
-    padding: 1rem 0;
-  }
-
-  .stat-card {
-    height: 120px;
-  }
-
-  .stat-icon-section {
-    flex: 0 0 35%;
-  }
-
-  .icon-text {
-    font-size: 2.5rem;
-  }
-
-  .stat-value {
-    font-size: 2rem;
-  }
-
-  .stat-subtitle {
-    font-size: 0.75rem;
-  }
-
-  .stat-title {
-    font-size: 1.1rem;
-  }
-}
-
+/* Start button - positioned at bottom with proper spacing */
 .start-button-link {
-  margin-top: auto;
-  margin-bottom: 8rem;
+  margin-top: 3rem; /* Changed from auto to fixed spacing */
+  margin-bottom: 2rem;
   display: block;
   width: 80%;
   margin-left: auto;
   margin-right: auto;
   text-decoration: none;
+  position: relative; /* Ensure proper stacking context */
+  z-index: 10; /* Keep above other elements */
 }
 
 .start-review-button {
@@ -314,4 +230,111 @@
 
 .start-review-button:active {
   transform: translateY(-1px);
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .review-home-container {
+    margin: 0 6%;
+  }
+
+  .stat-value {
+    font-size: 3rem;
+  }
+
+  .icon-text {
+    font-size: 3.5rem;
+  }
+
+  .bottom-section {
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .word-search-section {
+    min-height: 200px;
+  }
+
+  .start-button-link {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .review-home-container {
+    margin: 0 4%;
+  }
+
+  .stat-card {
+    height: 150px;
+  }
+
+  .stat-value {
+    font-size: 2.5rem;
+  }
+
+  .bottom-section {
+    grid-template-columns: 1fr;
+    height: auto;
+    margin-bottom: 2rem;
+  }
+
+  .word-search-section {
+    min-height: 200px;
+  }
+
+  .start-button-link {
+    width: 85%;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .review-home-container {
+    margin: 0 2%;
+    padding: 1rem 0;
+  }
+
+  .stat-card {
+    height: 120px;
+  }
+
+  .stat-icon-section {
+    flex: 0 0 35%;
+  }
+
+  .icon-text {
+    font-size: 2.5rem;
+  }
+
+  .stat-value {
+    font-size: 2rem;
+  }
+
+  .stat-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .stat-title {
+    font-size: 1.1rem;
+  }
+
+  .start-button-link {
+    width: 90%;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .start-review-button {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
 }

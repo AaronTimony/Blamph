@@ -147,6 +147,7 @@ class SubtitleParser:
 
     def parse_srt_file(self, file_content: bytes, deck_id: int, db: Session) -> Dict:
         try:
+
             encoding = self.detect_encoding(file_content)
             content = file_content.decode(encoding)
 
@@ -156,48 +157,73 @@ class SubtitleParser:
 
             words_count = Counter(all_words)
 
+            unique_words = list(words_count.keys())
+            existing_cards = db.query(Card).filter(Card.jp_word.in_(unique_words)).all()
+            # Getting the hash map ready to go
+            existing_cards_map = {card.jp_word: card for card in existing_cards}
+
+            new_cards = []
+            cards_to_update = []
+
             for word, count in words_count.items():
                 reading, meaning = self.extract_meaning_and_reading(word)
 
-                try:
-                    if meaning:
-                        card = db.query(Card).filter(Card.jp_word == word).first()
-                        if not card:
-                            card = Card(jp_word=word,
-                                        meaning=meaning,
-                                        reading=reading,
-                                        overall_frequency = count)
-                            db.add(card)
-                            db.flush()
-                        else:
-                            card.overall_frequency += count
+                if not meaning:
+                    continue
 
-                    else:
-                        continue
-
-                except Exception as e:
-                    print(e)
-
-                existing_relation = db.query(CardDeck).filter(
-                    CardDeck.card_id == card.id,
-                    CardDeck.deck_id == deck_id
-                ).first()
-                
-                if not existing_relation:
-                    new_relation = CardDeck(
-                        card_id=card.id,
-                        deck_id=deck_id,
-                        word_frequency=count
-                    )
-                    db.add(new_relation)
+                if word in existing_cards_map:
+                    card = existing_cards_map[word]
+                    cards_to_update.append({
+                        'id': card.id,
+                        'overall_frequency': card.overall_frequency + count
+                    })
 
                 else:
+                    new_card = Card(
+                        jp_word=word,
+                        meaning=meaning,
+                        reading=reading,
+                        overall_frequency=count
+                    )
+                    new_cards.append(new_card)
+
+            if cards_to_update:
+                db.bulk_update_mappings(Card, cards_to_update)
+
+            if new_cards:
+                db.bulk_save_objects(new_cards, return_defaults=True)
+                db.flush()
+
+
+            all_cards_map = existing_cards_map.copy()
+            for card in new_cards:
+                all_cards_map[card.jp_word] = card
+
+            card_deck_relations = []
+
+            for word, count in words_count.items():
+                if word not in all_cards_map:
                     continue
+
+                card = all_cards_map[word]
+
+                card_deck_relations.append({
+                    'card_id': card.id,
+                    'deck_id': deck_id,
+                    'word_frequency': count
+                })
+
+            if card_deck_relations:
+                db.bulk_insert_mappings(CardDeck, card_deck_relations)
 
             db.commit()
 
-            return {"success": True,
-                    "total_words" : len(words_count)}
+            return {
+                "success": True,
+                "total_words": len(words_count),
+                "new_cards": len(new_cards),
+                "card_deck_relations": len(card_deck_relations)
+            }
 
         except Exception as e:
             db.rollback()

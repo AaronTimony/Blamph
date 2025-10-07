@@ -18,8 +18,8 @@ class User(Base):
     daily_new_words_learned = Column(Integer, default=0)
     last_daily_reset = Column(Date, nullable=True)
     timezone = Column(String, default="UTC")
-    current_streak = Column(Integer, default=0)
-    longest_streak = Column(Integer, default=0)
+    current_streak = Column(Integer, nullable = True, default=0)
+    longest_streak = Column(Integer, nullable = True, default=0)
 
     daily_new_words = Column(Integer, default=20)
 

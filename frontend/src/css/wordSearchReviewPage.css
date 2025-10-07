@@ -62,6 +62,31 @@
   transition: all 0.2s ease;
 }
 
+.next-word-type {
+  /* Existing styles */
+  font-weight: bold;
+  padding: 4px 8px;
+
+  border-radius: 16px;
+  position: absolute; 
+  top: 0;            
+  right: 0;          
+  margin: 30px; 
+  z-index: 10;        /* Ensure it sits above other content */
+}
+
+.New {
+  width:5.3rem;
+  font-size: 2rem;
+  background-color: #4CAF50; /* Green background for New cards */
+  color: white;
+}
+
+.Review {
+  background-color: Orange; /* Blue background for Review cards */
+  color: white;
+}
+
 
 .next-word-rank strong,
 .next-word-deck-appearances strong {

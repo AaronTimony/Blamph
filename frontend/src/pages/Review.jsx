@@ -11,7 +11,7 @@ import {WordSearch} from "../components/wordSearchResults"
 export default function ReviewPage() {
   const [searchedWord, setSearchWord] = useState("")
   const {user, loading} = useAuthContext();
-  const {getWordCounts} = useReviewPage()
+  const {getUserInfo} = useReviewPage()
 
   const {searchAllWords, addWordToPriorityQueue} = useSearch(searchedWord);
 
@@ -23,19 +23,20 @@ export default function ReviewPage() {
     return <h1> Login to see this page! </h1>
   }
 
-  if (getWordCounts.isLoading) return <h1> <SearchLoading detail={"Reviews..."} /> </h1>
+  if (getUserInfo.isLoading) return <h1> <SearchLoading detail={"Reviews..."} /> </h1>
 
-  if (getWordCounts.isError) return <h1> {getWordCounts.error} </h1>
+  if (getUserInfo.isError) return <h1> {getUserInfo.error} </h1>
 
   if (searchedWord && searchAllWords.isLoading) return <h1> <SearchLoading detail={"Words..."} /> </h1>
 
+  console.log(getUserInfo.data)
   return (
     <>
       <SearchBar onSearch={setSearchWord} detail={"Words"}/>
       {searchedWord ? (
         <WordSearch words={searchAllWords.data} addWordToPriorityQueue={addWordToPriorityQueue}/>
       ) : (
-          <ReviewHomePage dueWordCount={getWordCounts.data.due_count} newWordCount={getWordCounts.data.new_count} knownWordCount={getWordCounts.data.known_count}/>
+          <ReviewHomePage dueWordCount={getUserInfo.data.due_count} newWordCount={getUserInfo.data.new_count} knownWordCount={getUserInfo.data.known_count} current_streak={getUserInfo.data.current_streak} longest_streak={getUserInfo.data.longest_streak}/>
         )}
     </>
   )

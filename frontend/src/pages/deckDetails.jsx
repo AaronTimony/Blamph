@@ -1,5 +1,4 @@
 import JapaneseWordCards from "../components/wordDetailsCard"
-import "../css/JapaneseWordCards.css"
 import useWords from "../hooks/useWords"
 import SearchBar from "../components/searchBar"
 import {SearchLoading} from "../components/Loading"
@@ -19,10 +18,9 @@ export default function DeckDetails() {
 
   if (wordsQuery.isError) return <h1>{wordsQuery.error}</h1>
 
-  if (searchWordsinDeck.isLoading) return <h1> LOADING </h1>
+  if (searchWordsinDeck.isLoading) return <h1><SearchLoading detail={"Words"} /></h1>
 
   const total_pages = (words && words.length > 0 && words[0].total_pages ? words[0].total_pages : 0)
-  console.log(searchWordsinDeck.data)
 
   return (
     <>

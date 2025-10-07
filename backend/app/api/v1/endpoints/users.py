@@ -4,12 +4,13 @@ from app.core.database import get_db
 from sqlalchemy.orm import Session
 from app.services.user_services import UserService
 from app.api.v1.endpoints.auth import get_current_active_user
+from app.schemas.auth import TokenResponse
 from app.models import User
 
 router = APIRouter()
 user_service = UserService()
 
-@router.post("/register/")
+@router.post("/register/", response_model=TokenResponse)
 def register_user(user_data: UserRegister, db: Session = Depends(get_db)):
     return user_service.register_user_service(user_data, db)
 
