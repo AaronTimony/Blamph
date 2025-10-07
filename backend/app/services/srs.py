@@ -5,7 +5,7 @@ from fastapi import HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app.models import User, UserCard, Card, CardDeck, UserDeck
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone, timedelta, date
 # I need to pass a rating (that i translate to the ratings here), card_id, first_time
 
 # I need to return, due_date, level (manual), card_id
@@ -113,7 +113,7 @@ class SRS:
 
         return (level, due_date)
 
-    def get_due_cards(self, user_id: int, db: Session):
+    def get_due_cards(self, user: User, db: Session):
         cur_date = datetime.now(timezone.utc)
 
         rank = func.rank().over(order_by=Card.overall_frequency.desc())
@@ -133,7 +133,7 @@ class SRS:
                                  )
         .join(UserCard, Card.id == UserCard.card_id)
         .join(rank_subq, Card.id == rank_subq.c.id)  # ADD THIS LINE
-        .filter(UserCard.user_id == user_id).
+        .filter(UserCard.user_id == user.id).
         filter(UserCard.next_review < cur_date).
         filter(UserCard.level > 0).first())
 

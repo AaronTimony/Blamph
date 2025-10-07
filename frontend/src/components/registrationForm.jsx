@@ -48,7 +48,6 @@ function RegisterForm({setError}) {
         <input
           id="username"
           type="text"
-          placeholder="Enter username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
@@ -57,7 +56,6 @@ function RegisterForm({setError}) {
         <input
           id="email"
           type="email"
-          placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -66,7 +64,6 @@ function RegisterForm({setError}) {
         <input
           id="password"
           type="password"
-          placeholder="Enter password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
@@ -75,7 +72,6 @@ function RegisterForm({setError}) {
         <input
           id="confirm-password"
           type="password"
-          placeholder="Please Confirm your password"
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
         />

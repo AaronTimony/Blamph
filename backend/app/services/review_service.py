@@ -1,12 +1,12 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func
-from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm.attributes import flag_modified
+from fastapi import HTTPException
 from app.services.srs import SRS
 from app.models import User, UserCard, Card, UserReview, UserNewWords
 from app.schemas.review import Newest_cards, Review_cards, CardRatingRequest, CardCountsResponse, ReviewStats
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-import json
 
 srs = SRS()
 
@@ -24,7 +24,7 @@ class ReviewService:
                         rank.label("rank")
                     ).subquery()
                 )
-                print(type(current_user.new_word_priority_queue))
+
                 card = (db.query(Card.jp_word,
                                  Card.meaning,
                                  Card.reading,
@@ -59,7 +59,7 @@ class ReviewService:
 
     def get_review_card(self, current_user: User, db: Session):
 
-        user_due_card = srs.get_due_cards(current_user.id, db)
+        user_due_card = srs.get_due_cards(current_user, db)
         if not user_due_card:
             return Review_cards(jp_word=None, meaning=None, reading=None, overall_frequency=None, rank=None, card_type=None)
 
@@ -77,13 +77,8 @@ class ReviewService:
                         db: Session):
 
         if current_user.new_word_priority_queue != []:
-            updated_queue = current_user.new_word_priority_queue[1:]
-
-            db.query(User).filter(User.id == current_user.id).update({
-                User.new_word_priority_queue: json.dumps(updated_queue)
-            })
-
-            db.commit()
+            current_user.new_word_priority_queue.pop(0)  # Remove first element
+            flag_modified(current_user, 'new_word_priority_queue')
 
         card_id = db.query(Card.id).filter(Card.jp_word == req.jp_word).scalar()
 

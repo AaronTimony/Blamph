@@ -1,12 +1,20 @@
 import {SORT_OPTIONS} from "../constants/sortOptions"
+import "../css/JapaneseWordCards.css"
 
 const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod }) => {
 
   const getKnowledgeClass = (known, level) => {
-    if (!known) return "knowledge-unknown";
+    if (known) return "knowledge-advanced";
     if (level >= 4) return "knowledge-advanced";
     if (level >= 2) return "knowledge-intermediate";
-    return "knowledge-beginner";
+    return "knowledge-unknown";
+  };
+  
+  const getKnowledgeTier = (known, level) => {
+    if (known) return "Known";
+    if (level >= 4) return "Advanced";
+    if (level >= 2) return "Learning";
+    return "beginner";
   };
 
   const getRankClass = (rank) => {
@@ -18,18 +26,25 @@ const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod
 
   return (
     <div className="word-cards-container">
-      <h2 className="deck-title-word-details">{deck_name}</h2>
-      <select 
-        value={deckSortMethod} 
-        onChange={(e) => setDeckSortMethod(e.target.value)}
-      >
-        {SORT_OPTIONS.map(option => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <div className="deck-header">
+        <h2 className="deck-title-word-details">{deck_name}</h2>
+        <div className="sort-controls">
+          <label htmlFor="sort-select">Sort by:</label>
+          <select 
+            id="sort-select"
+            value={deckSortMethod} 
+            onChange={(e) => setDeckSortMethod(e.target.value)}
+          >
+            {SORT_OPTIONS.map(option => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
       {words.map((word, index) => (
+        console.log(word),
         <div key={index} className="word-card">
           {/* Main content area */}
           <div className="card-content-word">
@@ -41,8 +56,8 @@ const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod
             {/* Knowledge status - Top right */}
             <div className={`knowledge-status ${getKnowledgeClass(word.known, word.level)}`}>
               <div className="knowledge-info">
-                <span>{word.known ? "Known" : ""}</span>
-                {word.known && (
+                <span>{getKnowledgeTier(word.known, word.level)}</span>
+                {
                   <div className="star-rating">
                     {[...Array(5)].map((_, i) => (
                       <span 
@@ -53,7 +68,7 @@ const JapaneseWordCards = ({ words, deck_name, deckSortMethod, setDeckSortMethod
                       </span>
                     ))}
                   </div>
-                )}
+                }
               </div>
             </div>
           </div>

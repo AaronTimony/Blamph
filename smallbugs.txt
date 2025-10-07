@@ -7,3 +7,4 @@
 7) cannot go backwards in return page all places link to the same route page would be better to have different pages.
 8) cannot add words for some reason in search anymore
 9) When you switch ordering of new words, it doesnt update cache so old one still shows in.
+10) When you add a deck while searching, it doesn't disappear. Kind of important. Looks like on the decks page you can search all decks including the ones you already have added which is a bit worrying possibly.

@@ -1,13 +1,8 @@
 1) Forget all that other shit for now. I need to fix this site at its foundation.
 Improve UX first:
-- Tomorrow, I should start fixing up the reviews page. Make it look nicer and take up a bunch of space. Need to fix the spacing of stuff then add a thing at the bottom. I could make next word to review box to look much cooler too.
-- Second fix ALL OF THE PAGES. Users should be able to go throughout the site without having to wait three centuries.
-- Third Fix reviews and new words. This is the most important part of the site so it NEEDS to be quick and clean. It is currently far too slow.
-- STOP ADDING FEATURES UNTIL SITE HAS GOOD UX AND UI.
+- When I load into the webiste, I first join logged out until i do something. I need to fix that so that It always works if you have a refresh token.
 
 2) Recreate user_cards with partitions.
-
-3) typescript, react router?
 
 4) Create some way for new users to enter the site, create and Account and then login nice and seemlessly. Explain the sites goal on purpose when users first enter.
 

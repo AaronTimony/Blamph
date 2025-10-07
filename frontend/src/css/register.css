@@ -4,10 +4,9 @@
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: #f9fafb;
+  background: #2a2a2a;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .register-form form {
@@ -17,8 +16,7 @@
 
 .register-form label {
   margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #333;
+  font-size: 1.5rem;
 }
 
 .register-form input {
@@ -26,12 +24,15 @@
   margin-bottom: 1.25rem;
   border: 1.5px solid #ccc;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 1.5rem;
+  height: 4rem;
+  border-radius: 16px;
   transition: border-color 0.3s ease;
 }
 
 .register-form input:focus {
   outline: none;
+  padding:1rem;
   border-color: #0070f3;
   box-shadow: 0 0 3px #0070f3;
 }

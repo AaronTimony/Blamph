@@ -1,3 +1,4 @@
+from app.core.auth import create_access_token, create_refresh_token
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, UploadFile
 from pydantic import ValidationError
@@ -38,8 +39,21 @@ class UserService:
             db.commit()
             db.refresh(db_user)
 
-            return {"message": "User Created Successfully"}
+            access_token = create_access_token(data={
+                "sub": db_user.username,
+                "user_id": db_user.id,
+                "role": db_user.role
+            })
 
+            refresh_token = create_refresh_token(db_user.username)
+            return {
+                "message": "User Created Successfully",
+                "access_token": access_token,
+                "refresh_token": refresh_token,
+                "token_type": "bearer",
+                "user": db_user.username
+            }
+        
         except ValidationError as e:
             return {"message": str(e.errors()[0]['msg'])}
 

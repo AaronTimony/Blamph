@@ -1,7 +1,8 @@
-import {useQuery, useMutation} from "@tanstack/react-query"
+import {useQuery} from "@tanstack/react-query"
 import {useAuthContext} from "../contexts/AuthContext"
 import API_BASE_URL from "../config"
 import {SearchLoading} from "../components/Loading"
+import "../css/reviewStats.css"
 
 export function ReviewStats() {
   const {apiCall} = useAuthContext();
@@ -27,5 +28,4 @@ export function ReviewStats() {
       <h1> All Time Reviews: {getReviewValues.data.all_time_reviews} </h1>
     </div>
   )
-
 }

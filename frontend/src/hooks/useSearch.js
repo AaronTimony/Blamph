@@ -26,7 +26,7 @@ export function useSearch(searchquery) {
 
   const addWordToPriorityQueue = useMutation({
     mutationFn: async (card_id) => {
-      const response = await apiCall(`${API_BASE_URL}/api/v1/search/addWordPriority`, {
+      const response = await apiCall(`${API_BASE_URL}/api/v1/search/addWordPriority/`, {
         method: "PATCH",
         body: JSON.stringify({card_id})
       })
@@ -50,6 +50,7 @@ export function useSearchinDeck(searchquery, deck_name) {
   const searchWordsinDeck = useQuery({
     queryKey: ["SearchDeckWords", searchquery, deck_name],
     queryFn: async () => {
+      console.log(searchquery)
     console.log(searchquery, deck_name)
       const response = await fetch(`${API_BASE_URL}/api/v1/search/deckWords?query=${searchquery}&deck_name=${deck_name}`, {
         headers: {"Content-Type" : "application/json"},

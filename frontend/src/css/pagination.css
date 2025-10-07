@@ -1,7 +1,57 @@
 .page-numbers-container {
   display: flex;
-  gap: 1rem;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2rem 0;
+  padding: 1rem;
+}
 
+.page-numbers-container a {
+  text-decoration: none;
+  transition: transform 0.2s;
+}
+
+.page-numbers-container a:hover {
+  transform: translateY(-2px);
+}
+
+.page-numbers-container h1 {
+  margin: 0;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #333;
+  background: #fff;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 50px;
+  text-align: center;
+}
+
+.page-numbers-container a:hover h1 {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.page-numbers-container a.active h1 {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+@media (max-width: 768px) {
+  .page-numbers-container {
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+  
+  .page-numbers-container h1 {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    min-width: 40px;
+  }
 }

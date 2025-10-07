@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy import cast, String, func, or_
+from sqlalchemy import cast, String, func, or_, Text
 from sqlalchemy.orm import Session
 from app.core.database import get_db
+from sqlalchemy.orm.attributes import flag_modified
 from app.models import Card, Deck, CardDeck, User, UserCard
 from app.api.v1.endpoints.auth import get_current_active_user
 from app.schemas.search import NewWordPriorityRequest
@@ -72,7 +73,7 @@ def search_deck_words(query: str = Query(..., max_length = 50),
              .filter(Deck.deck_name == deck_name,
                      or_(
                      subq.c.jp_word.contains(query),
-                     func.lower(subq.c.meaning).contains(func.lower(query))
+                     func.lower(cast(subq.c.meaning, Text)).contains(func.lower(query))
                   ))
                   .limit(50)
                   .all())
@@ -86,7 +87,6 @@ def search_deck_words(query: str = Query(..., max_length = 50),
 def add_word_to_priority_queue(request: NewWordPriorityRequest,
                                current_user: User = Depends(get_current_active_user),
                                db: Session = Depends(get_db)):
-
     card_id = request.card_id
 
     card_exist = (db.query(UserCard.card_id)
@@ -98,13 +98,15 @@ def add_word_to_priority_queue(request: NewWordPriorityRequest,
         return {"message": "Card already in your review queue"}
 
     if card_id not in current_user.new_word_priority_queue:
-        updated_queue = current_user.new_word_priority_queue + [card_id]
-        db.query(User).filter(User.id == current_user.id).update({User.new_word_priority_queue: json.dumps(updated_queue) })
+        current_user.new_word_priority_queue.append(card_id)
+        flag_modified(current_user, 'new_word_priority_queue')  
+        db.commit()
         print(f"Added {card_id}. Queue is now: {current_user.new_word_priority_queue}")
+
     else:
         print(f"Card {card_id} already in queue")
+        return {"message": "Card already in priority queue", "queue": current_user.new_word_priority_queue}
 
 
-    db.commit()
 
     return {"message" : "Added to priority queue", "queue" : current_user.new_word_priority_queue}

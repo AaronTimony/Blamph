@@ -1,5 +1,7 @@
 import API_BASE_URL from "../config"
 import {useMutation} from "@tanstack/react-query"
+import default_pfp from "../images/default-pfp.jpeg"
+import "../css/profilePictureUpload.css"
 
 export default function useProfilePicUpload() {
   const uploadMutation = useMutation({
@@ -36,6 +38,9 @@ export default function useProfilePicUpload() {
 
   return (
     <div className="Upload-file-box">
+      <div className="profile-picture-image-box">
+        <img src={default_pfp} alt={"profile_picture"} className="profile-picture-img" />
+      </div>
       <form onSubmit={handleSubmit} className="profile-pic-submit-form">
         <label htmlFor="image"> Profile picture image: </label>
         <input type="file" name="image" />
