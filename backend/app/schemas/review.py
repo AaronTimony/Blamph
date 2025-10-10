@@ -34,6 +34,7 @@ class CardCountsResponse(BaseModel):
     known_count: int
     current_streak: int
     longest_streak: int
+    user_owns_decks: bool
 
 class ReviewStats(BaseModel):
     daily_reviews: int

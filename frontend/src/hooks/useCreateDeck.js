@@ -1,7 +1,11 @@
 import {useMutation, useQueryClient} from "@tanstack/react-query"
 import API_BASE_URL from "../config"
+import {useAuthContext} from "../contexts/AuthContext"
 
 export function useCreateDeck() {
+  const queryClient = useQueryClient()
+  const {user} = useAuthContext();
+
   const createDeckMutation = useMutation({
     mutationFn: async (formData) => {
       const token = localStorage.getItem('access_token')
@@ -17,6 +21,7 @@ export function useCreateDeck() {
 
       return responseData
     },
+    onSuccess: () => {queryClient.refetchQueries(["myDecks", user?.id])},
     onError: (error) => {
       console.log('Full error:', error.message)
     }

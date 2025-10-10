@@ -36,7 +36,7 @@ class SRS:
                     0.1542,
             ),
             desired_retention = 0.9,
-            learning_steps = (timedelta(minutes=3), timedelta(minutes=10)),
+            learning_steps = (timedelta(minutes=3), timedelta(minutes=10), timedelta(days=1), timedelta(days=3)),
             relearning_steps = (timedelta(minutes=10),),
             maximum_interval = 36500,
             enable_fuzzing = True

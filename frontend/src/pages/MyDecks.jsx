@@ -1,10 +1,8 @@
 import DeckPicker from "../components/deckPicker"
 import SearchBar from "../components/searchBar"
-import API_BASE_URL from "../config";
-import {useCallback, useState, useEffect} from "react"
-import {useAuthContext} from "../contexts/AuthContext"
-import {SearchLoading} from "../components/Loading"
+import {useState, useEffect} from "react"
 import {useMyDecks} from "../hooks/useDeck"
+import "../css/myDecksPage.css"
 import {
   DndContext,
   closestCenter,
@@ -77,12 +75,18 @@ function MyDecks() {
     setActiveId(active.id);
   }
 
-  if (reorderDecksMutation.isPending) return;
 
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       <SearchBar onSearch={setSearchQuery} detail={"decks"}/>
-      <DeckPicker decks={decks} added={true} delDeckfromUser={deleteDeck}/>
+      {localDecks && localDecks.length > 0 ? (
+        <DeckPicker decks={decks} added={true} delDeckfromUser={deleteDeck}/>
+      ) : (
+          <div className="no-decks-found-box">
+            <h1 className="no-decks-found-text"> No Decks Found! </h1>
+            <p className="no-decks-found-subtext"> You can add decks from the 'Decks' page using the + button. </p>
+          </div>
+        )}
     </DndContext>
   )
 }

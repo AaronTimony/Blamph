@@ -7,6 +7,8 @@ import {useState} from "react"
 import SearchBar from "../components/searchBar"
 import {useSearch} from "../hooks/useSearch"
 import {WordSearch} from "../components/wordSearchResults"
+import {WelcomePage} from "../components/welcomePage.jsx"
+import {ReviewPageNoDecks} from "../components/reviewPageNoDecks.jsx"
 
 export default function ReviewPage() {
   const [searchedWord, setSearchWord] = useState("")
@@ -20,8 +22,10 @@ export default function ReviewPage() {
   }
 
   if (!user) {
-    return <h1> Login to see this page! </h1>
+    return <WelcomePage />
   }
+
+
 
   if (getUserInfo.isLoading) return <h1> <SearchLoading detail={"Reviews..."} /> </h1>
 
@@ -30,6 +34,8 @@ export default function ReviewPage() {
   if (searchedWord && searchAllWords.isLoading) return <h1> <SearchLoading detail={"Words..."} /> </h1>
 
   console.log(getUserInfo.data)
+  if (!getUserInfo.data.user_owns_decks) return <ReviewPageNoDecks />;
+
   return (
     <>
       <SearchBar onSearch={setSearchWord} detail={"Words"}/>

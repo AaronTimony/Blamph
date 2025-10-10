@@ -79,7 +79,7 @@ nav {
 }
 
 .centre-of-navbar a:hover::before {
-  color: #d0d0d0; /* clean neutral grey — bright but visibly different */
+  color: #d0d0d0; 
   transform: translateY(-1px);
   opacity: 1;
 }
@@ -88,21 +88,55 @@ nav {
   transform: translateY(0px);
 }
 
-/* Active link styling */
 .centre-of-navbar a.active {
   color: #00FF9C;
   box-shadow: 0 0 20px rgba(0, 255, 156, 0.2),
               inset 0 0 0 1px rgba(0, 255, 156, 0.3);
 }
 
-/* Logged-out section */
 .logged-out-navbar {
   display: flex;
-  gap: 1rem;
   margin-left: auto;
 }
 
-/* Responsive design */
+.logged-out-navbar .registration-link,
+.logged-out-navbar .login-link {
+  display: inline-block;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.6rem 0.6rem;
+  border-radius: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.logged-out-navbar .registration-link::before,
+.logged-out-navbar .login-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: 20px;
+}
+
+.logged-out-navbar .registration-link:hover::before,
+.logged-out-navbar .login-link:hover::before {
+  opacity: 1;
+}
+
+.logged-out-navbar .registration-link:hover,
+.logged-out-navbar .login-link:hover {
+  color: #d0d0d0; 
+  opacity: 1;
+}
+
 @media (max-width: 1024px) {
   .NavBar {
     width: 90%;

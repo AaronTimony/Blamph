@@ -34,15 +34,14 @@ function RegisterForm({setError}) {
 
       } else {
         setError("")
-        navigate("/Decks")
         const data = await response.json()
-        console.log(data, "get this")
 
         const {access_token, refresh_token} = data;
 
         const userData = await validateToken(access_token);
-        console.log(userData, "got this")
         if (userData) {
+          navigate("/Decks")
+          window.location.reload()
           localStorage.setItem('user', JSON.stringify(userData));
           localStorage.setItem('access_token', access_token);
           localStorage.setItem('refresh_token', refresh_token);

@@ -64,8 +64,8 @@ function NavBar() {
           </div>
         ) : (
             <div className="logged-out-navbar">
-              <Link to="/Login">Login</Link>
-              <Link to="/Register">Register</Link>
+              <Link to="/Login" className="login-link">Login</Link>
+              <Link to="/Register" className="registration-link">Register</Link>
             </div>
           )}
       </div>

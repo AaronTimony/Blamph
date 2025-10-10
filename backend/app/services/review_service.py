@@ -3,7 +3,7 @@ from sqlalchemy import func
 from sqlalchemy.orm.attributes import flag_modified
 from fastapi import HTTPException
 from app.services.srs import SRS
-from app.models import User, UserCard, Card, UserReview, UserNewWords
+from app.models import User, UserCard, Card, UserReview, UserNewWords, UserDeck
 from app.schemas.review import Newest_cards, Review_cards, CardRatingRequest, CardCountsResponse, ReviewStats
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
@@ -101,8 +101,6 @@ class ReviewService:
 
         self.handle_new_card_statistics(current_user, db)
 
-        current_user.daily_new_words_learned += 1
-
         new_user_card = UserCard(card_id = card_id,
                                  user_id = current_user.id,
                                  level = level,
@@ -115,6 +113,7 @@ class ReviewService:
     def review_card_rating(self, req: CardRatingRequest,
                            current_user: User,
                            db: Session):
+
         self.handle_new_card_statistics(current_user, db)
         card_id = db.query(Card.id).filter(Card.jp_word == req.jp_word).scalar()
 
@@ -153,13 +152,20 @@ class ReviewService:
         known_count = srs.get_known_cards_count(current_user.id, db)
         current_streak = current_user.current_streak
         longest_streak = current_user.longest_streak
+        has_decks = db.query(UserDeck).filter(UserDeck.user_id == current_user.id).first()
+
+        if has_decks:
+            user_owns_decks = True
+        else:
+            user_owns_decks = False
 
         return CardCountsResponse(
             due_count=due_count,
             new_count=new_count,
             known_count=known_count,
             current_streak=current_streak,
-            longest_streak=longest_streak
+            longest_streak=longest_streak,
+            user_owns_decks=user_owns_decks
         )
 
     def get_review_stats(self, current_user: User, db: Session):
@@ -205,12 +211,12 @@ class ReviewService:
                 current_user.longest_streak = max(current_user.current_streak, current_user.longest_streak)
 
             else:
-                current_user.current_streak = 0
+                current_user.current_streak = 1
 
             db.add(previous_day_record)
 
-        current_user.daily_new_words_learned = 0
-        current_user.last_daily_reset = today
+            current_user.daily_new_words_learned = 0
+            current_user.last_daily_reset = today
 
 
         db.commit()

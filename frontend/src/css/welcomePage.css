@@ -1,0 +1,9 @@
+.Welcome-page-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome-image {
+}
+

@@ -11,7 +11,7 @@ import Decks from "./pages/Decks"
 import {AuthProvider, useAuthContext} from "./contexts/AuthContext"
 import LoginPage from "./pages/login"
 import RegisterPage from "./pages/register"
-import CreateDeck from "./pages/CreateDeck"
+import CreateDeck from "./pages/NewCreateDeck"
 import CardReview from "./pages/CardReview"
 import DeckDetails from "./pages/deckDetails"
 import UserSettings from './pages/Settings'

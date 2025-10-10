@@ -1,7 +1,5 @@
-1) Finally maybe add some AI anime pics to the review page instead of the stock garbage. Also maybe make a setting for altering your desired review percentage in FSRS because reviews are very slow. I should default it to a different percentage because its just too slow right now.
+1) When ready get the partitions going.
 
-1.5) add loading bar to create deck, also change styling for login and register in navbar.
+2) Make a nice welcome page :)
 
-2) Recreate user_cards with partitions.
-
-4) So we need to check for token before the page displays after register and when you return after some time. I can fix both later. also when you have no decks I should suggest to add decks in the no decks screen. Similar to the home page when logged out should have some site details.
+5) fix-new icon in review page on smaller screensk and add update to current streak on reviewing first cardNewUser

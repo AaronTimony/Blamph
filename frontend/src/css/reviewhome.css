@@ -66,12 +66,10 @@
   line-height: 1;
 }
 
-/* Individual stat component */
 .stat-component {
   margin: 0;
 }
 
-/* Title box above each stat card */
 .stat-title-box {
   display: flex;
   align-items: center;
@@ -105,7 +103,6 @@
   border-top: none;
 }
 
-/* Icon section (left side) */
 .stat-icon-section {
   flex: 0 0 40%;
   display: flex;
@@ -121,9 +118,8 @@
   filter: grayscale(0.3) brightness(1.2);
 }
 
-/* Different gradient backgrounds for each stat type */
 .review-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
 }
 
 .known-icon {
@@ -132,6 +128,23 @@
 
 .new-icon {
   background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.grad-hat-img {
+  display: block;
+  margin-top: 5px;
+  width: 80px;
+  height: 80px;
+}
+
+.new-words-img {
+  width: 100px;
+  height: 100px;
+}
+
+.review-icon-img {
+  width: 100px;
+  height: 100px;
 }
 
 /* Value section (right side) */
@@ -152,7 +165,6 @@
   margin: 0;
 }
 
-/* Different colors for each stat type */
 .review-value {
   color: #a78bfa;
 }
@@ -232,6 +244,10 @@
   transform: translateY(-1px);
 }
 
+.tick-icon-image {
+  height: 60px;
+}
+
 /* Responsive design */
 @media (max-width: 1200px) {
   .review-home-container {
@@ -260,6 +276,18 @@
   .start-button-link {
     margin-top: 2rem;
     margin-bottom: 2rem;
+  }
+  .grad-hat-img {
+    width: 60px;
+    height: 60px;
+  }
+  .review-icon-img {
+    width: 75px;
+    height: 75px;
+  }
+  .new-words-img {
+    width: 90px;
+    height: 90px;
   }
 }
 
@@ -294,6 +322,18 @@
   .start-button-link {
     width: 85%;
     margin-top: 2rem;
+  }
+  .grad-hat-img {
+    width: 80px;
+    height: 80px;
+  }
+  .review-icon-img {
+    width: 75px;
+    height: 75px;
+  }
+  .new-words-img {
+    width: 90px;
+    height: 90px;
   }
 }
 

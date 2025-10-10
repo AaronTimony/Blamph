@@ -3,6 +3,10 @@ import {WordSearchReviewPage} from "../components/nextReviewWord.jsx"
 import {useReview} from "../hooks/useReview"
 import {SearchLoading} from "../components/Loading"
 import {Link} from "react-router-dom"
+import grad_hat from "../images/graduation-hat-icon.png"
+import new_words_icon from "../images/new_words_icon.png"
+import review_icon from "../images/review-icon.png"
+import tick_icon from "../images/tick-icon.png"
 
 export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCount, current_streak, longest_streak}) {
   const {
@@ -17,14 +21,14 @@ export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCou
 
   if (isPending || isLoading) return <SearchLoading detail={"Reviews..."} />
 
-  const displayNewWordCount = newWordCount <= 0 ? "Done" : newWordCount;
+  const displayNewWordCount = newWordCount <= 0 ? <img src={tick_icon} alt={"✔"} className="tick-icon-image" /> : newWordCount;
 
-  const displayReviewWordCount = dueWordCount <= 0 ? "Done" : dueWordCount;
+  const displayReviewWordCount = dueWordCount <= 0 ? <img src={tick_icon} alt={"✔"} className="tick-icon-image" /> : dueWordCount;
 
   const current_card = getReviewCard.data.jp_word ? getReviewCard.data : getNewCard.data
 
 
-return (
+  return (
     <div className="review-home-container">
       <div className="stats-grid">
         {/* Words to Review */}
@@ -34,7 +38,9 @@ return (
           </div>
           <div className="stat-card">
             <div className="stat-icon-section review-icon">
-              <span className="icon-text">📝</span>
+              <span className="icon-text">
+                <img src={review_icon} alt="" className="review-icon-img" />
+              </span>
             </div>
             <div className="stat-value-section">
               <div className="stat-value review-value">{displayReviewWordCount}</div>
@@ -50,7 +56,9 @@ return (
           </div>
           <div className="stat-card">
             <div className="stat-icon-section known-icon">
-              <span className="icon-text">✓</span>
+              <span className="icon-text">
+                <img src={grad_hat} alt="✔" className="grad-hat-img" />
+              </span>
             </div>
             <div className="stat-value-section">
               <div className="stat-value known-value">{knownWordCount}</div>
@@ -59,14 +67,15 @@ return (
           </div>
         </div>
 
-        {/* New Words */}
         <div className="stat-component">
           <div className="stat-title-box">
             <h2 className="stat-title">New Words</h2>
           </div>
           <div className="stat-card">
             <div className="stat-icon-section new-icon">
-              <span className="icon-text">✨</span>
+              <span className="icon-text">
+                <img src={new_words_icon} alt="✨" className="new-words-img" />
+              </span>
             </div>
             <div className="stat-value-section">
               <div className="stat-value new-value">{displayNewWordCount}</div>

@@ -10,7 +10,7 @@ export function ReviewStats() {
     queryKey: ["ReviewValues"],
     queryFn: async () => {
       const response = await apiCall(`${API_BASE_URL}/api/v1/review/ReviewStatValues`)
-
+      
       if (!response.ok) throw new Error("Failed to get review stats")
 
       const data = response.json()
