@@ -94,7 +94,7 @@ class SubtitleParser:
                         jp_words.append(token.dictionary_form())
 
                 except Exception as e:
-                    print(e)
+                    print("BAD :()")
 
         except Exception as e:
             print(f"Error in tokenization: {e}")
@@ -145,19 +145,21 @@ class SubtitleParser:
 
         return reading, meaning
 
-    def parse_srt_file(self, file_content: bytes, deck_id: int, db: Session) -> Dict:
+    def create_count_list(self, file_content: bytes, db: Session) -> List[dict]:
+        encoding = self.detect_encoding(file_content)
+        content = file_content.decode(encoding)
+
+        text = self.clean_subtitle_text(content)
+
+        all_words = self.extract_cards(text, db)
+
+        words_count = Counter(all_words)
+
+        return words_count
+
+    def parse_srt_file(self, overall_counter: List[dict], deck_id: int, db: Session) -> Dict:
         try:
-
-            encoding = self.detect_encoding(file_content)
-            content = file_content.decode(encoding)
-
-            text = self.clean_subtitle_text(content)
-
-            all_words = self.extract_cards(text, db)
-
-            words_count = Counter(all_words)
-
-            unique_words = list(words_count.keys())
+            unique_words = list(overall_counter.keys())
             existing_cards = db.query(Card).filter(Card.jp_word.in_(unique_words)).all()
             # Getting the hash map ready to go
             existing_cards_map = {card.jp_word: card for card in existing_cards}
@@ -165,7 +167,7 @@ class SubtitleParser:
             new_cards = []
             cards_to_update = []
 
-            for word, count in words_count.items():
+            for word, count in overall_counter.items():
                 reading, meaning = self.extract_meaning_and_reading(word)
 
                 if not meaning:
@@ -201,7 +203,7 @@ class SubtitleParser:
 
             card_deck_relations = []
 
-            for word, count in words_count.items():
+            for word, count in overall_counter.items():
                 if word not in all_cards_map:
                     continue
 
@@ -220,7 +222,7 @@ class SubtitleParser:
 
             return {
                 "success": True,
-                "total_words": len(words_count),
+                "unique_words": len(overall_counter),
                 "new_cards": len(new_cards),
                 "card_deck_relations": len(card_deck_relations)
             }

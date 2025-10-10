@@ -1,6 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
 from sqlalchemy import func
+from collections import Counter
 from fastapi import UploadFile, HTTPException
 from app.services.subtitle_parser import SubtitleParser
 from app.models import Deck, CardDeck, User, UserCard, Card, UserDeck
@@ -27,6 +28,8 @@ class WordService:
 
             deck = new_deck
 
+        overall_counter = Counter()
+
         for file in files:
             if not file.filename.lower().endswith(supported_extensions):
                 raise HTTPException(status_code=400, detail="This file type is not supported)")
@@ -34,11 +37,14 @@ class WordService:
             try:
                 content = await file.read()
 
-                result = parser.parse_srt_file(content, deck.id, db)
+                result = parser.create_count_list(content, db)
+                overall_counter.update(result)
 
             except Exception as e:
                 raise HTTPException(status_code=500, detail=f"Could not add subtitles: {e}")
 
+
+        parser.parse_srt_file(overall_counter, deck.id, db)
         unique_words = db.query(CardDeck).filter(CardDeck.deck_id == deck.id).count()
         # This only works if CardDeck was not previously defined,
         total_words = db.query(func.sum(CardDeck.word_frequency)).filter(CardDeck.deck_id == deck.id).scalar()
