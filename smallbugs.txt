@@ -1,12 +1,6 @@
-1) new word feature not working fully. I need to have the words save when the user logs in or something because as of right now i just call the function that saves to that table when a new word is done that day (what if user studies a bunch of words then doesnt do any words one day, it will not have updated in stats. I guess i could call it anytime a user checks his stats as doing it every time they join site is expensive)
-2) Another issue is that my website doesnt wait to check tokens so you will have a flash of the "logged out" state before seeing the normal screen. Improper loading states need to be fixed.
-3) The images in full screen have weird bars. Also the deck details page only takes up half the screen?
 4) When you drag the deck to the bottom in my decks it just stays permanently scrolling downwards.
-5) when i reset pfp it doesnt update on taskbar (maybe irrelevant as that isnt ultimate purpose of pfp and likely to be removed.)
-6) The new words feature does not reset until you do a new word then it goes to the number that you want it to.
-7) cannot go backwards in return page all places link to the same route page would be better to have different pages.
-8) cannot add words for some reason in search anymore
-9) When you switch ordering of new words, it doesnt update cache so old one still shows in.
 10) When you add a deck while searching, it doesn't disappear. Kind of important. Looks like on the decks page you can search all decks including the ones you already have added which is a bit worrying possibly.
 11) The known, unique words and words dont add up. Need to see whats going on
-
+12) I might already have this down, but when I load up the review home page, I shoul dhave it refetch the new words to learn immediately. Further, once I do my first review, I should refetch the review home page queries.
+13) I have an issue where once a card is saved to that front page thing and displayed, even if new review cards come it doesn't reset. 
+14) When you log in, have some kind of loading before going to main page. Do same for registration.

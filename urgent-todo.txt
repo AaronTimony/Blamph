@@ -1,5 +1,1 @@
-1) When ready get the partitions going.
-
-2) Make a nice welcome page :)
-
 5) fix-new icon in review page on smaller screensk and add update to current streak on reviewing first cardNewUser

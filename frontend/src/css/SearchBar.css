@@ -47,6 +47,9 @@
 }
 
 .submit-search-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   height: 3.2rem; /* Slightly taller to match search box better */
   padding: 0 2rem;
   font-size: 16px;
@@ -103,5 +106,14 @@
   }
   
   .submit-search-button {
+  }
+}
+
+
+@media (max-width: 480px) {
+  .submit-search-button {
+    font-size: 0.8rem;
+    width: 30px;
+    height: 50px;
   }
 }

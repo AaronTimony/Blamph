@@ -9,9 +9,12 @@ import {useSearch} from "../hooks/useSearch"
 import {WordSearch} from "../components/wordSearchResults"
 import {WelcomePage} from "../components/welcomePage.jsx"
 import {ReviewPageNoDecks} from "../components/reviewPageNoDecks.jsx"
+import {useSearchParams} from "react-router-dom"
+
 
 export default function ReviewPage() {
-  const [searchedWord, setSearchWord] = useState("")
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchedWord = searchParams.get('search') || "";
   const {user, loading} = useAuthContext();
   const {getUserInfo} = useReviewPage()
 
@@ -25,6 +28,14 @@ export default function ReviewPage() {
     return <WelcomePage />
   }
 
+  const handleSearch = (query) => {
+    if (query) {
+      setSearchParams({search: query});
+    } else {
+      setSearchParams({});
+    }
+  }
+
 
 
   if (getUserInfo.isLoading) return <h1> <SearchLoading detail={"Reviews..."} /> </h1>
@@ -33,12 +44,11 @@ export default function ReviewPage() {
 
   if (searchedWord && searchAllWords.isLoading) return <h1> <SearchLoading detail={"Words..."} /> </h1>
 
-  console.log(getUserInfo.data)
   if (!getUserInfo.data.user_owns_decks) return <ReviewPageNoDecks />;
 
   return (
     <>
-      <SearchBar onSearch={setSearchWord} detail={"Words"}/>
+      <SearchBar onSearch={handleSearch} detail={"Words"}/>
       {searchedWord ? (
         <WordSearch words={searchAllWords.data} addWordToPriorityQueue={addWordToPriorityQueue}/>
       ) : (

@@ -96,7 +96,7 @@ export function useDecks() {
   const addDeckMutation = useMutation({
     mutationFn: (data) => deckMutations.addDeck(apiCall, data),
     onSuccess: (data) => {
-      queryClient.setQueryData(['decks', 'available'], (old) => 
+      queryClient.setQueryData(['decks', 'available', user?.id], (old) => 
         old?.filter(deck => deck.deck_name !== data.deck_name)
       )
       queryClient.refetchQueries(['myDecks', user?.id]);

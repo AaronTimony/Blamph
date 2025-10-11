@@ -74,20 +74,19 @@
   /* This will be pushed to the far right */
 }
 /* Hover effect for the entire component */
-.deck-component:hover .deck-title-box {
+.deck-component:hover .deck-title-box.myDecks {
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-.deck-component:hover .deck-card {
+.deck-component:hover .deck-card.myDecks {
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.2);
   transform: translateY(-2px);
   border-color: rgba(59, 130, 246, 0.3);
 }
 
-.deck-component:hover .deck-title-box {
+.deck-component:hover .deck-title-box.myDecks {
   transform: translateY(-2px);
 }
-
 .deck-card {
   background-color: #2a2a2a;
   border-radius: 0 0 16px 16px;
@@ -103,7 +102,6 @@
   border-top: none;
 }
 
-/* Default section - takes up 1 part */
 .deck-section {
   flex: 1;
   display: flex;
@@ -115,11 +113,13 @@
   transition: all 0.3s ease;
 }
 
+.deck-section:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
 /* Image section */
 .deck-section.deck-image {
   flex: 0.6;
 }
-
 /* Container for the three middle boxes */
 .deck-middle-container {
   flex: 3; /* Takes up space for 3 boxes */
@@ -182,7 +182,6 @@
   font-weight: 600;
   color: #9ca3af;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
   margin-bottom: 0.25rem;
 }
 
@@ -214,7 +213,6 @@
 
 
 .knowledge-section .property-value::after {
-  content: "%";
   font-size: 1rem;
   margin-left: 2px;
 }
@@ -350,7 +348,7 @@
   }
 
   .add-deck-btn {
-    font-size: 2rem;
+    font-size: 1rem;
   }
 }
 
@@ -360,7 +358,7 @@
   }
 
   .deck-section.deck-image {
-    flex: 2; /* Makes it twice as wide as the others */
+    flex: 1; /* Makes it twice as wide as the others */
   }
   .deck-card {
     height: 300px;
@@ -370,12 +368,12 @@
     padding: 0.5rem;
   }
 
-  .property-value {
-    font-size: 1rem;
+  .property-label {
+    font-size: 0.5rem;
   }
 
-  .property-label {
-    font-size: 0.65rem;
+  .property-value {
+    font-size: 1rem;
   }
 
   .add-deck-btn {
@@ -393,25 +391,35 @@
   }
 
   .deck-card {
-    height: 80px;
     flex-direction: row; /* Keep horizontal even on mobile */
   }
 
   .deck-section {
-    padding: 0.25rem;
     border-right: 1px solid #4a4a4a;
   }
 
   .property-value {
-    font-size: 0.9rem;
-  }
-
-  .property-label {
     font-size: 0.6rem;
   }
 
-  .add-deck-btn {
-    font-size: 1.25rem;
+  .property-label {
+    font-size: 0.45rem;
+  }
+
+  .add-deck-btn,
+  .minus-deck-btn {
+    font-size: 1rem;
+  }
+
+  .deck-section.add-button-section,
+  .deck-section.minus-button-section {
+    width: 45px;
+  }
+
+  .add-deck-btn,
+  .minus-deck-btn {
+    width: 45px;
+    height: 45px;
   }
 
   .deck-image::after {

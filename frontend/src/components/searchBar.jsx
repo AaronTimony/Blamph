@@ -6,7 +6,9 @@ function SearchBar({onSearch, detail}) {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    inputRef.current.focus();
+    if (window.innerWidth >= 1024) {
+      inputRef.current.focus();
+    }
   }, [])
 
   const handleSubmit = async (e) => {

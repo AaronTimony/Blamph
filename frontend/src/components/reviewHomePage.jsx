@@ -8,7 +8,7 @@ import new_words_icon from "../images/new_words_icon.png"
 import review_icon from "../images/review-icon.png"
 import tick_icon from "../images/tick-icon.png"
 
-export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCount, current_streak, longest_streak}) {
+export default function ReviewHomePage({dueWordCount, newWordCount, knownWordCount, current_streak}) {
   const {
     getNewCard,
     getReviewCard,

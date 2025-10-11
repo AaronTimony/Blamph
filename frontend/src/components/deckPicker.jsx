@@ -26,17 +26,17 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
   return (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <div key={deck.deck_name} className="deck-component">
-        <div className="deck-title-box">
+        <div className={`deck-title-box ${added ? 'myDecks' : ''}`}>
           <h2 className="deck-title">{deck.deck_name}</h2>
           {/*Hardcoded so that users always start on page 1*/}
           <button onClick={() => navigate(`/decks/${deck.deck_name}/1`)} 
             onPointerDown={(e) => e.stopPropagation()}
             className={deck.deck_order ? "deck-details-button" : "deck-details-button no_order"}>
-            See Deck Details
+            Deck Details
           </button>
           <h2 className="deck-order">{deck.deck_order}</h2>
         </div>
-        <div className="deck-card">
+        <div className={`deck-card ${added ? 'myDecks' : ''}`}>
           <div className="deck-section deck-image">
             <img src={deck.image_url} alt={deck.deck_name} />
           </div>
@@ -53,12 +53,12 @@ function SortableDeck({deck, addDecktoUser, added, delDeckfromUser}) {
               </div>
               <div className="deck-middle-box knowledge-section">
                 <div className="property-label">Known</div>
-                <div className="property-value">{deck.known_percentage ?? 0}</div>
+                <div className="property-value">{deck.known_percentage ?? 0}%</div>
               </div>
             </div>
             <div className="deck-middle-row">
               <div className="deck-middle-box difficulty-box">
-                <div className="property-label">Difficulty</div>
+                <div className="property-label">Level</div>
                 <div className="property-value">6</div>
               </div> 
               <div className="deck-middle-box media-section">

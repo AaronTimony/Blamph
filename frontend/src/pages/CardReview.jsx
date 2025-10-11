@@ -5,13 +5,13 @@ import {SearchLoading} from "../components/Loading"
 
 function CardReviewPage() {
   const [showMeaning, setShowMeaning] = useState(false)
+
   const {
-    getNewCard, 
+    getNewCard,
     getReviewCard,
   } = useReview()
 
   const isPending = getNewCard.isPending || getReviewCard.isPending
-
   
   const isLoading = getNewCard.isFetching ||
     getReviewCard.isFetching 

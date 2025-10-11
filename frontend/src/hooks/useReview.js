@@ -17,7 +17,9 @@ export function useReviewPage() {
 
       return counts
     },
-  })
+    refetchOnMount: true
+  });
+
 
   return {getUserInfo}
 }
@@ -70,7 +72,8 @@ export function useReview() {
             throw new Error("Could not patch with new rating")
           }
     },
-    onSuccess: () => {queryClient.invalidateQueries(['NewWord'])}
+    onSuccess: () => {queryClient.invalidateQueries(['NewWord']),
+    queryClient.invalidateQueries(['WordCounts'])}
 
   })
 
@@ -85,7 +88,8 @@ export function useReview() {
         throw new Error("Could not patch with new rating")
       }
     },
-    onSuccess: () => {queryClient.invalidateQueries(['ReviewWord'])}
+    onSuccess: () => {queryClient.invalidateQueries(['ReviewWord']),
+    queryClient.invalidateQueries(['WordCounts'])}
   })
 
   return {postNewCardRating, getNewCard, getReviewCard, postReviewCardRating}

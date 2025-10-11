@@ -87,26 +87,27 @@ def search_deck_words(query: str = Query(..., max_length = 50),
 def add_word_to_priority_queue(request: NewWordPriorityRequest,
                                current_user: User = Depends(get_current_active_user),
                                db: Session = Depends(get_db)):
-    card_id = request.card_id
+    try:
+        card_id = request.card_id
 
-    card_exist = (db.query(UserCard.card_id)
-                 .filter(UserCard.user_id == current_user.id)
-                 .filter(UserCard.card_id == card_id)
-                 .first())
+        card_exist = (db.query(UserCard.card_id)
+                      .filter(UserCard.user_id == current_user.id)
+                      .filter(UserCard.card_id == card_id)
+                      .first())
 
-    if card_exist:
-        return {"message": "Card already in your review queue"}
+        if card_exist:
+            return {"message": "Card already in your review queue"}
 
-    if card_id not in current_user.new_word_priority_queue:
-        current_user.new_word_priority_queue.append(card_id)
-        flag_modified(current_user, 'new_word_priority_queue')  
-        db.commit()
-        print(f"Added {card_id}. Queue is now: {current_user.new_word_priority_queue}")
+        if card_id not in current_user.new_word_priority_queue:
+            current_user.new_word_priority_queue.append(card_id)
+            flag_modified(current_user, 'new_word_priority_queue')  
+            db.commit()
+            print(f"Added {card_id}. Queue is now: {current_user.new_word_priority_queue}")
 
-    else:
-        print(f"Card {card_id} already in queue")
-        return {"message": "Card already in priority queue", "queue": current_user.new_word_priority_queue}
+        else:
+            print(f"Card {card_id} already in queue")
+            return {"message": "Card already in priority queue", "queue": current_user.new_word_priority_queue}
 
-
-
-    return {"message" : "Added to priority queue", "queue" : current_user.new_word_priority_queue}
+        return {"message" : "Added to priority queue", "queue" : current_user.new_word_priority_queue}
+    except Exception as e:
+        print(e)

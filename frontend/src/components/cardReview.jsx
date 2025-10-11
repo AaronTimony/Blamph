@@ -1,6 +1,5 @@
 import "../css/reviewpage.css"
 import {useReview} from "../hooks/useReview"
-import {useState} from "react"
 
 export function CardReview({found_due_card, found_new_card, showMeaning, setShowMeaning}) {
   const {postNewCardRating, postReviewCardRating} = useReview();

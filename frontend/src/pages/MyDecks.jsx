@@ -3,6 +3,7 @@ import SearchBar from "../components/searchBar"
 import {useState, useEffect} from "react"
 import {useMyDecks} from "../hooks/useDeck"
 import "../css/myDecksPage.css"
+import {SearchLoading} from "../components/Loading.jsx"
 import {
   DndContext,
   closestCenter,
@@ -74,6 +75,10 @@ function MyDecks() {
 
     setActiveId(active.id);
   }
+
+  const isLoading = getMyDecks.isLoading || getMyDecks.isPending || searchDecksQuery.isLoading || reorderDecksMutation.isLoading || reorderDecksMutation.isPending
+
+  if (isLoading) return <div><SearchLoading detail={"Decks..."} /></div>
 
 
   return (
