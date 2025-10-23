@@ -3,6 +3,8 @@ import {useNavigate} from "react-router-dom";
 import "../css/register.css";
 import API_BASE_URL from "../config"
 import {useAuthContext} from "../contexts/AuthContext" 
+import {useMutation} from "@tanstack/react-query"
+import {SearchLoading} from "../components/Loading"
 
 function RegisterForm({setError}) {
   const [username, setUsername] = useState("")
@@ -12,48 +14,59 @@ function RegisterForm({setError}) {
   const navigate = useNavigate();
   const {validateToken} = useAuthContext();
 
+
+  const registerUser = useMutation({
+    mutationFn: async ({user_data}) => {
+      console.log(user_data)
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/register`, {
+        method: "POST",
+        headers: {"Content-Type" : "application/json"},
+        body: JSON.stringify(user_data)
+      })
+
+      const data = await response.json()
+      
+
+      if (!response.ok) {
+        throw new Error(data.message || data.detail?.[0]?.msg || data.detail || "Registration Failed")
+      } 
+
+      return data;
+    },
+    onSuccess: async (data) => { 
+      const {access_token, refresh_token} = data;
+
+      const userData = await validateToken(access_token);
+
+      if (userData) {
+        navigate("/Decks")
+        window.location.reload()
+        localStorage.setItem('user', JSON.stringify(userData));
+        localStorage.setItem('access_token', access_token);
+        localStorage.setItem('refresh_token', refresh_token);
+        return {success: true};
+      } else {
+        throw new Error("Failed to register User")
+      }
+    },
+    onError: (error) => {
+      setError(error.message)
+      console.error(error.message)
+    }
+  })
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const userData = {
+    const user_data = {
       username,
       email,
       password,
       confirm_password: confirmPassword
     }
-
-    try{
-      const response = await fetch(`${API_BASE_URL}/api/v1/users/register`, {
-        method: "POST",
-        headers: {"Content-Type" : "application/json"},
-        body: JSON.stringify(userData)
-      })
-
-
-      if (!response.ok) {
-        setError(data.message || data.detail?.[0]?.msg || data.detail || "Registration Failed")
-
-      } else {
-        setError("")
-        const data = await response.json()
-
-        const {access_token, refresh_token} = data;
-
-        const userData = await validateToken(access_token);
-        if (userData) {
-          navigate("/Decks")
-          window.location.reload()
-          localStorage.setItem('user', JSON.stringify(userData));
-          localStorage.setItem('access_token', access_token);
-          localStorage.setItem('refresh_token', refresh_token);
-          return {success: true};
-        } else {
-          return {success: false, error: "Failed to register user"};
-        }
-      }
-    } catch(error) {
-      console.log("Failed to create user", error.message)
-    }
+    registerUser.mutate({user_data})
   }
+
+  if (registerUser.isPending) return <SearchLoading detail={"User Registration..."} />
 
   return (
     <div className="register-form">

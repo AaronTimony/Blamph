@@ -63,14 +63,14 @@ export function useReview() {
 
   const postNewCardRating = useMutation({
     mutationFn: async ({japWord, rating}) => {
-          const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcardrating/`, {
-            method: "POST",
-            body: JSON.stringify({"jp_word" : japWord, "rating" : rating})
-          })
+      const response = await apiCall(`${API_BASE_URL}/api/v1/review/newcardrating/`, {
+        method: "POST",
+        body: JSON.stringify({"jp_word" : japWord, "rating" : rating})
+      })
 
-          if (!response.ok) {
-            throw new Error("Could not patch with new rating")
-          }
+      if (!response.ok) {
+        throw new Error("Could not patch with new rating")
+      }
     },
     onSuccess: () => {queryClient.invalidateQueries(['NewWord']),
     queryClient.invalidateQueries(['WordCounts'])}

@@ -215,7 +215,7 @@ class ReviewService:
 
             db.add(previous_day_record)
 
-            current_user.daily_new_words_learned = 0
+            current_user.daily_new_words_learned = 1
             current_user.last_daily_reset = today
 
 

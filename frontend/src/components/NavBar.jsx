@@ -42,12 +42,12 @@ function NavBar() {
     <nav>
       <div className="NavBar">
         <div className="navbar-left">
-          <Link to="/Review" onClick={(e) => samePage(e, "/Review")} className="navbar-image-link">
+          <Link to="/Review" className="navbar-image-link">
             <img className="navbar-logo-image" src={logo} alt={"Blamph"} />
           </Link>
         </div>
         <div className="centre-of-navbar">
-          {user && <Link to="/Review" onClick = {(e) => samePage(e, "/Review")}>Review</Link>}
+          {user && <Link to="/Review" >Review</Link>}
           <Link to="/Decks" onClick={(e) => samePage(e, "/Decks")}>Decks</Link>
           {user && <Link to="/myDecks" onClick={(e) => samePage(e, "/myDecks")}>My Decks</Link>}
           {user && <Link to="/Create" onClick={(e) => samePage(e, "/Create")}>Create Deck</Link>}
