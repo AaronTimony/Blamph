@@ -1,1 +1,10 @@
-5) fix-new icon in review page on smaller screensk and add update to current streak on reviewing first cardNewUser
+0) Make adding decks faster. ✓
+1) Add refetch to home screen. ✓
+2) Improve search feature. X
+3) Fix deck adding time SUPA SLOW. X
+
+
+0) Done but there is still issues with unique words and also known words(unique words could be tokenizer issue so complex problem)
+1) I think is done but not sure because reset should be tomorrow right and it accidentally saved to today
+2) Not gonna bother with today.
+3) It's true but im not sure what to remove, I do need to update all those queries. I really think I should invalidate caches once i do it.

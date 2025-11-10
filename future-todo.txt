@@ -3,3 +3,5 @@
 2) Need to stop having words always be kanji form, add more readings and meanings for words. Get most common reading first. 
 
 3) add romaji to search for jp words and need less search results.
+
+4) When opening home page, need to check streak because it defualts to most recent streak rather than checking current and putting it as 0. Actually all values need re-checks.

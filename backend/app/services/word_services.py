@@ -132,7 +132,7 @@ class WordService:
                      .offset(offset)
                      .all())
 
-            total_pages = 0 if not cards else (math.ceil(cards[0].unique_words/limit))
+            total_pages = 0 if not cards else (math.ceil((cards[0].unique_words or 0)/limit))
 
             return [
                 {

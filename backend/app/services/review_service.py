@@ -153,6 +153,7 @@ class ReviewService:
         current_streak = current_user.current_streak
         longest_streak = current_user.longest_streak
         has_decks = db.query(UserDeck).filter(UserDeck.user_id == current_user.id).first()
+        self.handle_new_card_statistics(current_user, db)
 
         if has_decks:
             user_owns_decks = True

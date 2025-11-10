@@ -10,7 +10,7 @@ export const AuthProvider = ({children}) => {
 
   const validateToken = async (accessToken) => {
     try{
-      const response = await fetch(`${API_BASE_URL}/api/v1/auth/users/me`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/auth/users/me/`, {
         method: "GET",
         headers: {
           "Content-Type" : "application/json",

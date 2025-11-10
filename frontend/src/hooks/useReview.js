@@ -8,16 +8,19 @@ export function useReviewPage() {
 
   const getUserInfo = useQuery({
     queryKey: ["WordCounts"],
+
     queryFn: async () => {
       const response = await apiCall(`${API_BASE_URL}/api/v1/review/AllUserReviewInfo/`)
       if (!response.ok) {
         throw new Error("Failed to find new word count")
       }
+
       const counts = await response.json()
 
       return counts
     },
-    refetchOnMount: true
+    refetchOnMount: true,
+    staleTime: 0
   });
 
 
@@ -74,7 +77,6 @@ export function useReview() {
     },
     onSuccess: () => {queryClient.invalidateQueries(['NewWord']),
     queryClient.invalidateQueries(['WordCounts'])}
-
   })
 
   const postReviewCardRating = useMutation({
@@ -88,6 +90,7 @@ export function useReview() {
         throw new Error("Could not patch with new rating")
       }
     },
+
     onSuccess: () => {queryClient.invalidateQueries(['ReviewWord']),
     queryClient.invalidateQueries(['WordCounts'])}
   })

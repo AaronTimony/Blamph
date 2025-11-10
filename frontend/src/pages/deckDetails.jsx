@@ -25,6 +25,7 @@ export default function DeckDetails() {
   return (
     <>
       <SearchBar onSearch={setSearchQuery} detail={"Words"}/>
+      
       {searchQuery ? (
         <JapaneseWordCards words={searchWordsinDeck.data} deck_name={deck_name} deckSortMethod={deckSortMethod} />
       ) : (

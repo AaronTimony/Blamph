@@ -11,6 +11,7 @@ from collections import Counter
 from typing import List, Dict, Tuple
 import fugashi
 import unidic
+import time
 import re
 import chardet
 unidic_path = unidic.DICDIR
@@ -104,7 +105,7 @@ class SubtitleParser:
 
         return jp_words
 
-    def extract_meaning_and_reading(self, word: str) -> Tuple[str | None, List | None]:
+    def extract_meaning_and_reading(self, word: str, db: Session) -> Tuple[str | None, List | None]:
         """This function is a bit weird. I have created a list called broken_words, jamdict has this issue where its first entry will usually be the most common form a verb but not always. Sudachipy when two verbs are the same in kana form eg. いる it will not distinguish what form of verb this is based on context. So what I have done is manually set what the most common form of the verb isin kana form for these verbs. If the kanji form is found, then sudachi can use that form, otherwise it defaults to the form of the verb which i have manually set. I don't know how else to do this because the NLP simply does not do it for me so I have no other method other than manual."""
         meaning = None
         reading = None
@@ -161,6 +162,7 @@ class SubtitleParser:
         try:
             unique_words = list(overall_counter.keys())
             existing_cards = db.query(Card).filter(Card.jp_word.in_(unique_words)).all()
+
             # Getting the hash map ready to go
             existing_cards_map = {card.jp_word: card for card in existing_cards}
 
@@ -168,27 +170,32 @@ class SubtitleParser:
             cards_to_update = []
 
             for word, count in overall_counter.items():
-                reading, meaning = self.extract_meaning_and_reading(word)
-
-                if not meaning:
-                    continue
 
                 if word in existing_cards_map:
                     card = existing_cards_map[word]
                     cards_to_update.append({
                         'id': card.id,
+                        'jp_word': word,
                         'overall_frequency': card.overall_frequency + count
                     })
 
+
                 else:
+                    reading, meaning = self.extract_meaning_and_reading(word, db)
+
+                    if not meaning:
+                        continue
+
                     new_card = Card(
                         jp_word=word,
                         meaning=meaning,
                         reading=reading,
                         overall_frequency=count
                     )
+
                     new_cards.append(new_card)
 
+            # here is where cards overall count are updated OR new cards are added to database.
             if cards_to_update:
                 db.bulk_update_mappings(Card, cards_to_update)
 
@@ -196,27 +203,47 @@ class SubtitleParser:
                 db.bulk_save_objects(new_cards, return_defaults=True)
                 db.flush()
 
+            # Because of our uniqueness relation we need to separate out the addition of new relationships and 
+            # the simple addition of old relationships. So if we add 2 subtitles files, we check if the cards were added already
+            # in previous file and if not add them here. If they were added then we simply add the word count to the relation rather than create
+            # a new one
 
-            all_cards_map = existing_cards_map.copy()
-            for card in new_cards:
-                all_cards_map[card.jp_word] = card
+            old_relation_ids = [card['id'] for card in cards_to_update]
+
+            already_exist_in_deck = db.query(CardDeck, Card.jp_word).join(Card, CardDeck.card_id == Card.id)\
+                .filter(CardDeck.deck_id == deck_id).filter(CardDeck.card_id.in_(old_relation_ids)).all()
 
             card_deck_relations = []
+            update_deck_relations = []
+            
+            new_cards_map = {card.jp_word: card for card in new_cards}
+
+            # This contains the card_deck relationship within card so we can use it to update later. 
+            cards_to_update_map = {jp_word: card_deck for card_deck, jp_word in already_exist_in_deck}
 
             for word, count in overall_counter.items():
-                if word not in all_cards_map:
-                    continue
+                if word in new_cards_map:
+                    card_deck_relations.append({
+                        'card_id': new_cards_map[word].id,
+                        'deck_id': deck_id,
+                        'word_frequency': count
+                    })
 
-                card = all_cards_map[word]
+                elif word in cards_to_update_map:
+                    # We need to find the old frequency of the card using the word and then we add to it
+                    update_deck_relations.append({
+                        'id': cards_to_update_map[word].id,
+                        'word_frequency': cards_to_update_map[word].word_frequency + count
+                    })
 
-                card_deck_relations.append({
-                    'card_id': card.id,
-                    'deck_id': deck_id,
-                    'word_frequency': count
-                })
+                # A bit messy but essentially because of the map relation being jp_word: card we can get card_id that maps to the id
+                # using this.
 
             if card_deck_relations:
                 db.bulk_insert_mappings(CardDeck, card_deck_relations)
+
+            if update_deck_relations:
+                db.bulk_update_mappings(CardDeck, update_deck_relations)
 
             db.commit()
 
