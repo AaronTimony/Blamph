@@ -54,7 +54,7 @@ CREATE TABLE user_cards_p8 PARTITION OF user_cards
 FOR VALUES WITH (MODULUS 8, REMAINDER 7);
 
 Here's the raw psql command to execute all those partition creations at once:
-sqlCREATE TABLE user_cards_p1 PARTITION OF user_cards FOR VALUES WITH (MODULUS 8, REMAINDER 0);
+CREATE TABLE user_cards_p1 PARTITION OF user_cards FOR VALUES WITH (MODULUS 8, REMAINDER 0);
 CREATE TABLE user_cards_p2 PARTITION OF user_cards FOR VALUES WITH (MODULUS 8, REMAINDER 1);
 CREATE TABLE user_cards_p3 PARTITION OF user_cards FOR VALUES WITH (MODULUS 8, REMAINDER 2);
 CREATE TABLE user_cards_p4 PARTITION OF user_cards FOR VALUES WITH (MODULUS 8, REMAINDER 3);

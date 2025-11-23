@@ -10,3 +10,4 @@
 18) need to clear cache of decks on logout
 19) Prompt signin on add deck of logged out screen for decks
 20) need to add loading screen for login and registration
+21) I believe since I made changes to user reg, ONLY new words are being shown in new words for a deck.

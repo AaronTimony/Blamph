@@ -40,3 +40,17 @@ export const createDecks = async () => {
     console.error("Something went wrong", error)
   }
 }
+
+export const callAPI = async () => {
+  try{
+    const response = await fetch(`http://localhost:8000/subtitles/useAPI?deck_id=1&episodes=5-10`)
+    if (!response.ok) {
+      throw new Error("Failed to create new decks in database")
+    }
+    const data = await response.json()
+
+    return data
+  } catch(error) {
+    console.error("Something went wrong", error)
+  }
+}

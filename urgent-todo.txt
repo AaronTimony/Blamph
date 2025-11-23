@@ -8,3 +8,5 @@
 1) I think is done but not sure because reset should be tomorrow right and it accidentally saved to today
 2) Not gonna bother with today.
 3) It's true but im not sure what to remove, I do need to update all those queries. I really think I should invalidate caches once i do it.
+4) There is a lot of stuff related to the just the adding of decks that is super important. Obviously speed is an issue but hopefully that fixes with new changes
+but i still need to fix the word counts and known words and stuff. Lots to look at there.
