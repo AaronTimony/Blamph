@@ -10,11 +10,9 @@ from app.models.cardDeck import CardDeck
 from collections import Counter
 from typing import List, Dict, Tuple
 import fugashi
-import unidic
 import time
 import re
 import chardet
-unidic_path = unidic.DICDIR
 
 class SubtitleParser:
     def __init__(self):

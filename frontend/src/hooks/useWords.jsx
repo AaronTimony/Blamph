@@ -10,7 +10,7 @@ export default function useWords(deckSortMethod) {
   const wordsQuery = useQuery({
     queryKey: ['words', page, deck_name, deckSortMethod],
     queryFn: async () => {
-      const res = await apiCall(`${API_BASE_URL}/api/v1/words/getDeckWords`, {
+      const res = await apiCall(`${API_BASE_URL}/api/v1/words/getDeckWords/`, {
         method: 'POST',
         body: JSON.stringify({deck_name, page, ordering:deckSortMethod})
       });

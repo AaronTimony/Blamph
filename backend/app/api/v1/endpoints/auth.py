@@ -74,3 +74,6 @@ async def get_profile_picture(username: str):
 
     return FileResponse(file_path)
 
+@router.get("/health/")
+def health_check():
+    return "Working"

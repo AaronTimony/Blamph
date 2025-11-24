@@ -77,7 +77,6 @@ SQLAlchemy==2.0.42
 srsly==2.5.1
 starlette==0.47.2
 SudachiDict-core==20250515
-SudachiDict-full==20250515
 SudachiPy==0.6.10
 thinc==8.3.6
 tqdm==4.67.1
