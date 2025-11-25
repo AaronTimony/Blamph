@@ -6,7 +6,6 @@ import {SearchLoading} from "../components/Loading"
 import {Pagination} from "../components/pagination"
 import {useSearchinDeck} from "../hooks/useSearch"
 import {useState} from "react"
-import {SignIn} from "../components/signIn"
 
 export default function DeckDetails() {
   const [searchQuery, setSearchQuery] = useState("")
