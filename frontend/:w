@@ -6,6 +6,7 @@ export function WelcomePage() {
     <div className="Welcome-page-box">
       <h1> Welcome to Blamph! </h1>
       <br></br>
+      <br></br>
       <p> Please sign up to begin your Immersion Journey! </p>
 
       <br></br>

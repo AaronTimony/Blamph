@@ -6,6 +6,7 @@ import {SearchLoading} from "../components/Loading"
 import {Pagination} from "../components/pagination"
 import {useSearchinDeck} from "../hooks/useSearch"
 import {useState} from "react"
+import {SignIn} from "../components/signIn"
 
 export default function DeckDetails() {
   const [searchQuery, setSearchQuery] = useState("")
@@ -19,6 +20,7 @@ export default function DeckDetails() {
       <>
         <h1 style={{textAlign: 'center'}}> {deck_name} </h1>
         <h2 style={{ textAlign: 'center' }}> Please sign in to see the words contained in this deck!</h2>
+
       </>
     )
   }

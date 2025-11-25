@@ -24,14 +24,14 @@ const deckQueries = {
   },
 
   searchDecks: async (query) => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/decks/search?q=${encodeURIComponent(query)}/`)
+    const response = await fetch(`${API_BASE_URL}/api/v1/decks/search/?q=${encodeURIComponent(query)}`)
     if (!response.ok) throw new Error('Failed to search decks')
     const data =  await response.json()
     return data
   },
 
   searchMyDecks: async (apiCall, query) => {
-    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/search/myDecks?q=${encodeURIComponent(query)}/`)
+    const response = await apiCall(`${API_BASE_URL}/api/v1/decks/search/myDecks/?q=${encodeURIComponent(query)}`)
     if (!response.ok) throw new Error('Failed to search my decks')
     return await response.json()
   }
