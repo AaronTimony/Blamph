@@ -43,7 +43,14 @@ const deckMutations = {
       method: "POST",
       body: JSON.stringify({deck_name: deck_name, image_url})
     })
-    if (!response.ok) throw new Error("Failed to add decks")
+
+    if (!response.ok) {
+      const error = new Error("Failed to add decks")
+      error.status = response.status
+      console(response.status)
+      throw error
+
+    }
 
     return await response.json()
   },
@@ -73,6 +80,7 @@ export function useDecks() {
   const debouncedSearchQuery = useDebounce(searchQuery, 300)
   const {apiCall, user} = useAuthContext()
   const queryClient = useQueryClient()
+  const [displayError, setDisplayError] = useState(false)
 
   const availableDecksQuery = useQuery({
     queryKey: ['decks', 'available', user?.id],
@@ -100,7 +108,12 @@ export function useDecks() {
       )
       queryClient.refetchQueries(['myDecks', user?.id]);
       },
-    onError: (error) => console.log(error)
+    onError: (error) => {
+      setDisplayError(true)
+      setTimeout(() => {
+        setDisplayError(false)
+      }, 5000)
+    }
   })
 
   const addDecktoUser = (e, deckName, image_url) => {
@@ -114,7 +127,7 @@ export function useDecks() {
     enabled: debouncedSearchQuery.length > 0,
   })
 
-  return {availableDecksQuery, addDecktoUser, searchDecksQuery, setSearchQuery, searchQuery}
+  return {availableDecksQuery, addDeckMutation, addDecktoUser, searchDecksQuery, setSearchQuery, searchQuery, displayError}
 }
 
 export function useMyDecks() {

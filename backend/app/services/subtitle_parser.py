@@ -210,6 +210,7 @@ class SubtitleParser:
 
             already_exist_in_deck = db.query(CardDeck, Card.jp_word).join(Card, CardDeck.card_id == Card.id)\
                 .filter(CardDeck.deck_id == deck_id).filter(CardDeck.card_id.in_(old_relation_ids)).all()
+            print(old_relation_ids, "OK SO THIS GIVES THE OUTPUTS BUT already_exist_in_deck is empty!")
 
             card_deck_relations = []
             update_deck_relations = []

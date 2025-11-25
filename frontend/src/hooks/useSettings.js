@@ -8,7 +8,7 @@ export function useSettings(setDailyNewWords) {
   
   const updateNewDailyWords = useMutation({
     mutationFn: async (dailyNewWords) => {
-      const response = await apiCall(`${API_BASE_URL}/api/v1/settings/updateNewWords`, {
+      const response = await apiCall(`${API_BASE_URL}/api/v1/settings/updateNewWords/`, {
         method: "PATCH",
         body: JSON.stringify({newDailyWords: dailyNewWords})
       })
@@ -26,7 +26,7 @@ export function useSettings(setDailyNewWords) {
 
   const updateNewWordOrdering = useMutation({
     mutationFn: async (newWordOrdering) => {
-      const response = await apiCall(`${API_BASE_URL}/api/v1/settings/updateNewWordsAppearanceOrder`, {
+      const response = await apiCall(`${API_BASE_URL}/api/v1/settings/updateNewWordsAppearanceOrder/`, {
         method: "PATCH",
         body: JSON.stringify({newWordOrdering})
       })

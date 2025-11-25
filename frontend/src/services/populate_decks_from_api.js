@@ -2,7 +2,7 @@ import API_BASE_URL from "../config"
 
 export const fetchTopAnime = async () => {
   try{
-    const response = await fetch(`https://api.jikan.moe/v4/top/anime?limit=10`)
+    const response = await fetch(`https://api.jikan.moe/v4/top/anime?limit=10/`)
 
     if (!response.ok) {
       throw new Error("Failed to retrieve data")
@@ -43,7 +43,7 @@ export const createDecks = async () => {
 
 export const callAPI = async () => {
   try{
-    const response = await fetch(`http://localhost:8000/subtitles/useAPI?deck_id=1&episodes=5-10`)
+    const response = await fetch(`http://localhost:8000/subtitles/useAPI?deck_id=1&episodes=5-10/`)
     if (!response.ok) {
       throw new Error("Failed to create new decks in database")
     }

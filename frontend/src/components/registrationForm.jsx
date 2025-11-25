@@ -18,7 +18,7 @@ function RegisterForm({setError}) {
   const registerUser = useMutation({
     mutationFn: async ({user_data}) => {
       console.log(user_data)
-      const response = await fetch(`${API_BASE_URL}/api/v1/users/register`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/register/`, {
         method: "POST",
         headers: {"Content-Type" : "application/json"},
         body: JSON.stringify(user_data)

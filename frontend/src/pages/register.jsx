@@ -9,7 +9,7 @@ function RegisterPage() {
     <div>
       <RegisterForm setError={setError}/>
       <div style={{display: 'flex', justifyContent: 'center'}}>
-        <FormError error={error}/>
+        <FormError error={error} className="error-message"/>
       </div>
     </div>
   )

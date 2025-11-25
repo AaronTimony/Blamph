@@ -4,7 +4,7 @@ import API_BASE_URL from "../config"
 import {useParams} from "react-router-dom"
 
 export default function useWords(deckSortMethod) {
-  const {apiCall} = useAuthContext();
+  const {apiCall, user} = useAuthContext();
   const {deck_name, page} = useParams()
 
   const wordsQuery = useQuery({
@@ -18,7 +18,6 @@ export default function useWords(deckSortMethod) {
 
       const words = await res.json();
 
-      console.log(words)
       return words
     },
     enabled: !!deck_name,

@@ -33,7 +33,9 @@ export const AuthProvider = ({children}) => {
   const refreshAccessToken = async () => {
     const refresh_token = localStorage.getItem("refresh_token")
     if (!refresh_token) {
-      throw new Error("No refresh token found")
+      const error = new Error("No refresh token found")
+      error.status = 401
+      throw error
     }
     try {
       const response = await fetch(`${API_BASE_URL}/api/v1/auth/refresh/`, {
@@ -85,7 +87,6 @@ export const AuthProvider = ({children}) => {
       });
     };
     let response = await makeRequest(accessToken);
-    let newAccessToken;
 
     if (response.status === 401) {
       console.log("Token expired, attempting refresh")
@@ -188,7 +189,7 @@ export const AuthProvider = ({children}) => {
     try {
       const refreshToken = localStorage.getItem("refresh_token")
       if (refreshToken) {
-        await fetch(`${API_BASE_URL}/api/v1/auth/logout`, {
+        await fetch(`${API_BASE_URL}/api/v1/auth/logout/`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

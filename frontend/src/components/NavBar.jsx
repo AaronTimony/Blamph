@@ -3,7 +3,6 @@ import "../css/NavBar.css"
 import {useAuthContext} from "../contexts/AuthContext"
 import {useState, useEffect, useRef} from "react"
 import menubars from "../icons/menu-bars.svg"
-import API_BASE_URL from "../config"
 import {ProfileDropdown} from "../components/profileDropdown"
 import logo from "../images/Site_logo_temp.png"
 

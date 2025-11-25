@@ -1,4 +1,5 @@
 import JapaneseWordCards from "../components/wordDetailsCard"
+import {useAuthContext} from "../contexts/AuthContext"
 import useWords from "../hooks/useWords"
 import SearchBar from "../components/searchBar"
 import {SearchLoading} from "../components/Loading"
@@ -10,8 +11,17 @@ export default function DeckDetails() {
   const [searchQuery, setSearchQuery] = useState("")
   const [deckSortMethod, setDeckSortMethod] = useState("deck_frequency")
   const {wordsQuery, deck_name, page} = useWords(deckSortMethod);
+  const {user} = useAuthContext();
   const {searchWordsinDeck} = useSearchinDeck(searchQuery, deck_name)
 
+  if (!user) {
+    return (
+      <>
+        <h1 style={{textAlign: 'center'}}> {deck_name} </h1>
+        <h2 style={{ textAlign: 'center' }}> Please sign in to see the words contained in this deck!</h2>
+      </>
+    )
+  }
   const words = wordsQuery.data
 
   if (wordsQuery.isPending) return <h1><SearchLoading detail={"Words"}/></h1>

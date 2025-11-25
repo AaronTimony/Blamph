@@ -7,7 +7,7 @@ export default function useProfilePicUpload() {
   const uploadMutation = useMutation({
     mutationFn: async (formData) => {
       const token = localStorage.getItem("access_token")
-      const response = await fetch(`${API_BASE_URL}/api/v1/users/profile_picture`, {
+      const response = await fetch(`${API_BASE_URL}/api/v1/users/profile_picture/`, {
         headers: {"Authorization" : `Bearer ${token}`},
         method: 'PATCH',
         body: formData

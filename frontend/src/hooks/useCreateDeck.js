@@ -17,13 +17,12 @@ export function useCreateDeck() {
         body: formData
       })
       if (!response.ok) {
-        // Get the error details from the response
-        const errorData = await response.json().catch(() => ({}));
+
+        const errorData = await response.json();
         console.log('Response status:', response.status);
         console.log('Response statusText:', response.statusText);
         console.log('Error data:', errorData);
 
-        // Throw a more detailed error
         throw new Error(
           errorData.message || 
             errorData.detail || 
@@ -37,7 +36,7 @@ export function useCreateDeck() {
     },
     onSuccess: () => {queryClient.refetchQueries(["myDecks", user?.id])},
     onError: (error) => {
-      console.log('Full error:', error.message)
+      
     }
   })
   return {createDeckMutation}

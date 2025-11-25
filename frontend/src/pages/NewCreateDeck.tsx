@@ -1,6 +1,7 @@
 import {ChangeEvent, useRef, useState} from "react"
 import "../css/addFile.css"
 import {useCreateDeck} from "../hooks/useCreateDeck"
+import FormError from "../components/formError";
 
 import {
   FileAudio,
@@ -26,6 +27,7 @@ export default function CreateDeck() {
   const [uploading, setUploading] = useState(false);
   const [deckName, setDeckName] = useState<string>("")
   const {createDeckMutation} = useCreateDeck();
+  const [displayError, setDisplayError] = useState(false)
 
   const inputRef = useRef<HTMLInputElement >(null);
 
@@ -59,6 +61,14 @@ export default function CreateDeck() {
       formData.append('files', fileWithProgress.file);
     });
 
+
+    if (createDeckMutation.isError) {
+      setDisplayError(true)
+
+      setTimeout(() => {
+        setDisplayError(false)
+      }, 10000)
+    }
     createDeckMutation.mutate(formData)
   }
 
@@ -100,7 +110,9 @@ export default function CreateDeck() {
         />
       </div>
       <FileList files={files} onRemove={removeFile} uploading={uploading} />
+      {displayError && <FormError error={createDeckMutation.error?.message} className="create-deck-error"/>}
     </div>
+    
   );
 }
 
