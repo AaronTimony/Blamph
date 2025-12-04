@@ -5,3 +5,5 @@
 3) add romaji to search for jp words and need less search results.
 
 4) When opening home page, need to check streak because it defualts to most recent streak rather than checking current and putting it as 0. Actually all values need re-checks.
+
+5) I need to make the deck also contain words that were obtained prior. Right now just adds new ones i think.

@@ -176,6 +176,7 @@ class SubtitleParser:
                         'jp_word': word,
                         'overall_frequency': card.overall_frequency + count
                     })
+                    # The issue is things are working fine here to update stuff but these updated ones are not getting added to the deck
 
 
                 else:
@@ -201,7 +202,7 @@ class SubtitleParser:
                 db.bulk_save_objects(new_cards, return_defaults=True)
                 db.flush()
 
-            # Because of our uniqueness relation we need to separate out the addition of new relationships and 
+            # Because of our uniqueness relation we need to separate out the creation of new relationships and 
             # the simple addition of old relationships. So if we add 2 subtitles files, we check if the cards were added already
             # in previous file and if not add them here. If they were added then we simply add the word count to the relation rather than create
             # a new one
@@ -211,19 +212,41 @@ class SubtitleParser:
             already_exist_in_deck = db.query(CardDeck, Card.jp_word).join(Card, CardDeck.card_id == Card.id)\
                 .filter(CardDeck.deck_id == deck_id).filter(CardDeck.card_id.in_(old_relation_ids)).all()
             print(old_relation_ids, "OK SO THIS GIVES THE OUTPUTS BUT already_exist_in_deck is empty!")
+            print(already_exist_in_deck, "NO OUTPUTS??")
+            
 
             card_deck_relations = []
             update_deck_relations = []
+
+            # This takes the cards already added to db but not to the deck, and also takes new cards to db and deck and combined them
             
             new_cards_map = {card.jp_word: card for card in new_cards}
+            existing_cards_to_update_map = {card['jp_word']: card for card in cards_to_update}
+            combined_card_map = {**new_cards_map, **existing_cards_to_update_map}
 
-            # This contains the card_deck relationship within card so we can use it to update later. 
+            # This contains the card_deck relationship within card so we can use it to update later. This contains all the cards
+            # that have already been added to the deck. Not cards that are in database.
+            # Need to add combined_card_map but remove the ones in already_exists_in_deck
             cards_to_update_map = {jp_word: card_deck for card_deck, jp_word in already_exist_in_deck}
+            print(cards_to_update_map, "cards to update")
+
+            # Ok so what this will do is exclude cards from cards_to_update_map from combined_card_map
+            keys_to_exclude = set(cards_to_update_map.keys())
+
+            # Create a new map containing only the entries whose key is NOT in the exclude set
+            # OK WELL THIS DIDNT WORK NEED TO FIGURE OUT WHY EVEN IF I REMOVE THIS SHIT (NOT SURE IF ACTUALLY REMOVING I STILL HAVE ISSUES)
+            cards_to_add_map = {
+                jp_word: card_data 
+                for jp_word, card_data in combined_card_map.items() 
+                if jp_word not in keys_to_exclude
+            }
 
             for word, count in overall_counter.items():
-                if word in new_cards_map:
+                # Here i need to get the word and match that to the card objects id
+                # OK SO I AM NOT PROPERLY CHECKING IF A WORD ALREADY EXISTS BECAUSE HERE I GET ERRORS OF ADDING DUPLICATES TO THE DECK xD!
+                if word in combined_card_map:
                     card_deck_relations.append({
-                        'card_id': new_cards_map[word].id,
+                        'card_id': combined_card_map[word]['id'],
                         'deck_id': deck_id,
                         'word_frequency': count
                     })
@@ -239,9 +262,12 @@ class SubtitleParser:
                 # using this.
 
             if card_deck_relations:
+                print("OK HOW ABOUT THESE?")
                 db.bulk_insert_mappings(CardDeck, card_deck_relations)
 
             if update_deck_relations:
+
+                print("OK HOW ABOUT THESE? ???")
                 db.bulk_update_mappings(CardDeck, update_deck_relations)
 
             db.commit()

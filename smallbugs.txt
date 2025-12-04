@@ -1,13 +1,9 @@
-4) When you drag the deck to the bottom in my decks it just stays permanently scrolling downwards.
-10) When you add a deck while searching, it doesn't disappear. Kind of important. Looks like on the decks page you can search all decks including the ones you already have added which is a bit worrying possibly.
-11) The known, unique words and words dont add up. Need to see whats going on
-12) I might already have this down, but when I load up the review home page, I shoul dhave it refetch the new words to learn immediately. Further, once I do my first review, I should refetch the review home page queries.
-13) I have an issue where once a card is saved to that front page thing and displayed, even if new review cards come it doesn't reset. 
-14) When you log in, have some kind of loading before going to main page. Do same for registration.
-15) Clean up adding and deleting decks its very slow and i think i know why. When i import useDecks and stuff it runs too much rather than just calling one api. Separate hooks
-16) Need to speed up creating decks by a lot lol.
-17) Parser can only take a limited number of bytes! Big problemo!
-18) need to clear cache of decks on logout
-19) Prompt signin on add deck of logged out screen for decks
-20) need to add loading screen for login and registration
-21) I believe since I made changes to user reg, ONLY new words are being shown in new words for a deck.
+1) When you drag the deck to the bottom in my decks it just stays permanently scrolling downwards.
+2) When you add a deck while searching, it doesn't disappear. Kind of important. Looks like on the decks page you can search all decks including the ones you already have added which is a bit worrying possibly.
+3) The known, unique words and words dont add up. Need to see whats going on
+4) I might already have this down, but when I load up the review home page, I shoul dhave it refetch the new words to learn immediately. Further, once I do my first review, I should refetch the review home page queries.
+5) I have an issue where once a card is saved to that front page thing and displayed, even if new review cards come it doesn't reset. 
+6) Parser can only take a limited number of bytes! Big problemo!
+7) need to clear cache of decks on logout
+8) The review words do not wait for new words and instead flash the next word rather than waiting.
+9) Need to improve the responsiveness at small sizes in review. For example megane is going off the screen so i need it to wrap

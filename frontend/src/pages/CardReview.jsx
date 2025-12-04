@@ -13,8 +13,7 @@ function CardReviewPage() {
 
   const isPending = getNewCard.isPending || getReviewCard.isPending
   
-  const isLoading = getNewCard.isFetching ||
-    getReviewCard.isFetching 
+  const isLoading = getNewCard.isFetching || getReviewCard.isFetching 
 
 
   useEffect(() => {

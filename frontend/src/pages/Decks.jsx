@@ -2,7 +2,6 @@ import DeckPicker from "../components/deckPicker"
 import {SearchLoading} from "../components/Loading"
 import SearchBar from "../components/searchBar";
 import { useDecks } from "../hooks/useDeck"
-import {useState} from "react"
 import FormError from "../components/formError"
 
 /*import {createDecks, fetchTopAnime} from "../services/populate_decks_from_api" 
@@ -24,16 +23,11 @@ function Decks() {
 
   if (availableDecksQuery.isError) return <div>{availableDecksQuery.error}</div>
 
-
   let decks = availableDecksQuery.data
 
-  if (searchQuery) {
-    decks = searchDecksQuery.data
-  }
+  if (searchQuery) { decks = searchDecksQuery.data }
 
-  if (decks === null) {
-    return <h1> No decks added yet! </h1>
-  }
+  if (decks === null)  return <h1> No decks added yet! </h1> 
 
   return (
     <>
