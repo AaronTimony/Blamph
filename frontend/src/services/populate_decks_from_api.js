@@ -2,12 +2,13 @@ import API_BASE_URL from "../config"
 
 export const fetchTopAnime = async () => {
   try{
-    const response = await fetch(`https://api.jikan.moe/v4/top/anime?limit=10/`)
+    const response = await fetch(`https://api.jikan.moe/v4/top/anime?limit=10`)
 
     if (!response.ok) {
       throw new Error("Failed to retrieve data")
     }
     const data = await response.json()
+    console.log(data)
   
     return data.data.map((anime) => ({
       title: anime.title,
